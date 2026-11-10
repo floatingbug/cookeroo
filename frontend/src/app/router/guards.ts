@@ -33,6 +33,14 @@ export function installAuthGuard(router: Router): void {
       return { path: safeRedirect(to.query.redirect) }
     }
 
+    const authenticatedRedirect = to.matched
+      .map((record) => record.meta.redirectAuthenticatedTo)
+      .find((target): target is string => typeof target === 'string')
+
+    if (authenticatedRedirect && authenticatedRedirect !== to.path && authStore.isAuthenticated) {
+      return { path: authenticatedRedirect }
+    }
+
     return true
   })
 }

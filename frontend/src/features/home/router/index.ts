@@ -9,6 +9,7 @@ export default {
       path: '',
       name: 'home',
       component: () => import('../ui/views/HomeView.vue'),
+      meta: { redirectAuthenticatedTo: '/dashboard' },
     },
   ],
 } satisfies RouteRecordRaw

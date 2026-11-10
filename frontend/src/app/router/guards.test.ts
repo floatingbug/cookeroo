@@ -41,6 +41,12 @@ function createTestRouter() {
         component: Stub,
         meta: { requiresAuth: true },
       },
+      {
+        path: '/start',
+        name: 'start',
+        component: Stub,
+        meta: { redirectAuthenticatedTo: '/dashboard' },
+      },
     ],
   })
 
@@ -134,6 +140,26 @@ describe('Auth-Guard', () => {
     await router.push({ name: 'sign-in', query: { redirect: '//evil.example' } })
 
     expect(router.currentRoute.value.path).toBe('/')
+  })
+
+  it('lässt Gäste auf Routen mit redirectAuthenticatedTo', async () => {
+    const router = createTestRouter()
+
+    await router.push('/start')
+
+    expect(router.currentRoute.value.name).toBe('start')
+  })
+
+  it('leitet angemeldete Nutzer über redirectAuthenticatedTo um', async () => {
+    const store = useAuthStore(pinia)
+    store.status = 'authenticated'
+    store.user = { id: '1', name: 'Tommy' } as User
+
+    const router = createTestRouter()
+
+    await router.push('/start')
+
+    expect(router.currentRoute.value.path).toBe('/dashboard')
   })
 
   it('stellt die Session nur einmal wieder her', async () => {
