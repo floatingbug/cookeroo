@@ -15,6 +15,6 @@
     "sourceMap": true,
     "noEmit": true
   },
-  "include": ["main.ts", "src/**/*.ts", "test/**/*.ts"],
+  "include": ["main.ts", "src/**/*.ts", "test/**/*.ts", "scripts/**/*.ts"],
   "exclude": ["node_modules", "dist", "logs"]
 }
