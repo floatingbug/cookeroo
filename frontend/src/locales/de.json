@@ -5,6 +5,7 @@
   "nav": {
     "main": "Hauptnavigation",
     "home": "Start",
+    "dashboard": "Dashboard",
     "products": "Produktsuche",
     "account": "Konto"
   },
@@ -82,6 +83,11 @@
   "home": {
     "title": "Willkommen",
     "description": "Vue-Frontend und Express-Backend sind bereit für das erste Feature."
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "description": "Dein Überblick in Cookeroo.",
+    "welcome": "Willkommen zurück, {name}!"
   },
   "product": {
     "title": "Produktsuche",

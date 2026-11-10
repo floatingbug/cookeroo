@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import type { RouteRecordRaw } from 'vue-router'
 
 import authRoutes from '@/features/auth/router'
+import dashboardRoutes from '@/features/dashboard/router'
 import homeRoutes from '@/features/home/router'
 import productRoutes from '@/features/product/router'
 import notFoundRoutes from '@/features/not-found/router'
@@ -14,6 +15,7 @@ const routes: RouteRecordRaw[] = [
   homeRoutes,
   authRoutes,
   // Feature-Router mit geschützten Seiten setzen `meta: { requiresAuth: true }`.
+  dashboardRoutes,
   productRoutes,
   notFoundRoutes,
 ]
