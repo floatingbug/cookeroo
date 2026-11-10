@@ -1,0 +1,23 @@
+<script setup lang="ts">
+import { onMounted } from 'vue'
+import { useI18n } from 'vue-i18n'
+
+import { use__Name__Store } from '../../store/__name__Store'
+
+const { t } = useI18n()
+const store = use__Name__Store()
+
+onMounted(async () => {
+  // Nur die für diesen Use-Case benötigte Store-Action aufrufen.
+  await store.fetchAll()
+})
+</script>
+
+<template>
+  <main>
+    <h1>{{ t('__name__.title') }}</h1>
+    <p v-if="store.loading">{{ t('__name__.loading') }}</p>
+    <p v-else-if="store.errorKey" role="alert">{{ t(store.errorKey) }}</p>
+    <!-- Hier die konkrete Darstellung des Use-Cases und benötigte Komponenten verbinden. -->
+  </main>
+</template>
