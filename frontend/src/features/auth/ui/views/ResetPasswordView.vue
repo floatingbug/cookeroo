@@ -6,10 +6,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { Button, Input } from '@/shared/components'
 
 import AuthCard from '../components/AuthCard.vue'
-import {
-  getPasswordConfirmationErrorKey,
-  getPasswordErrorKey,
-} from '../../services/authValidation'
+import { getPasswordConfirmationErrorKey, getPasswordErrorKey } from '../../services/authValidation'
 import { useAuthStore } from '../../store/authStore'
 
 const { t } = useI18n()

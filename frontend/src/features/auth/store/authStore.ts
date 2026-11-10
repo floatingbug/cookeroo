@@ -110,7 +110,13 @@ export const useAuthStore = defineStore('auth', {
       return this.status
     },
 
-    async signIn({ nameOrEmail, password }: { nameOrEmail: string; password: string }): Promise<boolean> {
+    async signIn({
+      nameOrEmail,
+      password,
+    }: {
+      nameOrEmail: string
+      password: string
+    }): Promise<boolean> {
       this.loading = true
       this.errorKey = null
       this.noticeKey = null
@@ -132,7 +138,15 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async signUp({ name, email, password }: { name: string; email: string; password: string }): Promise<boolean> {
+    async signUp({
+      name,
+      email,
+      password,
+    }: {
+      name: string
+      email: string
+      password: string
+    }): Promise<boolean> {
       this.loading = true
       this.errorKey = null
       this.noticeKey = null
@@ -207,7 +221,13 @@ export const useAuthStore = defineStore('auth', {
       }
     },
 
-    async resetPassword({ token, password }: { token: string; password: string }): Promise<boolean> {
+    async resetPassword({
+      token,
+      password,
+    }: {
+      token: string
+      password: string
+    }): Promise<boolean> {
       this.loading = true
       this.errorKey = null
       this.noticeKey = null

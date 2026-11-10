@@ -246,7 +246,9 @@ describe('useAuthStore', () => {
   })
 
   it('fordert ohne Anmeldung keinen User erneut an', async () => {
-    mockedAuthService.confirmEmailChange.mockResolvedValue({ newEmail: 'neu@example.com' } as ConfirmEmailChangeResponse)
+    mockedAuthService.confirmEmailChange.mockResolvedValue({
+      newEmail: 'neu@example.com',
+    } as ConfirmEmailChangeResponse)
 
     const store = useAuthStore()
 

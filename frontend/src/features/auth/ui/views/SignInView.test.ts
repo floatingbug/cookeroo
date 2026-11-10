@@ -117,7 +117,9 @@ describe('SignInView', () => {
   })
 
   it('zeigt falsche Zugangsdaten an', async () => {
-    mockedAuthService.signIn.mockRejectedValue(Object.assign(new Error('unauthorized'), { status: 401 }))
+    mockedAuthService.signIn.mockRejectedValue(
+      Object.assign(new Error('unauthorized'), { status: 401 }),
+    )
 
     const { wrapper, router, store } = await mountView()
 
@@ -129,7 +131,9 @@ describe('SignInView', () => {
   })
 
   it('bietet bei unbestätigter E-Mail das erneute Senden an', async () => {
-    mockedAuthService.signIn.mockRejectedValue(Object.assign(new Error('forbidden'), { status: 403 }))
+    mockedAuthService.signIn.mockRejectedValue(
+      Object.assign(new Error('forbidden'), { status: 403 }),
+    )
     mockedAuthService.resendVerificationEmail.mockResolvedValue({ message: 'ok' })
 
     const { wrapper, store } = await mountView()

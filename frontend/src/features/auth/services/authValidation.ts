@@ -39,7 +39,10 @@ export function getPasswordErrorKey(password: unknown): string | null {
   return null
 }
 
-export function getPasswordConfirmationErrorKey(password: unknown, confirmation: unknown): string | null {
+export function getPasswordConfirmationErrorKey(
+  password: unknown,
+  confirmation: unknown,
+): string | null {
   if (password !== confirmation) {
     return 'auth.errors.passwordMismatch'
   }

@@ -71,7 +71,9 @@ describe('VerifyEmailView', () => {
   })
 
   it('zeigt einen ungültigen Token an', async () => {
-    mockedAuthService.verifyEmail.mockRejectedValue(Object.assign(new Error('invalid'), { status: 400 }))
+    mockedAuthService.verifyEmail.mockRejectedValue(
+      Object.assign(new Error('invalid'), { status: 400 }),
+    )
 
     const { wrapper } = await mountView({ token: 'token-1' })
 

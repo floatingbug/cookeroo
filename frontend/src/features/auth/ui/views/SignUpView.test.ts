@@ -51,7 +51,12 @@ async function mountView() {
 
 async function fillForm(
   wrapper: VueWrapper,
-  { name, email, password, passwordConfirm }: { name: string; email: string; password: string; passwordConfirm: string },
+  {
+    name,
+    email,
+    password,
+    passwordConfirm,
+  }: { name: string; email: string; password: string; passwordConfirm: string },
 ) {
   await wrapper.find('#sign-up-name').setValue(name)
   await wrapper.find('#sign-up-email').setValue(email)
@@ -120,7 +125,9 @@ describe('SignUpView', () => {
   })
 
   it('zeigt einen bestehenden Account an', async () => {
-    mockedAuthService.signUp.mockRejectedValue(Object.assign(new Error('conflict'), { status: 409 }))
+    mockedAuthService.signUp.mockRejectedValue(
+      Object.assign(new Error('conflict'), { status: 409 }),
+    )
 
     const { wrapper } = await mountView()
 
