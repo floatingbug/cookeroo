@@ -4,1276 +4,1438 @@
  */
 
 export interface paths {
-    "/auth/sign-up": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Create an account
-         * @description Creates a user and sends a verification email. In development without
-         *     SMTP configuration the verification link is written to the backend log.
-         */
-        post: operations["signUp"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/sign-in": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Sign in
-         * @description Returns an access token in the JSON body and sets the HttpOnly refresh
-         *     token cookie. The refresh token is never returned in the JSON body.
-         */
-        post: operations["signIn"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/sign-out": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Sign out
-         * @description Requires a valid access token and clears the refresh token cookie.
-         *     The response has no body.
-         */
-        post: operations["signOut"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/refresh": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Refresh the access token
-         * @description Reads the HttpOnly `refreshToken` cookie and returns a new access token.
-         *     The refresh cookie is not rotated.
-         */
-        post: operations["refreshAccessToken"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/verify-email": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Verify an email address
-         * @description Verifies the email address using the token from the verification email.
-         *     Opening the same valid link again returns 200 if the address is already
-         *     verified.
-         */
-        get: operations["verifyEmail"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/verify-email/resend": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Resend the verification email
-         * @description Always responds generically so the endpoint does not reveal whether an
-         *     account exists. A mail delivery failure returns 502.
-         */
-        post: operations["resendVerificationEmail"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/forgot-password": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Request a password reset
-         * @description Always responds generically so the endpoint does not reveal whether an
-         *     account exists. Mail errors are logged and do not change the response.
-         */
-        post: operations["forgotPassword"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/auth/reset-password": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        /**
-         * Set a new password
-         * @description Consumes the password reset token and replaces the password. Passwords
-         *     are never trimmed.
-         */
-        post: operations["resetPassword"];
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/users/me": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /** Get the current user */
-        get: operations["getCurrentUser"];
-        put?: never;
-        post?: never;
-        /**
-         * Delete the current account
-         * @description Deletes the account and clears the refresh token cookie.
-         */
-        delete: operations["deleteCurrentUser"];
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
-    "/account": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        get?: never;
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        /**
-         * Update name, email or password
-         * @description Changes one or more fields. Business conflicts such as a taken name or
-         *     email, an identical value, or an identical email are intentionally
-         *     reported in the `errorMessages` object with HTTP 200. Multiple fields
-         *     can succeed or fail independently in a single request. Input validation
-         *     failures use HTTP 400 with `{ "message": ... }`.
-         */
-        patch: operations["updateAccount"];
-        trace?: never;
-    };
-    "/account/confirm-email": {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        /**
-         * Confirm an email change
-         * @description Confirms a pending email change using the token from the confirmation
-         *     email. The endpoint itself does not require authentication.
-         */
-        get: operations["confirmEmailChange"];
-        put?: never;
-        post?: never;
-        delete?: never;
-        options?: never;
-        head?: never;
-        patch?: never;
-        trace?: never;
-    };
+  '/auth/sign-up': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create an account
+     * @description Creates a user and sends a verification email. In development without
+     *     SMTP configuration the verification link is written to the backend log.
+     */
+    post: operations['signUp']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/auth/sign-in': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Sign in
+     * @description Returns an access token in the JSON body and sets the HttpOnly refresh
+     *     token cookie. The refresh token is never returned in the JSON body.
+     */
+    post: operations['signIn']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/auth/sign-out': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Sign out
+     * @description Requires a valid access token and clears the refresh token cookie.
+     *     The response has no body.
+     */
+    post: operations['signOut']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/auth/refresh': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Refresh the access token
+     * @description Reads the HttpOnly `refreshToken` cookie and returns a new access token.
+     *     The refresh cookie is not rotated.
+     */
+    post: operations['refreshAccessToken']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/auth/verify-email': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Verify an email address
+     * @description Verifies the email address using the token from the verification email.
+     *     Opening the same valid link again returns 200 if the address is already
+     *     verified.
+     */
+    get: operations['verifyEmail']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/auth/verify-email/resend': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Resend the verification email
+     * @description Always responds generically so the endpoint does not reveal whether an
+     *     account exists. A mail delivery failure returns 502.
+     */
+    post: operations['resendVerificationEmail']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/auth/forgot-password': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Request a password reset
+     * @description Always responds generically so the endpoint does not reveal whether an
+     *     account exists. Mail errors are logged and do not change the response.
+     */
+    post: operations['forgotPassword']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/auth/reset-password': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Set a new password
+     * @description Consumes the password reset token and replaces the password. Passwords
+     *     are never trimmed.
+     */
+    post: operations['resetPassword']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/users/me': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** Get the current user */
+    get: operations['getCurrentUser']
+    put?: never
+    post?: never
+    /**
+     * Delete the current account
+     * @description Deletes the account and clears the refresh token cookie.
+     */
+    delete: operations['deleteCurrentUser']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/account': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    /**
+     * Update name, email or password
+     * @description Changes one or more fields. Business conflicts such as a taken name or
+     *     email, an identical value, or an identical email are intentionally
+     *     reported in the `errorMessages` object with HTTP 200. Multiple fields
+     *     can succeed or fail independently in a single request. Input validation
+     *     failures use HTTP 400 with `{ "message": ... }`.
+     */
+    patch: operations['updateAccount']
+    trace?: never
+  }
+  '/account/confirm-email': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Confirm an email change
+     * @description Confirms a pending email change using the token from the confirmation
+     *     email. The endpoint itself does not require authentication.
+     */
+    get: operations['confirmEmailChange']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/products/search': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Search food products by name
+     * @description Full-text product search backed by OpenFoodFacts. Results are cached
+     *     briefly on the server to respect the OpenFoodFacts rate limits.
+     */
+    get: operations['searchProducts']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
 }
-export type webhooks = Record<string, never>;
+export type webhooks = Record<string, never>
 export interface components {
-    schemas: {
-        SignUpRequest: {
-            /** @description Trimmed display name. */
-            name: string;
-            /** @description Email address; normalized to lowercase. */
-            email: string;
-            /**
-             * @description Must contain uppercase and lowercase letters and at least one
-             *     number. Never trimmed.
-             */
-            password: string;
+  schemas: {
+    SignUpRequest: {
+      /** @description Trimmed display name. */
+      name: string
+      /** @description Email address; normalized to lowercase. */
+      email: string
+      /**
+       * @description Must contain uppercase and lowercase letters and at least one
+       *     number. Never trimmed.
+       */
+      password: string
+    } & {
+      [key: string]: unknown
+    }
+    Message: {
+      message: string
+    }
+    Error: {
+      message: string
+    }
+    SignInRequest: {
+      /** @description Email address or display name. */
+      nameOrEmail: string
+      password: string
+    } & {
+      [key: string]: unknown
+    }
+    /** @description Public user data. `name` and `email` are personal data. */
+    User: {
+      /** @description MongoDB ObjectId serialized as a hex string. */
+      id: string
+      name: string
+      /** @description Normalized email address. */
+      email: string
+    }
+    SignInResponse: {
+      /** @description Public user data. `name` and `email` are personal data. */
+      user: {
+        /** @description MongoDB ObjectId serialized as a hex string. */
+        id: string
+        name: string
+        /** @description Normalized email address. */
+        email: string
+      }
+      /** @description JWT access token for the `Authorization: Bearer` header. */
+      accessToken: string
+    }
+    RefreshResponse: {
+      accessToken: string
+    }
+    EmailRequest: {
+      email: string
+    } & {
+      [key: string]: unknown
+    }
+    ResetPasswordRequest: {
+      token: string
+      /**
+       * @description Must contain uppercase and lowercase letters and at least one
+       *     number. Never trimmed.
+       */
+      password: string
+    } & {
+      [key: string]: unknown
+    }
+    /**
+     * @description At least one of `name`, `email` or `password` is required. Unknown
+     *     fields are rejected by the existing account validation middleware.
+     */
+    AccountUpdateRequest: {
+      name?: string
+      email?: string
+      /**
+       * @description Must contain uppercase and lowercase letters and at least one
+       *     number. Never trimmed.
+       */
+      password?: string
+    }
+    /**
+     * @description Result of a partially successful account update. `messages` contains
+     *     successful fields, `errorMessages` contains business conflicts, and
+     *     `updated` lists the fields that were changed.
+     */
+    AccountUpdateResult: {
+      messages: {
+        name?: string
+        email?: string
+        password?: string
+      }
+      errorMessages: {
+        name?: string
+        email?: string
+        password?: string
+      }
+      updated: ('name' | 'email' | 'password')[]
+    }
+    ConfirmEmailChangeResponse: {
+      /** @enum {boolean} */
+      success: true
+      newEmail: string | null
+      message: string
+    }
+    /**
+     * @description Food product from OpenFoodFacts. Fields other than `code` may be null when
+     *     OpenFoodFacts has no data for them.
+     */
+    Product: {
+      /** @description Barcode of the product. */
+      code: string
+      productName?: string | null
+      /** @description Comma-separated brand names as stored by OpenFoodFacts. */
+      brands?: string | null
+      /** @description Comma-separated category names as stored by OpenFoodFacts. */
+      categories?: string | null
+      /** @description Front image URL, falling back to any available image. */
+      imageUrl?: string | null
+      /** @description Nutri-Score grade from `a` to `e`, null when unknown. */
+      nutriscoreGrade?: string | null
+    }
+    /** @description Paginated result of the product search. */
+    ProductSearchResponse: {
+      products: {
+        /** @description Barcode of the product. */
+        code: string
+        productName?: string | null
+        /** @description Comma-separated brand names as stored by OpenFoodFacts. */
+        brands?: string | null
+        /** @description Comma-separated category names as stored by OpenFoodFacts. */
+        categories?: string | null
+        /** @description Front image URL, falling back to any available image. */
+        imageUrl?: string | null
+        /** @description Nutri-Score grade from `a` to `e`, null when unknown. */
+        nutriscoreGrade?: string | null
+      }[]
+      /** @description Total number of matching products reported by OpenFoodFacts. */
+      count: number
+      /** @description 1-based page number of this result. */
+      page: number
+      /** @description Number of products requested per page. */
+      pageSize: number
+    }
+  }
+  responses: {
+    /** @description Invalid input. */
+    BadRequest: {
+      headers: {
+        [name: string]: unknown
+      }
+      content: {
+        'application/json': {
+          message: string
+        }
+      }
+    }
+    /** @description Rate limit exceeded (only active in production). */
+    TooManyRequests: {
+      headers: {
+        [name: string]: unknown
+      }
+      content: {
+        'application/json': {
+          message: string
+        }
+      }
+    }
+    /** @description Unexpected server error. */
+    InternalServerError: {
+      headers: {
+        [name: string]: unknown
+      }
+      content: {
+        'application/json': {
+          message: string
+        }
+      }
+    }
+    /** @description Missing or invalid access token. */
+    Unauthorized: {
+      headers: {
+        [name: string]: unknown
+      }
+      content: {
+        'application/json': {
+          message: string
+        }
+      }
+    }
+  }
+  parameters: {
+    /**
+     * @description Token from the email link. Required in practice; if missing, the
+     *     endpoint responds with 400.
+     */
+    TokenQuery: string
+  }
+  requestBodies: never
+  headers: {
+    /** @description Cookie header for the refresh token. Sign-in sets it; sign-out clears it. */
+    SetCookie: string
+  }
+  pathItems: never
+}
+export type $defs = Record<string, never>
+export interface operations {
+  signUp: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @description Trimmed display name. */
+          name: string
+          /** @description Email address; normalized to lowercase. */
+          email: string
+          /**
+           * @description Must contain uppercase and lowercase letters and at least one
+           *     number. Never trimmed.
+           */
+          password: string
         } & {
-            [key: string]: unknown;
-        };
-        Message: {
-            message: string;
-        };
-        Error: {
-            message: string;
-        };
-        SignInRequest: {
-            /** @description Email address or display name. */
-            nameOrEmail: string;
-            password: string;
+          [key: string]: unknown
+        }
+      }
+    }
+    responses: {
+      /** @description Account created; verification email requested. */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Name or email address is already in use. */
+      409: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Rate limit exceeded (only active in production). */
+      429: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description The verification email could not be sent. */
+      502: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  signIn: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @description Email address or display name. */
+          nameOrEmail: string
+          password: string
         } & {
-            [key: string]: unknown;
-        };
-        /** @description Public user data. `name` and `email` are personal data. */
-        User: {
-            /** @description MongoDB ObjectId serialized as a hex string. */
-            id: string;
-            name: string;
-            /** @description Normalized email address. */
-            email: string;
-        };
-        SignInResponse: {
+          [key: string]: unknown
+        }
+      }
+    }
+    responses: {
+      /** @description Signed in successfully. */
+      200: {
+        headers: {
+          /** @description Cookie header for the refresh token. Sign-in sets it; sign-out clears it. */
+          'Set-Cookie'?: string
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
             /** @description Public user data. `name` and `email` are personal data. */
             user: {
-                /** @description MongoDB ObjectId serialized as a hex string. */
-                id: string;
-                name: string;
-                /** @description Normalized email address. */
-                email: string;
-            };
+              /** @description MongoDB ObjectId serialized as a hex string. */
+              id: string
+              name: string
+              /** @description Normalized email address. */
+              email: string
+            }
             /** @description JWT access token for the `Authorization: Bearer` header. */
-            accessToken: string;
-        };
-        RefreshResponse: {
-            accessToken: string;
-        };
-        EmailRequest: {
-            email: string;
-        } & {
-            [key: string]: unknown;
-        };
-        ResetPasswordRequest: {
-            token: string;
-            /**
-             * @description Must contain uppercase and lowercase letters and at least one
-             *     number. Never trimmed.
-             */
-            password: string;
-        } & {
-            [key: string]: unknown;
-        };
-        /**
-         * @description At least one of `name`, `email` or `password` is required. Unknown
-         *     fields are rejected by the existing account validation middleware.
-         */
-        AccountUpdateRequest: {
-            name?: string;
-            email?: string;
-            /**
-             * @description Must contain uppercase and lowercase letters and at least one
-             *     number. Never trimmed.
-             */
-            password?: string;
-        };
-        /**
-         * @description Result of a partially successful account update. `messages` contains
-         *     successful fields, `errorMessages` contains business conflicts, and
-         *     `updated` lists the fields that were changed.
-         */
-        AccountUpdateResult: {
-            messages: {
-                name?: string;
-                email?: string;
-                password?: string;
-            };
-            errorMessages: {
-                name?: string;
-                email?: string;
-                password?: string;
-            };
-            updated: ("name" | "email" | "password")[];
-        };
-        ConfirmEmailChangeResponse: {
-            /** @enum {boolean} */
-            success: true;
-            newEmail: string | null;
-            message: string;
-        };
-    };
-    responses: {
-        /** @description Invalid input. */
-        BadRequest: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": {
-                    message: string;
-                };
-            };
-        };
-        /** @description Rate limit exceeded (only active in production). */
-        TooManyRequests: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": {
-                    message: string;
-                };
-            };
-        };
-        /** @description Unexpected server error. */
-        InternalServerError: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": {
-                    message: string;
-                };
-            };
-        };
-        /** @description Missing or invalid access token. */
-        Unauthorized: {
-            headers: {
-                [name: string]: unknown;
-            };
-            content: {
-                "application/json": {
-                    message: string;
-                };
-            };
-        };
-    };
+            accessToken: string
+          }
+        }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Invalid credentials. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description The email address has not been verified yet. */
+      403: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Rate limit exceeded (only active in production). */
+      429: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  signOut: {
     parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Signed out; refresh cookie cleared. */
+      204: {
+        headers: {
+          /** @description Cookie header for the refresh token. Sign-in sets it; sign-out clears it. */
+          'Set-Cookie'?: string
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Rate limit exceeded (only active in production). */
+      429: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  refreshAccessToken: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description New access token. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            accessToken: string
+          }
+        }
+      }
+      /** @description Refresh token missing, invalid or expired. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Rate limit exceeded (only active in production). */
+      429: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  verifyEmail: {
+    parameters: {
+      query?: {
         /**
          * @description Token from the email link. Required in practice; if missing, the
          *     endpoint responds with 400.
          */
-        TokenQuery: string;
-    };
-    requestBodies: never;
-    headers: {
-        /** @description Cookie header for the refresh token. Sign-in sets it; sign-out clears it. */
-        SetCookie: string;
-    };
-    pathItems: never;
-}
-export type $defs = Record<string, never>;
-export interface operations {
-    signUp: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @description Trimmed display name. */
-                    name: string;
-                    /** @description Email address; normalized to lowercase. */
-                    email: string;
-                    /**
-                     * @description Must contain uppercase and lowercase letters and at least one
-                     *     number. Never trimmed.
-                     */
-                    password: string;
-                } & {
-                    [key: string]: unknown;
-                };
-            };
-        };
-        responses: {
-            /** @description Account created; verification email requested. */
-            201: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Invalid input. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Name or email address is already in use. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Rate limit exceeded (only active in production). */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Unexpected server error. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description The verification email could not be sent. */
-            502: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
-    };
-    signIn: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    /** @description Email address or display name. */
-                    nameOrEmail: string;
-                    password: string;
-                } & {
-                    [key: string]: unknown;
-                };
-            };
-        };
-        responses: {
-            /** @description Signed in successfully. */
-            200: {
-                headers: {
-                    /** @description Cookie header for the refresh token. Sign-in sets it; sign-out clears it. */
-                    "Set-Cookie"?: string;
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @description Public user data. `name` and `email` are personal data. */
-                        user: {
-                            /** @description MongoDB ObjectId serialized as a hex string. */
-                            id: string;
-                            name: string;
-                            /** @description Normalized email address. */
-                            email: string;
-                        };
-                        /** @description JWT access token for the `Authorization: Bearer` header. */
-                        accessToken: string;
-                    };
-                };
-            };
-            /** @description Invalid input. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Invalid credentials. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description The email address has not been verified yet. */
-            403: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Rate limit exceeded (only active in production). */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Unexpected server error. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
-    };
-    signOut: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Signed out; refresh cookie cleared. */
-            204: {
-                headers: {
-                    /** @description Cookie header for the refresh token. Sign-in sets it; sign-out clears it. */
-                    "Set-Cookie"?: string;
-                    [name: string]: unknown;
-                };
-                content?: never;
-            };
-            /** @description Missing or invalid access token. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Rate limit exceeded (only active in production). */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Unexpected server error. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
-    };
-    refreshAccessToken: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description New access token. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        accessToken: string;
-                    };
-                };
-            };
-            /** @description Refresh token missing, invalid or expired. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Rate limit exceeded (only active in production). */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Unexpected server error. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
-    };
-    verifyEmail: {
-        parameters: {
-            query?: {
-                /**
-                 * @description Token from the email link. Required in practice; if missing, the
-                 *     endpoint responds with 400.
-                 */
-                token?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Email address verified (or already verified). */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Invalid input. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Rate limit exceeded (only active in production). */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Unexpected server error. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
-    };
-    resendVerificationEmail: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    email: string;
-                } & {
-                    [key: string]: unknown;
-                };
-            };
-        };
-        responses: {
-            /** @description Request accepted; a verification email was sent if applicable. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Invalid input. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Rate limit exceeded (only active in production). */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Unexpected server error. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description The verification email could not be sent. */
-            502: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
-    };
-    forgotPassword: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    email: string;
-                } & {
-                    [key: string]: unknown;
-                };
-            };
-        };
-        responses: {
-            /** @description Request accepted; a reset link was sent if applicable. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Invalid input. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Rate limit exceeded (only active in production). */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Unexpected server error. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
-    };
-    resetPassword: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    token: string;
-                    /**
-                     * @description Must contain uppercase and lowercase letters and at least one
-                     *     number. Never trimmed.
-                     */
-                    password: string;
-                } & {
-                    [key: string]: unknown;
-                };
-            };
-        };
-        responses: {
-            /** @description Password reset successfully. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Invalid input. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Rate limit exceeded (only active in production). */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Unexpected server error. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
-    };
-    getCurrentUser: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Current user. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @description MongoDB ObjectId serialized as a hex string. */
-                        id: string;
-                        name: string;
-                        /** @description Normalized email address. */
-                        email: string;
-                    };
-                };
-            };
-            /** @description Missing or invalid access token. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description The authenticated user no longer exists. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Rate limit exceeded (only active in production). */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Unexpected server error. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
-    };
-    deleteCurrentUser: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Account deleted. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Missing or invalid access token. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description The account could not be deleted because it no longer exists. */
-            404: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Rate limit exceeded (only active in production). */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Unexpected server error. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
-    };
-    updateAccount: {
-        parameters: {
-            query?: never;
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody: {
-            content: {
-                "application/json": {
-                    name?: string;
-                    email?: string;
-                    /**
-                     * @description Must contain uppercase and lowercase letters and at least one
-                     *     number. Never trimmed.
-                     */
-                    password?: string;
-                };
-            };
-        };
-        responses: {
-            /**
-             * @description Update processed. Successful fields are listed in `messages` and
-             *     `updated`; business conflicts are intentionally reported in
-             *     `errorMessages` with HTTP 200. Multiple fields can succeed or fail
-             *     independently.
-             */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        messages: {
-                            name?: string;
-                            email?: string;
-                            password?: string;
-                        };
-                        errorMessages: {
-                            name?: string;
-                            email?: string;
-                            password?: string;
-                        };
-                        updated: ("name" | "email" | "password")[];
-                    };
-                };
-            };
-            /** @description Invalid input. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Missing or invalid access token. */
-            401: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Rate limit exceeded (only active in production). */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Unexpected server error. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
-    };
-    confirmEmailChange: {
-        parameters: {
-            query?: {
-                /**
-                 * @description Token from the email link. Required in practice; if missing, the
-                 *     endpoint responds with 400.
-                 */
-                token?: string;
-            };
-            header?: never;
-            path?: never;
-            cookie?: never;
-        };
-        requestBody?: never;
-        responses: {
-            /** @description Email address changed. */
-            200: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        /** @enum {boolean} */
-                        success: true;
-                        newEmail: string | null;
-                        message: string;
-                    };
-                };
-            };
-            /** @description Invalid input. */
-            400: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description The new email address is already in use by another account. */
-            409: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Rate limit exceeded (only active in production). */
-            429: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-            /** @description Unexpected server error. */
-            500: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": {
-                        message: string;
-                    };
-                };
-            };
-        };
-    };
+        token?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Email address verified (or already verified). */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Rate limit exceeded (only active in production). */
+      429: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  resendVerificationEmail: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': {
+          email: string
+        } & {
+          [key: string]: unknown
+        }
+      }
+    }
+    responses: {
+      /** @description Request accepted; a verification email was sent if applicable. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Rate limit exceeded (only active in production). */
+      429: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description The verification email could not be sent. */
+      502: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  forgotPassword: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': {
+          email: string
+        } & {
+          [key: string]: unknown
+        }
+      }
+    }
+    responses: {
+      /** @description Request accepted; a reset link was sent if applicable. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Rate limit exceeded (only active in production). */
+      429: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  resetPassword: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': {
+          token: string
+          /**
+           * @description Must contain uppercase and lowercase letters and at least one
+           *     number. Never trimmed.
+           */
+          password: string
+        } & {
+          [key: string]: unknown
+        }
+      }
+    }
+    responses: {
+      /** @description Password reset successfully. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Rate limit exceeded (only active in production). */
+      429: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  getCurrentUser: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Current user. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @description MongoDB ObjectId serialized as a hex string. */
+            id: string
+            name: string
+            /** @description Normalized email address. */
+            email: string
+          }
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description The authenticated user no longer exists. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Rate limit exceeded (only active in production). */
+      429: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  deleteCurrentUser: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Account deleted. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description The account could not be deleted because it no longer exists. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Rate limit exceeded (only active in production). */
+      429: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  updateAccount: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': {
+          name?: string
+          email?: string
+          /**
+           * @description Must contain uppercase and lowercase letters and at least one
+           *     number. Never trimmed.
+           */
+          password?: string
+        }
+      }
+    }
+    responses: {
+      /**
+       * @description Update processed. Successful fields are listed in `messages` and
+       *     `updated`; business conflicts are intentionally reported in
+       *     `errorMessages` with HTTP 200. Multiple fields can succeed or fail
+       *     independently.
+       */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            messages: {
+              name?: string
+              email?: string
+              password?: string
+            }
+            errorMessages: {
+              name?: string
+              email?: string
+              password?: string
+            }
+            updated: ('name' | 'email' | 'password')[]
+          }
+        }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Rate limit exceeded (only active in production). */
+      429: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  confirmEmailChange: {
+    parameters: {
+      query?: {
+        /**
+         * @description Token from the email link. Required in practice; if missing, the
+         *     endpoint responds with 400.
+         */
+        token?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Email address changed. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @enum {boolean} */
+            success: true
+            newEmail: string | null
+            message: string
+          }
+        }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description The new email address is already in use by another account. */
+      409: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Rate limit exceeded (only active in production). */
+      429: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  searchProducts: {
+    parameters: {
+      query: {
+        /** @description Search term, matched against product names. */
+        q: string
+        /** @description 1-based page number (numeric string). Defaults to `1`. */
+        page?: string
+        /** @description Products per page between 1 and 24 (numeric string). Defaults to `12`. */
+        pageSize?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Matching products. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            products: {
+              /** @description Barcode of the product. */
+              code: string
+              productName?: string | null
+              /** @description Comma-separated brand names as stored by OpenFoodFacts. */
+              brands?: string | null
+              /** @description Comma-separated category names as stored by OpenFoodFacts. */
+              categories?: string | null
+              /** @description Front image URL, falling back to any available image. */
+              imageUrl?: string | null
+              /** @description Nutri-Score grade from `a` to `e`, null when unknown. */
+              nutriscoreGrade?: string | null
+            }[]
+            /** @description Total number of matching products reported by OpenFoodFacts. */
+            count: number
+            /** @description 1-based page number of this result. */
+            page: number
+            /** @description Number of products requested per page. */
+            pageSize: number
+          }
+        }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Rate limit exceeded (only active in production). */
+      429: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description OpenFoodFacts is unavailable or returned an error. */
+      502: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
 }

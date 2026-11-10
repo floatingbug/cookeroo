@@ -64,11 +64,16 @@ export interface TestServer {
     close: () => Promise<void>;
 }
 
+interface StartOptions {
+    /** Zusätzliche Umgebungsvariablen für den Server-Child-Process. */
+    env?: Record<string, string>;
+}
+
 /**
  * Startet den echten Server als Child-Process gegen eine temporäre Datenbank.
  * So werden Bootstrap, Middleware-Reihenfolge und Mongo-Indizes mitgetestet.
  */
-async function startTestServer(): Promise<TestServer> {
+async function startTestServer({ env }: StartOptions = {}): Promise<TestServer> {
     const port = await getFreePort();
     const dbName = `fullstack_template_test_${process.pid}_${Date.now()}`;
     const backendDir = path.resolve(currentDir, "../..");
@@ -110,6 +115,7 @@ async function startTestServer(): Promise<TestServer> {
             SMTP_USER: "",
             SMTP_PASS: "",
             MAIL_FROM: "",
+            ...env,
         },
         stdio: ["ignore", "pipe", "pipe"],
     });

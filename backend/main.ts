@@ -9,6 +9,7 @@ import errorMiddleware from './src/middlewares/error.js';
 import authRoutes from './src/features/auth/index.js';
 import userRoutes from './src/features/user/index.js';
 import accountRoutes from './src/features/account/index.js';
+import productRoutes from './src/features/product/index.js';
 
 async function start(): Promise<void> {
     await connect();
@@ -41,6 +42,7 @@ async function start(): Promise<void> {
     app.use('/auth', authRoutes);
     app.use('/users', userRoutes);
     app.use('/account', accountRoutes);
+    app.use('/products', productRoutes);
 
     app.use((req, res) => {
         res.status(404).json({ message: 'Not found' });

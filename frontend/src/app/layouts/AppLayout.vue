@@ -1,11 +1,13 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
+import { useI18n } from 'vue-i18n'
 
 import { Sidebar, Topbar, UserMenu } from '@/shared/components'
 import { useAuthStore } from '@/features/auth/store/authStore'
 
 const router = useRouter()
 const authStore = useAuthStore()
+const { t } = useI18n()
 
 async function onSignOut() {
   await authStore.signOut()
@@ -27,7 +29,11 @@ async function onSignOut() {
       </template>
     </Topbar>
 
-    <Sidebar class="sidebar" />
+    <Sidebar class="sidebar">
+      <RouterLink class="sidebar-link" :to="{ name: 'product-search' }">
+        {{ t('nav.products') }}
+      </RouterLink>
+    </Sidebar>
 
     <div class="main">
       <RouterView />
@@ -59,6 +65,28 @@ async function onSignOut() {
   display: none;
   background-color: var(--color-bg-muted);
   border-right: 1px solid var(--color-border);
+}
+
+.sidebar-link {
+  padding: var(--space-sm) var(--space-md);
+  border-radius: var(--radius-md);
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-medium);
+  text-decoration: none;
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.sidebar-link:hover {
+  color: var(--color-text);
+  background-color: var(--color-surface);
+}
+
+.sidebar-link.router-link-active {
+  color: var(--color-primary);
+  background-color: var(--color-surface);
 }
 
 .main {

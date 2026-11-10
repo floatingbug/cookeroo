@@ -5,6 +5,7 @@
   "nav": {
     "main": "Hauptnavigation",
     "home": "Start",
+    "products": "Produktsuche",
     "account": "Konto"
   },
   "user": {
@@ -81,6 +82,31 @@
   "home": {
     "title": "Willkommen",
     "description": "Vue-Frontend und Express-Backend sind bereit für das erste Feature."
+  },
+  "product": {
+    "title": "Produktsuche",
+    "description": "Suche Lebensmittelprodukte in der Open-Food-Facts-Datenbank.",
+    "searchLabel": "Produktname",
+    "submit": "Suchen",
+    "loading": "Produkte werden gesucht …",
+    "resultCount": "1 Produkt gefunden | {count} Produkte gefunden",
+    "emptyText": "Keine Produkte gefunden. Versuche einen kürzeren oder allgemeineren Suchbegriff.",
+    "codeLabel": "Barcode: {code}",
+    "nutriscore": "Nutri-Score",
+    "attribution": "Daten bereitgestellt von Open Food Facts (ODbL-Lizenz).",
+    "pagination": {
+      "label": "Seitennavigation der Suchergebnisse",
+      "prev": "Zurück",
+      "next": "Weiter",
+      "pageInfo": "Seite {page} von {total}"
+    },
+    "errors": {
+      "queryTooShort": "Bitte gib mindestens 2 Zeichen ein.",
+      "rateLimit": "Zu viele Suchanfragen in kurzer Zeit. Bitte warte einen Moment.",
+      "unavailable": "Die Produktsuche ist derzeit nicht verfügbar. Bitte versuche es später erneut.",
+      "network": "Der Server ist nicht erreichbar. Bitte prüfe deine Verbindung.",
+      "generic": "Die Suche ist fehlgeschlagen. Bitte versuche es erneut."
+    }
   },
   "notFound": {
     "title": "Seite nicht gefunden",

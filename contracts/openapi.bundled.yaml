@@ -23,6 +23,8 @@ tags:
     description: Current user and public user lookup.
   - name: Account
     description: Account updates and email-change confirmation.
+  - name: Products
+    description: Food product search backed by OpenFoodFacts.
 paths:
   /auth/sign-up:
     post:
@@ -700,6 +702,123 @@ paths:
         '500':
           description: Unexpected server error.
           content: *ref_4
+  /products/search:
+    get:
+      tags:
+        - Products
+      operationId: searchProducts
+      summary: Search food products by name
+      description: |
+        Full-text product search backed by OpenFoodFacts. Results are cached
+        briefly on the server to respect the OpenFoodFacts rate limits.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: q
+          in: query
+          required: true
+          description: Search term, matched against product names.
+          schema:
+            type: string
+            minLength: 2
+            maxLength: 64
+        - name: page
+          in: query
+          required: false
+          description: 1-based page number (numeric string). Defaults to `1`.
+          schema:
+            type: string
+            pattern: ^[1-9][0-9]{0,2}$
+        - name: pageSize
+          in: query
+          required: false
+          description: Products per page between 1 and 24 (numeric string). Defaults to `12`.
+          schema:
+            type: string
+            pattern: ^([1-9]|1[0-9]|2[0-4])$
+      responses:
+        '200':
+          description: Matching products.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: &ref_31
+                  - products
+                  - count
+                  - page
+                  - pageSize
+                additionalProperties: false
+                description: Paginated result of the product search.
+                properties: &ref_32
+                  products:
+                    type: array
+                    items:
+                      type: object
+                      required: &ref_29
+                        - code
+                      additionalProperties: false
+                      description: |
+                        Food product from OpenFoodFacts. Fields other than `code` may be null when
+                        OpenFoodFacts has no data for them.
+                      properties: &ref_30
+                        code:
+                          type: string
+                          description: Barcode of the product.
+                        productName:
+                          type:
+                            - string
+                            - 'null'
+                        brands:
+                          type:
+                            - string
+                            - 'null'
+                          description: Comma-separated brand names as stored by OpenFoodFacts.
+                        categories:
+                          type:
+                            - string
+                            - 'null'
+                          description: Comma-separated category names as stored by OpenFoodFacts.
+                        imageUrl:
+                          type:
+                            - string
+                            - 'null'
+                          description: Front image URL, falling back to any available image.
+                        nutriscoreGrade:
+                          type:
+                            - string
+                            - 'null'
+                          description: Nutri-Score grade from `a` to `e`, null when unknown.
+                  count:
+                    type: integer
+                    description: Total number of matching products reported by OpenFoodFacts.
+                  page:
+                    type: integer
+                    description: 1-based page number of this result.
+                  pageSize:
+                    type: integer
+                    description: Number of products requested per page.
+        '400':
+          description: Invalid input.
+          content: *ref_2
+        '401':
+          description: Missing or invalid access token.
+          content: *ref_12
+        '429':
+          description: Rate limit exceeded (only active in production).
+          content: *ref_3
+        '500':
+          description: Unexpected server error.
+          content: *ref_4
+        '502':
+          description: OpenFoodFacts is unavailable or returned an error.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: *ref_0
+                additionalProperties: false
+                properties: *ref_1
 components:
   securitySchemes:
     bearerAuth:
@@ -784,6 +903,20 @@ components:
       required: *ref_27
       additionalProperties: false
       properties: *ref_28
+    Product:
+      type: object
+      required: *ref_29
+      additionalProperties: false
+      description: |
+        Food product from OpenFoodFacts. Fields other than `code` may be null when
+        OpenFoodFacts has no data for them.
+      properties: *ref_30
+    ProductSearchResponse:
+      type: object
+      required: *ref_31
+      additionalProperties: false
+      description: Paginated result of the product search.
+      properties: *ref_32
   responses:
     BadRequest:
       description: Invalid input.

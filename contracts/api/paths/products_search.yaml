@@ -1,0 +1,54 @@
+get:
+  tags:
+    - Products
+  operationId: searchProducts
+  summary: Search food products by name
+  description: |
+    Full-text product search backed by OpenFoodFacts. Results are cached
+    briefly on the server to respect the OpenFoodFacts rate limits.
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: q
+      in: query
+      required: true
+      description: Search term, matched against product names.
+      schema:
+        type: string
+        minLength: 2
+        maxLength: 64
+    - name: page
+      in: query
+      required: false
+      description: 1-based page number (numeric string). Defaults to `1`.
+      schema:
+        type: string
+        pattern: '^[1-9][0-9]{0,2}$'
+    - name: pageSize
+      in: query
+      required: false
+      description: Products per page between 1 and 24 (numeric string). Defaults to `12`.
+      schema:
+        type: string
+        pattern: '^([1-9]|1[0-9]|2[0-4])$'
+  responses:
+    '200':
+      description: Matching products.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ProductSearchResponse.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '429':
+      $ref: ../components/responses/TooManyRequests.yaml
+    '502':
+      description: OpenFoodFacts is unavailable or returned an error.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Error.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml

@@ -5,6 +5,7 @@
   "nav": {
     "main": "Main navigation",
     "home": "Home",
+    "products": "Product search",
     "account": "Account"
   },
   "user": {
@@ -81,6 +82,31 @@
   "home": {
     "title": "Welcome",
     "description": "The Vue frontend and the Express backend are ready for the first feature."
+  },
+  "product": {
+    "title": "Product search",
+    "description": "Search food products in the Open Food Facts database.",
+    "searchLabel": "Product name",
+    "submit": "Search",
+    "loading": "Searching products …",
+    "resultCount": "1 product found | {count} products found",
+    "emptyText": "No products found. Try a shorter or more general search term.",
+    "codeLabel": "Barcode: {code}",
+    "nutriscore": "Nutri-Score",
+    "attribution": "Data provided by Open Food Facts (ODbL license).",
+    "pagination": {
+      "label": "Search result pagination",
+      "prev": "Previous",
+      "next": "Next",
+      "pageInfo": "Page {page} of {total}"
+    },
+    "errors": {
+      "queryTooShort": "Please enter at least 2 characters.",
+      "rateLimit": "Too many search requests in a short time. Please wait a moment.",
+      "unavailable": "The product search is currently unavailable. Please try again later.",
+      "network": "The server is not reachable. Please check your connection.",
+      "generic": "The search failed. Please try again."
+    }
   },
   "notFound": {
     "title": "Page not found",

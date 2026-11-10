@@ -23,6 +23,8 @@ tags:
     description: Current user and public user lookup.
   - name: Account
     description: Account updates and email-change confirmation.
+  - name: Products
+    description: Food product search backed by OpenFoodFacts.
 paths:
   /auth/sign-up:
     $ref: paths/auth_sign-up.yaml
@@ -46,6 +48,8 @@ paths:
     $ref: paths/account.yaml
   /account/confirm-email:
     $ref: paths/account_confirm-email.yaml
+  /products/search:
+    $ref: paths/products_search.yaml
 components:
   securitySchemes:
     bearerAuth:
