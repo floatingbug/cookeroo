@@ -28,18 +28,24 @@ const classes = computed(() => ['button', `button--${props.severity}`])
   align-items: center;
   justify-content: center;
   gap: var(--space-sm);
-  padding: var(--space-sm) var(--space-md);
+  min-height: 2.5rem;
+  padding: var(--space-sm) var(--space-lg);
   border: 1px solid transparent;
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   font-size: var(--font-size-sm);
-  font-weight: var(--font-weight-medium);
+  font-weight: var(--font-weight-semibold);
   line-height: var(--line-height-snug);
   cursor: pointer;
   transition:
     color var(--duration-fast) var(--ease-standard),
     background-color var(--duration-fast) var(--ease-standard),
     border-color var(--duration-fast) var(--ease-standard),
-    box-shadow var(--duration-fast) var(--ease-standard);
+    box-shadow var(--duration-fast) var(--ease-standard),
+    transform var(--duration-fast) var(--ease-standard);
+}
+
+.button:not(:disabled):active {
+  transform: translateY(1px);
 }
 
 .button:disabled {
@@ -50,6 +56,7 @@ const classes = computed(() => ['button', `button--${props.severity}`])
 .button--primary {
   color: var(--color-primary-contrast);
   background-color: var(--color-primary);
+  box-shadow: var(--shadow-sm);
 }
 
 .button--primary:not(:disabled):hover {
@@ -59,7 +66,7 @@ const classes = computed(() => ['button', `button--${props.severity}`])
 .button--secondary {
   color: var(--color-text);
   background-color: var(--color-surface);
-  border-color: var(--color-border);
+  border-color: var(--color-border-strong);
 }
 
 .button--secondary:not(:disabled):hover {

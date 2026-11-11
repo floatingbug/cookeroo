@@ -9,8 +9,8 @@
 :root {
   color-scheme: light dark;
 
-  --color-bg: light-dark(var(--neutral-0), var(--neutral-950));
-  --color-bg-muted: light-dark(var(--neutral-50), var(--neutral-900));
+  --color-bg: light-dark(var(--neutral-50), var(--neutral-950));
+  --color-bg-muted: light-dark(var(--neutral-100), var(--neutral-900));
   --color-surface: light-dark(var(--neutral-0), var(--neutral-900));
   --color-surface-raised: light-dark(var(--neutral-0), var(--neutral-850));
 
@@ -22,6 +22,16 @@
   --color-primary: light-dark(var(--brand-600), var(--brand-300));
   --color-primary-hover: light-dark(var(--brand-700), var(--brand-200));
   --color-primary-contrast: light-dark(var(--neutral-0), var(--neutral-950));
+  --color-primary-soft: light-dark(
+    var(--brand-50),
+    color-mix(in srgb, var(--brand-800) 35%, var(--neutral-900))
+  );
+
+  --color-accent: light-dark(var(--sage-600), var(--sage-300));
+  --color-accent-soft: light-dark(
+    var(--sage-50),
+    color-mix(in srgb, var(--sage-800) 35%, var(--neutral-900))
+  );
 
   --color-danger: light-dark(var(--red-600), var(--red-400));
   --color-danger-hover: light-dark(var(--red-700), var(--red-300));
@@ -31,10 +41,10 @@
   --color-warning: light-dark(var(--amber-600), var(--amber-400));
   --color-focus: var(--color-primary);
 
-  --shadow-color: light-dark(rgb(19 28 43 / 8%), rgb(0 0 0 / 45%));
-  --shadow-sm: 0 1px 2px var(--shadow-color);
-  --shadow-md: 0 8px 24px var(--shadow-color);
-  --shadow-lg: 0 18px 48px var(--shadow-color);
+  --shadow-color: light-dark(rgb(62 52 45 / 8%), rgb(0 0 0 / 45%));
+  --shadow-sm: 0 1px 3px var(--shadow-color);
+  --shadow-md: 0 10px 28px var(--shadow-color);
+  --shadow-lg: 0 20px 52px var(--shadow-color);
 }
 
 :root[data-theme='light'] {

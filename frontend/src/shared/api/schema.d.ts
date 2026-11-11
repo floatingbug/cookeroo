@@ -239,7 +239,27 @@ export interface paths {
     patch?: never
     trace?: never
   }
-  '/products/search': {
+  '/recipes': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create a recipe
+     * @description Creates a recipe for the authenticated user.
+     */
+    post: operations['createRecipe']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/recipes/{recipeId}': {
     parameters: {
       query?: never
       header?: never
@@ -247,11 +267,52 @@ export interface paths {
       cookie?: never
     }
     /**
-     * Search food products by name
-     * @description Full-text product search backed by OpenFoodFacts. Results are cached
-     *     briefly on the server to respect the OpenFoodFacts rate limits.
+     * Get a recipe by ID
+     * @description Returns a recipe when it is public or belongs to the authenticated user.
+     *     Private recipes of other users are reported as not found.
      */
-    get: operations['searchProducts']
+    get: operations['getRecipe']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/uploads/images': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Upload an image
+     * @description Uploads a JPEG, PNG or WebP image and returns its public URL. The maximum
+     *     file size is 5 MB.
+     */
+    post: operations['uploadImage']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/uploads/{fileName}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get an uploaded image
+     * @description Returns a previously uploaded image by file name.
+     */
+    get: operations['getUploadedImage']
     put?: never
     post?: never
     delete?: never
@@ -366,43 +427,173 @@ export interface components {
       message: string
     }
     /**
-     * @description Food product from OpenFoodFacts. Fields other than `code` may be null when
-     *     OpenFoodFacts has no data for them.
+     * @description Difficulty of a recipe.
+     * @enum {string}
      */
-    Product: {
-      /** @description Barcode of the product. */
-      code: string
-      productName?: string | null
-      /** @description Comma-separated brand names as stored by OpenFoodFacts. */
-      brands?: string | null
-      /** @description Comma-separated category names as stored by OpenFoodFacts. */
-      categories?: string | null
-      /** @description Front image URL, falling back to any available image. */
-      imageUrl?: string | null
-      /** @description Nutri-Score grade from `a` to `e`, null when unknown. */
-      nutriscoreGrade?: string | null
+    RecipeDifficulty: 'easy' | 'medium' | 'hard'
+    /**
+     * @description Unit of an ingredient quantity.
+     * @enum {string}
+     */
+    IngredientUnit: 'g' | 'kg' | 'ml' | 'l' | 'piece' | 'tbsp' | 'tsp'
+    /** @description An ingredient of a recipe. */
+    Ingredient: {
+      name: string
+      /** @description Numeric amount of the ingredient. */
+      quantity: number
+      /**
+       * @description Unit of an ingredient quantity.
+       * @enum {string}
+       */
+      unit: 'g' | 'kg' | 'ml' | 'l' | 'piece' | 'tbsp' | 'tsp'
+      note?: string | null
+      /**
+       * @description Whether the ingredient is optional.
+       * @default false
+       */
+      isOptional: boolean
     }
-    /** @description Paginated result of the product search. */
-    ProductSearchResponse: {
-      products: {
-        /** @description Barcode of the product. */
-        code: string
-        productName?: string | null
-        /** @description Comma-separated brand names as stored by OpenFoodFacts. */
-        brands?: string | null
-        /** @description Comma-separated category names as stored by OpenFoodFacts. */
-        categories?: string | null
-        /** @description Front image URL, falling back to any available image. */
-        imageUrl?: string | null
-        /** @description Nutri-Score grade from `a` to `e`, null when unknown. */
-        nutriscoreGrade?: string | null
+    /** @description A single preparation step of a recipe. */
+    Instruction: {
+      /** @description 1-based position of the step. */
+      step: number
+      description: string
+      /** @description Duration in minutes. */
+      duration?: number | null
+      /**
+       * Format: uri
+       * @description URL of an uploaded image for this step.
+       */
+      imageUrl?: string | null
+    }
+    /**
+     * @description Payload to create a recipe. Timestamps, creator and status are derived by the
+     *     server and cannot be supplied by the client.
+     */
+    RecipeCreateRequest: {
+      title: string
+      description?: string | null
+      /**
+       * Format: uri
+       * @description URL of an uploaded image for the recipe.
+       */
+      imageUrl?: string | null
+      category?: string | null
+      cuisine?: string | null
+      difficulty?: ('easy' | 'medium' | 'hard') | null
+      /** @description Preparation time in minutes. */
+      prepTime: number
+      /** @description Cooking time in minutes. */
+      cookTime: number
+      /** @description Resting time in minutes. */
+      restTime?: number | null
+      servings: number
+      /** @description Optional label of one serving, for example "Portion". */
+      servingUnit?: string | null
+      tags?: string[]
+      ingredients: {
+        name: string
+        /** @description Numeric amount of the ingredient. */
+        quantity: number
+        /**
+         * @description Unit of an ingredient quantity.
+         * @enum {string}
+         */
+        unit: 'g' | 'kg' | 'ml' | 'l' | 'piece' | 'tbsp' | 'tsp'
+        note?: string | null
+        /**
+         * @description Whether the ingredient is optional.
+         * @default false
+         */
+        isOptional: boolean
       }[]
-      /** @description Total number of matching products reported by OpenFoodFacts. */
-      count: number
-      /** @description 1-based page number of this result. */
-      page: number
-      /** @description Number of products requested per page. */
-      pageSize: number
+      instructions: {
+        /** @description 1-based position of the step. */
+        step: number
+        description: string
+        /** @description Duration in minutes. */
+        duration?: number | null
+        /**
+         * Format: uri
+         * @description URL of an uploaded image for this step.
+         */
+        imageUrl?: string | null
+      }[]
+      /**
+       * @description Whether the recipe is visible to other users.
+       * @default true
+       */
+      isPublic: boolean
+    }
+    /**
+     * @description Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
+     *     visible to other users, `private` otherwise.
+     * @enum {string}
+     */
+    RecipeStatus: 'public' | 'private'
+    /** @description A complete recipe after creation or lookup. */
+    Recipe: {
+      /** @description MongoDB ObjectId serialized as a hex string. */
+      id: string
+      title: string
+      description: string | null
+      /** Format: uri */
+      imageUrl: string | null
+      category: string | null
+      cuisine: string | null
+      difficulty: ('easy' | 'medium' | 'hard') | null
+      prepTime: number
+      cookTime: number
+      restTime: number | null
+      servings: number
+      servingUnit: string | null
+      tags: string[]
+      ingredients: {
+        name: string
+        /** @description Numeric amount of the ingredient. */
+        quantity: number
+        /**
+         * @description Unit of an ingredient quantity.
+         * @enum {string}
+         */
+        unit: 'g' | 'kg' | 'ml' | 'l' | 'piece' | 'tbsp' | 'tsp'
+        note?: string | null
+        /**
+         * @description Whether the ingredient is optional.
+         * @default false
+         */
+        isOptional: boolean
+      }[]
+      instructions: {
+        /** @description 1-based position of the step. */
+        step: number
+        description: string
+        /** @description Duration in minutes. */
+        duration?: number | null
+        /**
+         * Format: uri
+         * @description URL of an uploaded image for this step.
+         */
+        imageUrl?: string | null
+      }[]
+      /** Format: date-time */
+      createdAt: string
+      /** Format: date-time */
+      updatedAt: string
+      /** @description MongoDB ObjectId of the creating user as a hex string. */
+      createdBy: string
+      isPublic: boolean
+      /**
+       * @description Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
+       *     visible to other users, `private` otherwise.
+       * @enum {string}
+       */
+      status: 'public' | 'private'
+    }
+    /** @description Public URL of an uploaded image. */
+    ImageUploadResponse: {
+      /** Format: uri */
+      url: string
     }
   }
   responses: {
@@ -441,6 +632,17 @@ export interface components {
     }
     /** @description Missing or invalid access token. */
     Unauthorized: {
+      headers: {
+        [name: string]: unknown
+      }
+      content: {
+        'application/json': {
+          message: string
+        }
+      }
+    }
+    /** @description The requested resource does not exist. */
+    NotFound: {
       headers: {
         [name: string]: unknown
       }
@@ -1336,48 +1538,136 @@ export interface operations {
       }
     }
   }
-  searchProducts: {
+  createRecipe: {
     parameters: {
-      query: {
-        /** @description Search term, matched against product names. */
-        q: string
-        /** @description 1-based page number (numeric string). Defaults to `1`. */
-        page?: string
-        /** @description Products per page between 1 and 24 (numeric string). Defaults to `12`. */
-        pageSize?: string
-      }
+      query?: never
       header?: never
       path?: never
       cookie?: never
     }
-    requestBody?: never
+    requestBody: {
+      content: {
+        'application/json': {
+          title: string
+          description?: string | null
+          /**
+           * Format: uri
+           * @description URL of an uploaded image for the recipe.
+           */
+          imageUrl?: string | null
+          category?: string | null
+          cuisine?: string | null
+          difficulty?: ('easy' | 'medium' | 'hard') | null
+          /** @description Preparation time in minutes. */
+          prepTime: number
+          /** @description Cooking time in minutes. */
+          cookTime: number
+          /** @description Resting time in minutes. */
+          restTime?: number | null
+          servings: number
+          /** @description Optional label of one serving, for example "Portion". */
+          servingUnit?: string | null
+          tags?: string[]
+          ingredients: {
+            name: string
+            /** @description Numeric amount of the ingredient. */
+            quantity: number
+            /**
+             * @description Unit of an ingredient quantity.
+             * @enum {string}
+             */
+            unit: 'g' | 'kg' | 'ml' | 'l' | 'piece' | 'tbsp' | 'tsp'
+            note?: string | null
+            /**
+             * @description Whether the ingredient is optional.
+             * @default false
+             */
+            isOptional?: boolean
+          }[]
+          instructions: {
+            /** @description 1-based position of the step. */
+            step: number
+            description: string
+            /** @description Duration in minutes. */
+            duration?: number | null
+            /**
+             * Format: uri
+             * @description URL of an uploaded image for this step.
+             */
+            imageUrl?: string | null
+          }[]
+          /**
+           * @description Whether the recipe is visible to other users.
+           * @default true
+           */
+          isPublic?: boolean
+        }
+      }
+    }
     responses: {
-      /** @description Matching products. */
-      200: {
+      /** @description The created recipe. */
+      201: {
         headers: {
           [name: string]: unknown
         }
         content: {
           'application/json': {
-            products: {
-              /** @description Barcode of the product. */
-              code: string
-              productName?: string | null
-              /** @description Comma-separated brand names as stored by OpenFoodFacts. */
-              brands?: string | null
-              /** @description Comma-separated category names as stored by OpenFoodFacts. */
-              categories?: string | null
-              /** @description Front image URL, falling back to any available image. */
-              imageUrl?: string | null
-              /** @description Nutri-Score grade from `a` to `e`, null when unknown. */
-              nutriscoreGrade?: string | null
+            /** @description MongoDB ObjectId serialized as a hex string. */
+            id: string
+            title: string
+            description: string | null
+            /** Format: uri */
+            imageUrl: string | null
+            category: string | null
+            cuisine: string | null
+            difficulty: ('easy' | 'medium' | 'hard') | null
+            prepTime: number
+            cookTime: number
+            restTime: number | null
+            servings: number
+            servingUnit: string | null
+            tags: string[]
+            ingredients: {
+              name: string
+              /** @description Numeric amount of the ingredient. */
+              quantity: number
+              /**
+               * @description Unit of an ingredient quantity.
+               * @enum {string}
+               */
+              unit: 'g' | 'kg' | 'ml' | 'l' | 'piece' | 'tbsp' | 'tsp'
+              note?: string | null
+              /**
+               * @description Whether the ingredient is optional.
+               * @default false
+               */
+              isOptional: boolean
             }[]
-            /** @description Total number of matching products reported by OpenFoodFacts. */
-            count: number
-            /** @description 1-based page number of this result. */
-            page: number
-            /** @description Number of products requested per page. */
-            pageSize: number
+            instructions: {
+              /** @description 1-based position of the step. */
+              step: number
+              description: string
+              /** @description Duration in minutes. */
+              duration?: number | null
+              /**
+               * Format: uri
+               * @description URL of an uploaded image for this step.
+               */
+              imageUrl?: string | null
+            }[]
+            /** Format: date-time */
+            createdAt: string
+            /** Format: date-time */
+            updatedAt: string
+            /** @description MongoDB ObjectId of the creating user as a hex string. */
+            createdBy: string
+            isPublic: boolean
+            /**
+             * @description Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
+             *     visible to other users, `private` otherwise.
+             * @enum {string}
+             */
+            status: 'public' | 'private'
           }
         }
       }
@@ -1403,8 +1693,121 @@ export interface operations {
           }
         }
       }
-      /** @description Rate limit exceeded (only active in production). */
-      429: {
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  getRecipe: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description MongoDB ObjectId of the recipe as a hex string. */
+        recipeId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The requested recipe. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @description MongoDB ObjectId serialized as a hex string. */
+            id: string
+            title: string
+            description: string | null
+            /** Format: uri */
+            imageUrl: string | null
+            category: string | null
+            cuisine: string | null
+            difficulty: ('easy' | 'medium' | 'hard') | null
+            prepTime: number
+            cookTime: number
+            restTime: number | null
+            servings: number
+            servingUnit: string | null
+            tags: string[]
+            ingredients: {
+              name: string
+              /** @description Numeric amount of the ingredient. */
+              quantity: number
+              /**
+               * @description Unit of an ingredient quantity.
+               * @enum {string}
+               */
+              unit: 'g' | 'kg' | 'ml' | 'l' | 'piece' | 'tbsp' | 'tsp'
+              note?: string | null
+              /**
+               * @description Whether the ingredient is optional.
+               * @default false
+               */
+              isOptional: boolean
+            }[]
+            instructions: {
+              /** @description 1-based position of the step. */
+              step: number
+              description: string
+              /** @description Duration in minutes. */
+              duration?: number | null
+              /**
+               * Format: uri
+               * @description URL of an uploaded image for this step.
+               */
+              imageUrl?: string | null
+            }[]
+            /** Format: date-time */
+            createdAt: string
+            /** Format: date-time */
+            updatedAt: string
+            /** @description MongoDB ObjectId of the creating user as a hex string. */
+            createdBy: string
+            isPublic: boolean
+            /**
+             * @description Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
+             *     visible to other users, `private` otherwise.
+             * @enum {string}
+             */
+            status: 'public' | 'private'
+          }
+        }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description The requested resource does not exist. */
+      404: {
         headers: {
           [name: string]: unknown
         }
@@ -1425,8 +1828,121 @@ export interface operations {
           }
         }
       }
-      /** @description OpenFoodFacts is unavailable or returned an error. */
-      502: {
+    }
+  }
+  uploadImage: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'multipart/form-data': {
+          /**
+           * Format: binary
+           * @description Image file (JPEG, PNG or WebP, max 5 MB).
+           */
+          file: string
+        }
+      }
+    }
+    responses: {
+      /** @description The uploaded image. */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** Format: uri */
+            url: string
+          }
+        }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description The uploaded file exceeds the maximum size. */
+      413: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  getUploadedImage: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description Generated file name of the uploaded image. */
+        fileName: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The image file. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'image/jpeg': string
+          'image/png': string
+          'image/webp': string
+        }
+      }
+      /** @description The requested resource does not exist. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
         headers: {
           [name: string]: unknown
         }

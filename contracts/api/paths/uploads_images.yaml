@@ -1,0 +1,43 @@
+post:
+  tags:
+    - Uploads
+  operationId: uploadImage
+  summary: Upload an image
+  description: |
+    Uploads a JPEG, PNG or WebP image and returns its public URL. The maximum
+    file size is 5 MB.
+  security:
+    - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      multipart/form-data:
+        schema:
+          type: object
+          required:
+            - file
+          additionalProperties: false
+          properties:
+            file:
+              type: string
+              format: binary
+              description: Image file (JPEG, PNG or WebP, max 5 MB).
+  responses:
+    '201':
+      description: The uploaded image.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/ImageUploadResponse.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '413':
+      description: The uploaded file exceeds the maximum size.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Error.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml

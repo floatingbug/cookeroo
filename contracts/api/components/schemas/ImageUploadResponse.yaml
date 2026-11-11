@@ -1,0 +1,9 @@
+type: object
+required:
+  - url
+additionalProperties: false
+description: Public URL of an uploaded image.
+properties:
+  url:
+    type: string
+    format: uri

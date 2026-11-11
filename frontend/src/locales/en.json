@@ -1,12 +1,12 @@
 {
   "app": {
-    "name": "Fullstack Template"
+    "name": "Cookeroo"
   },
   "nav": {
     "main": "Main navigation",
     "home": "Home",
     "dashboard": "Dashboard",
-    "products": "Product search",
+    "recipeCreate": "Create recipe",
     "account": "Account"
   },
   "user": {
@@ -81,37 +81,111 @@
     }
   },
   "home": {
-    "title": "Welcome",
-    "description": "The Vue frontend and the Express backend are ready for the first feature."
+    "title": "Welcome to Cookeroo",
+    "description": "Plan your meals, collect recipes and find the right ingredients – all in one place."
   },
   "dashboard": {
     "title": "Dashboard",
     "description": "Your overview in Cookeroo.",
     "welcome": "Welcome back, {name}!"
   },
-  "product": {
-    "title": "Product search",
-    "description": "Search food products in the Open Food Facts database.",
-    "searchLabel": "Product name",
-    "submit": "Search",
-    "loading": "Searching products …",
-    "resultCount": "1 product found | {count} products found",
-    "emptyText": "No products found. Try a shorter or more general search term.",
-    "codeLabel": "Barcode: {code}",
-    "nutriscore": "Nutri-Score",
-    "attribution": "Data provided by Open Food Facts (ODbL license).",
-    "pagination": {
-      "label": "Search result pagination",
-      "prev": "Previous",
-      "next": "Next",
-      "pageInfo": "Page {page} of {total}"
+  "recipe": {
+    "create": {
+      "title": "Create recipe",
+      "description": "Enter the basic data, ingredients and preparation.",
+      "sections": {
+        "basics": "Basic data",
+        "ingredients": "Ingredients",
+        "instructions": "Preparation",
+        "visibility": "Visibility"
+      }
+    },
+    "fields": {
+      "title": "Title",
+      "description": "Description",
+      "category": "Category",
+      "cuisine": "Cuisine",
+      "difficulty": "Difficulty",
+      "difficultyPlaceholder": "Not specified",
+      "prepTime": "Preparation time (minutes)",
+      "cookTime": "Cooking time (minutes)",
+      "restTime": "Resting time (minutes)",
+      "servings": "Servings",
+      "servingUnit": "Unit per serving",
+      "servingsUnitFallback": "servings",
+      "tags": "Tags",
+      "tagsHint": "Separate multiple tags with commas.",
+      "image": "Recipe image",
+      "ingredientIndex": "Ingredient {index}",
+      "name": "Ingredient",
+      "quantity": "Quantity",
+      "unit": "Unit",
+      "note": "Note",
+      "isOptional": "Optional",
+      "step": "Step {step}",
+      "stepDescription": "Description",
+      "duration": "Duration (minutes)",
+      "stepImage": "Step image",
+      "isPublic": "Share recipe publicly"
+    },
+    "actions": {
+      "addIngredient": "Add ingredient",
+      "removeIngredient": "Remove ingredient",
+      "addInstruction": "Add step",
+      "removeInstruction": "Remove step",
+      "removeImage": "Remove image",
+      "upload": "Choose image",
+      "uploading": "Uploading image …",
+      "submit": "Save recipe",
+      "saving": "Saving recipe …"
+    },
+    "units": {
+      "g": "g",
+      "kg": "kg",
+      "ml": "ml",
+      "l": "l",
+      "piece": "piece",
+      "tbsp": "tbsp",
+      "tsp": "tsp"
+    },
+    "difficulty": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard",
+      "none": "Not specified"
+    },
+    "status": {
+      "public": "Public",
+      "private": "Private"
+    },
+    "detail": {
+      "loading": "Loading recipe …",
+      "stepDuration": "{minutes} min",
+      "minutes": "min",
+      "createdAt": "Created on",
+      "optional": "optional"
     },
     "errors": {
-      "queryTooShort": "Please enter at least 2 characters.",
-      "rateLimit": "Too many search requests in a short time. Please wait a moment.",
-      "unavailable": "The product search is currently unavailable. Please try again later.",
+      "titleRequired": "Please enter a title.",
+      "prepTimeRequired": "Please enter a valid preparation time.",
+      "cookTimeRequired": "Please enter a valid cooking time.",
+      "restTimeInvalid": "Please enter a valid resting time.",
+      "servingsRequired": "Please enter at least one serving.",
+      "ingredientsRequired": "Please add at least one ingredient.",
+      "ingredientNameRequired": "Please enter a name for every ingredient.",
+      "ingredientQuantityRequired": "Please enter a quantity greater than 0 for every ingredient.",
+      "ingredientUnitRequired": "Please choose a unit for every ingredient.",
+      "instructionsRequired": "Please add at least one step.",
+      "instructionDescriptionRequired": "Please describe every step.",
+      "durationInvalid": "Please enter a valid duration for every step.",
+      "invalidInput": "Please check your input.",
+      "notFound": "The recipe could not be found.",
       "network": "The server is not reachable. Please check your connection.",
-      "generic": "The search failed. Please try again."
+      "generic": "The recipe could not be saved. Please try again.",
+      "uploadInvalidType": "Please choose a JPEG, PNG or WebP image.",
+      "uploadTooLarge": "The image is too large (maximum 5 MB).",
+      "uploadNetwork": "The server is not reachable. Please check your connection.",
+      "uploadGeneric": "The image could not be uploaded. Please try again."
     }
   },
   "notFound": {
@@ -120,6 +194,6 @@
     "home": "Back to home"
   },
   "footer": {
-    "copyright": "© {year} Fullstack Template"
+    "copyright": "© {year} Cookeroo"
   }
 }

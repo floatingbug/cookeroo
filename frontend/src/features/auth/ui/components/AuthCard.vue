@@ -27,11 +27,11 @@ defineProps({
   flex-direction: column;
   gap: var(--space-lg);
   width: 100%;
-  padding: var(--space-lg);
+  padding: var(--space-xl);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-lg);
+  border-radius: var(--radius-xl);
   background-color: var(--color-surface);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow-md);
 }
 
 .auth-card__header {
@@ -69,7 +69,7 @@ defineProps({
 .alert--notice {
   border-color: var(--color-primary);
   color: var(--color-primary);
-  background-color: color-mix(in srgb, var(--color-primary) 8%, transparent);
+  background-color: var(--color-primary-soft);
 }
 
 @media (max-width: 480px) {

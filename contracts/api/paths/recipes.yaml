@@ -1,0 +1,27 @@
+post:
+  tags:
+    - Recipes
+  operationId: createRecipe
+  summary: Create a recipe
+  description: Creates a recipe for the authenticated user.
+  security:
+    - bearerAuth: []
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/RecipeCreateRequest.yaml
+  responses:
+    '201':
+      description: The created recipe.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/Recipe.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml

@@ -2,4 +2,5 @@ node_modules
 .env
 dist
 logs
+uploads
 contracts/openapi.bundled.yaml

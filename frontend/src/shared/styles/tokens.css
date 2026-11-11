@@ -1,57 +1,64 @@
 /*
  * Design-Tokens
  *
- * Für ein neues Projekt zuerst hier anpassen:
- *   1. Markenpalette (--brand-*)
- *   2. Neutrale Palette (--neutral-*) nur bei Bedarf
- *   3. Typografie (--font-*, --font-size-*, --line-height-*)
- *   4. Form (--radius-*), Dichte (--space-*) und Layoutgrößen
- *
- * Komponenten verwenden ausschließlich die semantischen Tokens aus
- * theme.css, nie die Rohwerte aus dieser Datei.
+ * Cookeroo verwendet eine warme, appetitliche Farbwelt mit Terrakotta als
+ * Primärfarbe und Salbeigrün als Akzent. Komponenten verwenden ausschließlich
+ * die semantischen Tokens aus theme.css, nie die Rohwerte aus dieser Datei.
  */
 
 :root {
-  /* Marke: Signal Blue */
-  --brand-50: #eef3ff;
-  --brand-100: #dbe6ff;
-  --brand-200: #bdd0ff;
-  --brand-300: #92b1ff;
-  --brand-400: #6f94ff;
-  --brand-500: #4a74f2;
-  --brand-600: #2f5bea;
-  --brand-700: #2447c9;
-  --brand-800: #213ca3;
-  --brand-900: #203781;
-  --brand-950: #16224d;
+  /* Marke: Terrakotta */
+  --brand-50: #fff4ed;
+  --brand-100: #ffe8d7;
+  --brand-200: #ffcfaf;
+  --brand-300: #ffae80;
+  --brand-400: #fb8649;
+  --brand-500: #e9621a;
+  --brand-600: #c2410c;
+  --brand-700: #9a3412;
+  --brand-800: #7c2d12;
+  --brand-900: #652511;
+  --brand-950: #3c1209;
 
-  /* Neutrale: Blueprint Slate */
+  /* Akzent: Salbeigrün */
+  --sage-50: #f1f5ec;
+  --sage-100: #e3ecdb;
+  --sage-200: #c7d9b9;
+  --sage-300: #a3c28f;
+  --sage-400: #83a96b;
+  --sage-500: #6f8f5f;
+  --sage-600: #567547;
+  --sage-700: #425d38;
+  --sage-800: #35482e;
+  --sage-900: #293826;
+
+  /* Neutrale: Warmes Creme und Holzkohle */
   --neutral-0: #ffffff;
-  --neutral-50: #f6f8fc;
-  --neutral-100: #eef2f8;
-  --neutral-200: #e0e6ef;
-  --neutral-300: #c8d2e0;
-  --neutral-400: #9aa8bd;
-  --neutral-500: #7a879b;
-  --neutral-600: #5b687d;
-  --neutral-700: #465267;
-  --neutral-800: #2d384b;
-  --neutral-850: #202b3d;
-  --neutral-900: #131c2b;
-  --neutral-950: #0a111d;
+  --neutral-50: #faf7f2;
+  --neutral-100: #f3ede4;
+  --neutral-200: #e7ded2;
+  --neutral-300: #d4c7b8;
+  --neutral-400: #a99b8b;
+  --neutral-500: #8b7c6c;
+  --neutral-600: #6e6053;
+  --neutral-700: #55493f;
+  --neutral-800: #3e342d;
+  --neutral-850: #302822;
+  --neutral-900: #241e1a;
+  --neutral-950: #181411;
 
   /* Status */
-  --red-300: #f5aaa3;
-  --red-400: #f08a80;
-  --red-500: #e05a4f;
-  --red-600: #c0362c;
-  --red-700: #9f2a22;
-  --green-400: #6fd3a0;
-  --green-600: #1f7a4d;
-  --green-700: #19633f;
-  --amber-400: #f0b75e;
-  --amber-600: #9a5b00;
-  --amber-700: #7a4800;
+  --red-300: #f3a398;
+  --red-400: #ec8172;
+  --red-500: #db5948;
+  --red-600: #b63c2e;
+  --red-700: #8f2d24;
+  --green-400: #a3c28f;
+  --green-600: #567547;
+  --green-700: #425d38;
+  --amber-400: #e5ad55;
+  --amber-600: #a16207;
+  --amber-700: #7c4a03;
 
   /* Typografie */
   --font-family-base:
@@ -91,19 +98,19 @@
   --space-3xl: 6rem;
 
   /* Form */
-  --radius-xs: 2px;
-  --radius-sm: 4px;
-  --radius-md: 8px;
-  --radius-lg: 12px;
-  --radius-xl: 16px;
+  --radius-xs: 3px;
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
   --radius-full: 999px;
 
   /* Layout */
-  --topbar-height: 56px;
+  --topbar-height: 64px;
   --footer-height: 56px;
-  --sidebar-width: 240px;
-  --content-max-width: 1024px;
-  --auth-card-width: 420px;
+  --sidebar-width: 248px;
+  --content-max-width: 1120px;
+  --auth-card-width: 440px;
 
   /* Bewegung */
   --duration-fast: 120ms;

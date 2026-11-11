@@ -47,9 +47,9 @@ function onSignOut() {
 .user-menu-button {
   display: inline-flex;
   align-items: center;
-  padding: var(--space-xs) var(--space-sm);
+  padding: var(--space-xs) var(--space-md);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-full);
   background-color: var(--color-surface);
   color: var(--color-text);
   cursor: pointer;
@@ -75,7 +75,7 @@ function onSignOut() {
   min-width: 12rem;
   padding: var(--space-sm);
   border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border-radius: var(--radius-lg);
   background-color: var(--color-surface-raised);
   box-shadow: var(--shadow-md);
 }

@@ -1,0 +1,6 @@
+type: string
+description: Difficulty of a recipe.
+enum:
+  - easy
+  - medium
+  - hard

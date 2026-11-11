@@ -73,6 +73,20 @@ describe('apiFetch', () => {
     expect(options.body).toBe(JSON.stringify({ nameOrEmail: 'test', password: 'secret' }))
   })
 
+  it('sendet FormData ohne JSON-Content-Type', async () => {
+    fetchMock.mockResolvedValueOnce(jsonResponse(201, { url: 'http://example.test/image.png' }))
+
+    const form = new FormData()
+    form.append('file', new Blob(['abc'], { type: 'image/png' }), 'image.png')
+
+    await apiFetch('/uploads/images', { method: 'POST', body: form })
+
+    const [, options] = fetchMock.mock.calls[0]
+
+    expect(options.headers['Content-Type']).toBeUndefined()
+    expect(options.body).toBe(form)
+  })
+
   it('erneuert den Token bei 401 und wiederholt den Request einmal', async () => {
     getAccessToken.mockReturnValueOnce('old-token').mockReturnValueOnce('new-token')
     fetchMock

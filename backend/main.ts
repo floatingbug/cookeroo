@@ -1,3 +1,4 @@
+import { mkdir } from 'node:fs/promises';
 import express from 'express';
 import cookieParser from 'cookie-parser';
 import cors from 'cors';
@@ -9,10 +10,12 @@ import errorMiddleware from './src/middlewares/error.js';
 import authRoutes from './src/features/auth/index.js';
 import userRoutes from './src/features/user/index.js';
 import accountRoutes from './src/features/account/index.js';
-import productRoutes from './src/features/product/index.js';
+import recipeRoutes from './src/features/recipe/index.js';
+import uploadRoutes from './src/features/upload/index.js';
 
 async function start(): Promise<void> {
     await connect();
+    await mkdir(config.uploadsConfig.dir, { recursive: true });
 
     const app = express();
 
@@ -39,10 +42,13 @@ async function start(): Promise<void> {
         app.use(cors(config.corsConfig.develop));
     }
 
+    app.use('/uploads', express.static(config.uploadsConfig.dir));
+
     app.use('/auth', authRoutes);
     app.use('/users', userRoutes);
     app.use('/account', accountRoutes);
-    app.use('/products', productRoutes);
+    app.use('/recipes', recipeRoutes);
+    app.use('/uploads', uploadRoutes);
 
     app.use((req, res) => {
         res.status(404).json({ message: 'Not found' });

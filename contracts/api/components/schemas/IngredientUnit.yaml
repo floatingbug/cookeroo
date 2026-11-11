@@ -1,0 +1,10 @@
+type: string
+description: Unit of an ingredient quantity.
+enum:
+  - g
+  - kg
+  - ml
+  - l
+  - piece
+  - tbsp
+  - tsp

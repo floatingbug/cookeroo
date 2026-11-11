@@ -4,7 +4,7 @@ import rateLimitConfig from './rateLimitConfig.js';
 import corsConfig from './corsConfig.js';
 import coolDownConfig from './coolDownConfig.js';
 import authConfig from './authConfig.js';
-import offConfig from './offConfig.js';
+import uploadsConfig from './uploadsConfig.js';
 
 dotenv.config();
 
@@ -49,8 +49,8 @@ const config = {
     coolDownConfig,
     authConfig,
 
-    // OpenFoodFacts
-    offConfig,
+    // Uploads
+    uploadsConfig,
 };
 
 export type Config = typeof config;

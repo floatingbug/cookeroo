@@ -1,12 +1,12 @@
 {
   "app": {
-    "name": "Fullstack Template"
+    "name": "Cookeroo"
   },
   "nav": {
     "main": "Hauptnavigation",
     "home": "Start",
     "dashboard": "Dashboard",
-    "products": "Produktsuche",
+    "recipeCreate": "Rezept erstellen",
     "account": "Konto"
   },
   "user": {
@@ -81,37 +81,111 @@
     }
   },
   "home": {
-    "title": "Willkommen",
-    "description": "Vue-Frontend und Express-Backend sind bereit für das erste Feature."
+    "title": "Willkommen bei Cookeroo",
+    "description": "Plane deine Speisen, sammle Rezepte und finde passende Zutaten – alles an einem Ort."
   },
   "dashboard": {
     "title": "Dashboard",
     "description": "Dein Überblick in Cookeroo.",
     "welcome": "Willkommen zurück, {name}!"
   },
-  "product": {
-    "title": "Produktsuche",
-    "description": "Suche Lebensmittelprodukte in der Open-Food-Facts-Datenbank.",
-    "searchLabel": "Produktname",
-    "submit": "Suchen",
-    "loading": "Produkte werden gesucht …",
-    "resultCount": "1 Produkt gefunden | {count} Produkte gefunden",
-    "emptyText": "Keine Produkte gefunden. Versuche einen kürzeren oder allgemeineren Suchbegriff.",
-    "codeLabel": "Barcode: {code}",
-    "nutriscore": "Nutri-Score",
-    "attribution": "Daten bereitgestellt von Open Food Facts (ODbL-Lizenz).",
-    "pagination": {
-      "label": "Seitennavigation der Suchergebnisse",
-      "prev": "Zurück",
-      "next": "Weiter",
-      "pageInfo": "Seite {page} von {total}"
+  "recipe": {
+    "create": {
+      "title": "Rezept erstellen",
+      "description": "Trage die Grunddaten, Zutaten und Zubereitung ein.",
+      "sections": {
+        "basics": "Grunddaten",
+        "ingredients": "Zutaten",
+        "instructions": "Zubereitung",
+        "visibility": "Sichtbarkeit"
+      }
+    },
+    "fields": {
+      "title": "Titel",
+      "description": "Beschreibung",
+      "category": "Kategorie",
+      "cuisine": "Küche",
+      "difficulty": "Schwierigkeit",
+      "difficultyPlaceholder": "Keine Angabe",
+      "prepTime": "Vorbereitungszeit (Minuten)",
+      "cookTime": "Kochzeit (Minuten)",
+      "restTime": "Ruhezeit (Minuten)",
+      "servings": "Portionen",
+      "servingUnit": "Einheit pro Portion",
+      "servingsUnitFallback": "Portionen",
+      "tags": "Tags",
+      "tagsHint": "Mehrere Tags mit Komma trennen.",
+      "image": "Rezeptbild",
+      "ingredientIndex": "Zutat {index}",
+      "name": "Zutat",
+      "quantity": "Menge",
+      "unit": "Einheit",
+      "note": "Notiz",
+      "isOptional": "Optional",
+      "step": "Schritt {step}",
+      "stepDescription": "Beschreibung",
+      "duration": "Dauer (Minuten)",
+      "stepImage": "Schrittbild",
+      "isPublic": "Rezept öffentlich teilen"
+    },
+    "actions": {
+      "addIngredient": "Zutat hinzufügen",
+      "removeIngredient": "Zutat entfernen",
+      "addInstruction": "Schritt hinzufügen",
+      "removeInstruction": "Schritt entfernen",
+      "removeImage": "Bild entfernen",
+      "upload": "Bild auswählen",
+      "uploading": "Bild wird hochgeladen …",
+      "submit": "Rezept speichern",
+      "saving": "Rezept wird gespeichert …"
+    },
+    "units": {
+      "g": "g",
+      "kg": "kg",
+      "ml": "ml",
+      "l": "l",
+      "piece": "Stück",
+      "tbsp": "EL",
+      "tsp": "TL"
+    },
+    "difficulty": {
+      "easy": "Einfach",
+      "medium": "Mittel",
+      "hard": "Schwer",
+      "none": "Keine Angabe"
+    },
+    "status": {
+      "public": "Öffentlich",
+      "private": "Privat"
+    },
+    "detail": {
+      "loading": "Rezept wird geladen …",
+      "stepDuration": "{minutes} Min.",
+      "minutes": "Min.",
+      "createdAt": "Erstellt am",
+      "optional": "optional"
     },
     "errors": {
-      "queryTooShort": "Bitte gib mindestens 2 Zeichen ein.",
-      "rateLimit": "Zu viele Suchanfragen in kurzer Zeit. Bitte warte einen Moment.",
-      "unavailable": "Die Produktsuche ist derzeit nicht verfügbar. Bitte versuche es später erneut.",
+      "titleRequired": "Bitte gib einen Titel ein.",
+      "prepTimeRequired": "Bitte gib eine gültige Vorbereitungszeit an.",
+      "cookTimeRequired": "Bitte gib eine gültige Kochzeit an.",
+      "restTimeInvalid": "Bitte gib eine gültige Ruhezeit an.",
+      "servingsRequired": "Bitte gib mindestens eine Portion an.",
+      "ingredientsRequired": "Bitte füge mindestens eine Zutat hinzu.",
+      "ingredientNameRequired": "Bitte gib für jede Zutat einen Namen an.",
+      "ingredientQuantityRequired": "Bitte gib für jede Zutat eine Menge größer als 0 an.",
+      "ingredientUnitRequired": "Bitte wähle für jede Zutat eine Einheit.",
+      "instructionsRequired": "Bitte füge mindestens einen Schritt hinzu.",
+      "instructionDescriptionRequired": "Bitte beschreibe jeden Schritt.",
+      "durationInvalid": "Bitte gib für jeden Schritt eine gültige Dauer an.",
+      "invalidInput": "Bitte prüfe deine Eingaben.",
+      "notFound": "Das Rezept wurde nicht gefunden.",
       "network": "Der Server ist nicht erreichbar. Bitte prüfe deine Verbindung.",
-      "generic": "Die Suche ist fehlgeschlagen. Bitte versuche es erneut."
+      "generic": "Das Rezept konnte nicht gespeichert werden. Bitte versuche es erneut.",
+      "uploadInvalidType": "Bitte wähle ein JPEG-, PNG- oder WebP-Bild aus.",
+      "uploadTooLarge": "Das Bild ist zu groß (maximal 5 MB).",
+      "uploadNetwork": "Der Server ist nicht erreichbar. Bitte prüfe deine Verbindung.",
+      "uploadGeneric": "Das Bild konnte nicht hochgeladen werden. Bitte versuche es erneut."
     }
   },
   "notFound": {
@@ -120,6 +194,6 @@
     "home": "Zur Startseite"
   },
   "footer": {
-    "copyright": "© {year} Fullstack Template"
+    "copyright": "© {year} Cookeroo"
   }
 }

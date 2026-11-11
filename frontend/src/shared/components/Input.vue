@@ -68,10 +68,14 @@ function onInput(event: Event) {
   color: var(--color-text-muted);
 }
 
+.input-control:hover:not(:disabled) {
+  border-color: var(--color-border-strong);
+}
+
 .input-control:focus {
   border-color: var(--color-primary);
-  outline: 2px solid var(--color-focus);
-  outline-offset: 1px;
+  outline: 3px solid color-mix(in srgb, var(--color-focus) 22%, transparent);
+  outline-offset: 0;
 }
 
 .input-control[aria-invalid='true'] {

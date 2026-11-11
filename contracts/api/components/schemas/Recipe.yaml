@@ -1,0 +1,95 @@
+type: object
+required:
+  - id
+  - title
+  - description
+  - imageUrl
+  - category
+  - cuisine
+  - difficulty
+  - prepTime
+  - cookTime
+  - restTime
+  - servings
+  - servingUnit
+  - tags
+  - ingredients
+  - instructions
+  - createdAt
+  - updatedAt
+  - createdBy
+  - isPublic
+  - status
+additionalProperties: false
+description: A complete recipe after creation or lookup.
+properties:
+  id:
+    type: string
+    description: MongoDB ObjectId serialized as a hex string.
+  title:
+    type: string
+    minLength: 1
+    maxLength: 150
+  description:
+    type:
+      - string
+      - 'null'
+  imageUrl:
+    type:
+      - string
+      - 'null'
+    format: uri
+  category:
+    type:
+      - string
+      - 'null'
+  cuisine:
+    type:
+      - string
+      - 'null'
+  difficulty:
+    oneOf:
+      - $ref: RecipeDifficulty.yaml
+      - type: 'null'
+  prepTime:
+    type: integer
+    minimum: 0
+  cookTime:
+    type: integer
+    minimum: 0
+  restTime:
+    type:
+      - integer
+      - 'null'
+  servings:
+    type: integer
+    minimum: 1
+  servingUnit:
+    type:
+      - string
+      - 'null'
+  tags:
+    type: array
+    items:
+      type: string
+  ingredients:
+    type: array
+    items:
+      $ref: Ingredient.yaml
+  instructions:
+    type: array
+    items:
+      $ref: Instruction.yaml
+  createdAt:
+    type: string
+    format: date-time
+  updatedAt:
+    type: string
+    format: date-time
+  createdBy:
+    type: string
+    description: MongoDB ObjectId of the creating user as a hex string.
+  isPublic:
+    type: boolean
+  status:
+    $ref: RecipeStatus.yaml

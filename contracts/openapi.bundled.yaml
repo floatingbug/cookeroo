@@ -6,7 +6,8 @@ info:
     name: ISC
     identifier: ISC
   description: |
-    HTTP API for authentication, users and account management.
+    HTTP API for authentication, users, account management, recipes
+    and image uploads.
 
     All request and response bodies are JSON unless stated otherwise. Errors
     use `{ "message": "..." }`.
@@ -23,8 +24,10 @@ tags:
     description: Current user and public user lookup.
   - name: Account
     description: Account updates and email-change confirmation.
-  - name: Products
-    description: Food product search backed by OpenFoodFacts.
+  - name: Recipes
+    description: Create and view recipes.
+  - name: Uploads
+    description: Image uploads and delivery.
 paths:
   /auth/sign-up:
     post:
@@ -42,12 +45,12 @@ paths:
           application/json:
             schema:
               type: object
-              required: &ref_14
+              required: &ref_22
                 - name
                 - email
                 - password
               additionalProperties: true
-              properties: &ref_15
+              properties: &ref_23
                 name:
                   type: string
                   minLength: 3
@@ -141,11 +144,11 @@ paths:
           application/json:
             schema:
               type: object
-              required: &ref_16
+              required: &ref_24
                 - nameOrEmail
                 - password
               additionalProperties: true
-              properties: &ref_17
+              properties: &ref_25
                 nameOrEmail:
                   type: string
                   description: Email address or display name.
@@ -164,11 +167,11 @@ paths:
             application/json:
               schema:
                 type: object
-                required: &ref_18
+                required: &ref_26
                   - user
                   - accessToken
                 additionalProperties: false
-                properties: &ref_19
+                properties: &ref_27
                   user:
                     type: object
                     required: &ref_10
@@ -271,10 +274,10 @@ paths:
             application/json:
               schema:
                 type: object
-                required: &ref_20
+                required: &ref_28
                   - accessToken
                 additionalProperties: false
-                properties: &ref_21
+                properties: &ref_29
                   accessToken:
                     type: string
         '401':
@@ -435,11 +438,11 @@ paths:
           application/json:
             schema:
               type: object
-              required: &ref_22
+              required: &ref_30
                 - token
                 - password
               additionalProperties: true
-              properties: &ref_23
+              properties: &ref_31
                 token:
                   type: string
                 password:
@@ -567,7 +570,7 @@ paths:
               description: |
                 At least one of `name`, `email` or `password` is required. Unknown
                 fields are rejected by the existing account validation middleware.
-              properties: &ref_24
+              properties: &ref_32
                 name:
                   type: string
                   minLength: 3
@@ -597,12 +600,12 @@ paths:
                   Result of a partially successful account update. `messages` contains
                   successful fields, `errorMessages` contains business conflicts, and
                   `updated` lists the fields that were changed.
-                required: &ref_25
+                required: &ref_33
                   - messages
                   - errorMessages
                   - updated
                 additionalProperties: false
-                properties: &ref_26
+                properties: &ref_34
                   messages:
                     type: object
                     additionalProperties: false
@@ -668,12 +671,12 @@ paths:
             application/json:
               schema:
                 type: object
-                required: &ref_27
+                required: &ref_35
                   - success
                   - newEmail
                   - message
                 additionalProperties: false
-                properties: &ref_28
+                properties: &ref_36
                   success:
                     type: boolean
                     enum:
@@ -702,116 +705,394 @@ paths:
         '500':
           description: Unexpected server error.
           content: *ref_4
-  /products/search:
-    get:
+  /recipes:
+    post:
       tags:
-        - Products
-      operationId: searchProducts
-      summary: Search food products by name
-      description: |
-        Full-text product search backed by OpenFoodFacts. Results are cached
-        briefly on the server to respect the OpenFoodFacts rate limits.
+        - Recipes
+      operationId: createRecipe
+      summary: Create a recipe
+      description: Creates a recipe for the authenticated user.
       security:
         - bearerAuth: []
-      parameters:
-        - name: q
-          in: query
-          required: true
-          description: Search term, matched against product names.
-          schema:
-            type: string
-            minLength: 2
-            maxLength: 64
-        - name: page
-          in: query
-          required: false
-          description: 1-based page number (numeric string). Defaults to `1`.
-          schema:
-            type: string
-            pattern: ^[1-9][0-9]{0,2}$
-        - name: pageSize
-          in: query
-          required: false
-          description: Products per page between 1 and 24 (numeric string). Defaults to `12`.
-          schema:
-            type: string
-            pattern: ^([1-9]|1[0-9]|2[0-4])$
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: &ref_38
+                - title
+                - prepTime
+                - cookTime
+                - servings
+                - ingredients
+                - instructions
+              additionalProperties: false
+              description: |
+                Payload to create a recipe. Timestamps, creator and status are derived by the
+                server and cannot be supplied by the client.
+              properties: &ref_39
+                title:
+                  type: string
+                  minLength: 1
+                  maxLength: 150
+                description:
+                  type:
+                    - string
+                    - 'null'
+                  maxLength: 2000
+                imageUrl:
+                  type:
+                    - string
+                    - 'null'
+                  format: uri
+                  description: URL of an uploaded image for the recipe.
+                category:
+                  type:
+                    - string
+                    - 'null'
+                  maxLength: 60
+                cuisine:
+                  type:
+                    - string
+                    - 'null'
+                  maxLength: 60
+                difficulty:
+                  oneOf:
+                    - type: string
+                      description: Difficulty of a recipe.
+                      enum: &ref_14
+                        - easy
+                        - medium
+                        - hard
+                    - type: 'null'
+                prepTime:
+                  type: integer
+                  minimum: 0
+                  description: Preparation time in minutes.
+                cookTime:
+                  type: integer
+                  minimum: 0
+                  description: Cooking time in minutes.
+                restTime:
+                  type:
+                    - integer
+                    - 'null'
+                  minimum: 0
+                  description: Resting time in minutes.
+                servings:
+                  type: integer
+                  minimum: 1
+                servingUnit:
+                  type:
+                    - string
+                    - 'null'
+                  maxLength: 40
+                  description: Optional label of one serving, for example "Portion".
+                tags:
+                  type: array
+                  maxItems: 20
+                  items:
+                    type: string
+                    minLength: 1
+                    maxLength: 30
+                ingredients:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    required: &ref_15
+                      - name
+                      - quantity
+                      - unit
+                    additionalProperties: false
+                    description: An ingredient of a recipe.
+                    properties: &ref_16
+                      name:
+                        type: string
+                        minLength: 1
+                        maxLength: 120
+                      quantity:
+                        type: number
+                        exclusiveMinimum: 0
+                        description: Numeric amount of the ingredient.
+                      unit:
+                        type: string
+                        description: Unit of an ingredient quantity.
+                        enum: &ref_37
+                          - g
+                          - kg
+                          - ml
+                          - l
+                          - piece
+                          - tbsp
+                          - tsp
+                      note:
+                        type:
+                          - string
+                          - 'null'
+                        maxLength: 300
+                      isOptional:
+                        type: boolean
+                        default: false
+                        description: Whether the ingredient is optional.
+                instructions:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    required: &ref_17
+                      - step
+                      - description
+                    additionalProperties: false
+                    description: A single preparation step of a recipe.
+                    properties: &ref_18
+                      step:
+                        type: integer
+                        minimum: 1
+                        description: 1-based position of the step.
+                      description:
+                        type: string
+                        minLength: 1
+                        maxLength: 2000
+                      duration:
+                        type:
+                          - integer
+                          - 'null'
+                        minimum: 0
+                        description: Duration in minutes.
+                      imageUrl:
+                        type:
+                          - string
+                          - 'null'
+                        format: uri
+                        description: URL of an uploaded image for this step.
+                isPublic:
+                  type: boolean
+                  default: true
+                  description: Whether the recipe is visible to other users.
       responses:
-        '200':
-          description: Matching products.
+        '201':
+          description: The created recipe.
           content:
             application/json:
               schema:
                 type: object
-                required: &ref_31
-                  - products
-                  - count
-                  - page
-                  - pageSize
+                required: &ref_19
+                  - id
+                  - title
+                  - description
+                  - imageUrl
+                  - category
+                  - cuisine
+                  - difficulty
+                  - prepTime
+                  - cookTime
+                  - restTime
+                  - servings
+                  - servingUnit
+                  - tags
+                  - ingredients
+                  - instructions
+                  - createdAt
+                  - updatedAt
+                  - createdBy
+                  - isPublic
+                  - status
                 additionalProperties: false
-                description: Paginated result of the product search.
-                properties: &ref_32
-                  products:
+                description: A complete recipe after creation or lookup.
+                properties: &ref_20
+                  id:
+                    type: string
+                    description: MongoDB ObjectId serialized as a hex string.
+                  title:
+                    type: string
+                    minLength: 1
+                    maxLength: 150
+                  description:
+                    type:
+                      - string
+                      - 'null'
+                  imageUrl:
+                    type:
+                      - string
+                      - 'null'
+                    format: uri
+                  category:
+                    type:
+                      - string
+                      - 'null'
+                  cuisine:
+                    type:
+                      - string
+                      - 'null'
+                  difficulty:
+                    oneOf:
+                      - type: string
+                        description: Difficulty of a recipe.
+                        enum: *ref_14
+                      - type: 'null'
+                  prepTime:
+                    type: integer
+                    minimum: 0
+                  cookTime:
+                    type: integer
+                    minimum: 0
+                  restTime:
+                    type:
+                      - integer
+                      - 'null'
+                  servings:
+                    type: integer
+                    minimum: 1
+                  servingUnit:
+                    type:
+                      - string
+                      - 'null'
+                  tags:
+                    type: array
+                    items:
+                      type: string
+                  ingredients:
                     type: array
                     items:
                       type: object
-                      required: &ref_29
-                        - code
+                      required: *ref_15
                       additionalProperties: false
-                      description: |
-                        Food product from OpenFoodFacts. Fields other than `code` may be null when
-                        OpenFoodFacts has no data for them.
-                      properties: &ref_30
-                        code:
-                          type: string
-                          description: Barcode of the product.
-                        productName:
-                          type:
-                            - string
-                            - 'null'
-                        brands:
-                          type:
-                            - string
-                            - 'null'
-                          description: Comma-separated brand names as stored by OpenFoodFacts.
-                        categories:
-                          type:
-                            - string
-                            - 'null'
-                          description: Comma-separated category names as stored by OpenFoodFacts.
-                        imageUrl:
-                          type:
-                            - string
-                            - 'null'
-                          description: Front image URL, falling back to any available image.
-                        nutriscoreGrade:
-                          type:
-                            - string
-                            - 'null'
-                          description: Nutri-Score grade from `a` to `e`, null when unknown.
-                  count:
-                    type: integer
-                    description: Total number of matching products reported by OpenFoodFacts.
-                  page:
-                    type: integer
-                    description: 1-based page number of this result.
-                  pageSize:
-                    type: integer
-                    description: Number of products requested per page.
+                      description: An ingredient of a recipe.
+                      properties: *ref_16
+                  instructions:
+                    type: array
+                    items:
+                      type: object
+                      required: *ref_17
+                      additionalProperties: false
+                      description: A single preparation step of a recipe.
+                      properties: *ref_18
+                  createdAt:
+                    type: string
+                    format: date-time
+                  updatedAt:
+                    type: string
+                    format: date-time
+                  createdBy:
+                    type: string
+                    description: MongoDB ObjectId of the creating user as a hex string.
+                  isPublic:
+                    type: boolean
+                  status:
+                    type: string
+                    description: |
+                      Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
+                      visible to other users, `private` otherwise.
+                    enum: &ref_40
+                      - public
+                      - private
         '400':
           description: Invalid input.
           content: *ref_2
         '401':
           description: Missing or invalid access token.
           content: *ref_12
-        '429':
-          description: Rate limit exceeded (only active in production).
-          content: *ref_3
         '500':
           description: Unexpected server error.
           content: *ref_4
-        '502':
-          description: OpenFoodFacts is unavailable or returned an error.
+  /recipes/{recipeId}:
+    get:
+      tags:
+        - Recipes
+      operationId: getRecipe
+      summary: Get a recipe by ID
+      description: |
+        Returns a recipe when it is public or belongs to the authenticated user.
+        Private recipes of other users are reported as not found.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: recipeId
+          in: path
+          required: true
+          description: MongoDB ObjectId of the recipe as a hex string.
+          schema:
+            type: string
+            pattern: ^[a-f0-9]{24}$
+      responses:
+        '200':
+          description: The requested recipe.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: *ref_19
+                additionalProperties: false
+                description: A complete recipe after creation or lookup.
+                properties: *ref_20
+        '400':
+          description: Invalid input.
+          content: *ref_2
+        '401':
+          description: Missing or invalid access token.
+          content: *ref_12
+        '404':
+          description: The requested resource does not exist.
+          content: &ref_21
+            application/json:
+              schema:
+                type: object
+                required: *ref_0
+                additionalProperties: false
+                properties: *ref_1
+        '500':
+          description: Unexpected server error.
+          content: *ref_4
+  /uploads/images:
+    post:
+      tags:
+        - Uploads
+      operationId: uploadImage
+      summary: Upload an image
+      description: |
+        Uploads a JPEG, PNG or WebP image and returns its public URL. The maximum
+        file size is 5 MB.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              required:
+                - file
+              additionalProperties: false
+              properties:
+                file:
+                  type: string
+                  format: binary
+                  description: Image file (JPEG, PNG or WebP, max 5 MB).
+      responses:
+        '201':
+          description: The uploaded image.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: &ref_41
+                  - url
+                additionalProperties: false
+                description: Public URL of an uploaded image.
+                properties: &ref_42
+                  url:
+                    type: string
+                    format: uri
+        '400':
+          description: Invalid input.
+          content: *ref_2
+        '401':
+          description: Missing or invalid access token.
+          content: *ref_12
+        '413':
+          description: The uploaded file exceeds the maximum size.
           content:
             application/json:
               schema:
@@ -819,6 +1100,46 @@ paths:
                 required: *ref_0
                 additionalProperties: false
                 properties: *ref_1
+        '500':
+          description: Unexpected server error.
+          content: *ref_4
+  /uploads/{fileName}:
+    get:
+      tags:
+        - Uploads
+      operationId: getUploadedImage
+      summary: Get an uploaded image
+      description: Returns a previously uploaded image by file name.
+      parameters:
+        - name: fileName
+          in: path
+          required: true
+          description: Generated file name of the uploaded image.
+          schema:
+            type: string
+            pattern: ^[A-Za-z0-9_-]+\.(jpg|jpeg|png|webp)$
+      responses:
+        '200':
+          description: The image file.
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+            image/png:
+              schema:
+                type: string
+                format: binary
+            image/webp:
+              schema:
+                type: string
+                format: binary
+        '404':
+          description: The requested resource does not exist.
+          content: *ref_21
+        '500':
+          description: Unexpected server error.
+          content: *ref_4
 components:
   securitySchemes:
     bearerAuth:
@@ -836,9 +1157,9 @@ components:
   schemas:
     SignUpRequest:
       type: object
-      required: *ref_14
+      required: *ref_22
       additionalProperties: true
-      properties: *ref_15
+      properties: *ref_23
     Message:
       type: object
       required: *ref_6
@@ -851,9 +1172,9 @@ components:
       properties: *ref_1
     SignInRequest:
       type: object
-      required: *ref_16
+      required: *ref_24
       additionalProperties: true
-      properties: *ref_17
+      properties: *ref_25
     User:
       type: object
       required: *ref_10
@@ -863,14 +1184,14 @@ components:
       properties: *ref_11
     SignInResponse:
       type: object
-      required: *ref_18
+      required: *ref_26
       additionalProperties: false
-      properties: *ref_19
+      properties: *ref_27
     RefreshResponse:
       type: object
-      required: *ref_20
+      required: *ref_28
       additionalProperties: false
-      properties: *ref_21
+      properties: *ref_29
     EmailRequest:
       type: object
       required: *ref_8
@@ -878,9 +1199,9 @@ components:
       properties: *ref_9
     ResetPasswordRequest:
       type: object
-      required: *ref_22
+      required: *ref_30
       additionalProperties: true
-      properties: *ref_23
+      properties: *ref_31
     AccountUpdateRequest:
       type: object
       minProperties: 1
@@ -888,35 +1209,67 @@ components:
       description: |
         At least one of `name`, `email` or `password` is required. Unknown
         fields are rejected by the existing account validation middleware.
-      properties: *ref_24
+      properties: *ref_32
     AccountUpdateResult:
       type: object
       description: |
         Result of a partially successful account update. `messages` contains
         successful fields, `errorMessages` contains business conflicts, and
         `updated` lists the fields that were changed.
-      required: *ref_25
+      required: *ref_33
       additionalProperties: false
-      properties: *ref_26
+      properties: *ref_34
     ConfirmEmailChangeResponse:
       type: object
-      required: *ref_27
+      required: *ref_35
       additionalProperties: false
-      properties: *ref_28
-    Product:
+      properties: *ref_36
+    RecipeDifficulty:
+      type: string
+      description: Difficulty of a recipe.
+      enum: *ref_14
+    IngredientUnit:
+      type: string
+      description: Unit of an ingredient quantity.
+      enum: *ref_37
+    Ingredient:
       type: object
-      required: *ref_29
+      required: *ref_15
+      additionalProperties: false
+      description: An ingredient of a recipe.
+      properties: *ref_16
+    Instruction:
+      type: object
+      required: *ref_17
+      additionalProperties: false
+      description: A single preparation step of a recipe.
+      properties: *ref_18
+    RecipeCreateRequest:
+      type: object
+      required: *ref_38
       additionalProperties: false
       description: |
-        Food product from OpenFoodFacts. Fields other than `code` may be null when
-        OpenFoodFacts has no data for them.
-      properties: *ref_30
-    ProductSearchResponse:
+        Payload to create a recipe. Timestamps, creator and status are derived by the
+        server and cannot be supplied by the client.
+      properties: *ref_39
+    RecipeStatus:
+      type: string
+      description: |
+        Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
+        visible to other users, `private` otherwise.
+      enum: *ref_40
+    Recipe:
       type: object
-      required: *ref_31
+      required: *ref_19
       additionalProperties: false
-      description: Paginated result of the product search.
-      properties: *ref_32
+      description: A complete recipe after creation or lookup.
+      properties: *ref_20
+    ImageUploadResponse:
+      type: object
+      required: *ref_41
+      additionalProperties: false
+      description: Public URL of an uploaded image.
+      properties: *ref_42
   responses:
     BadRequest:
       description: Invalid input.
@@ -930,6 +1283,9 @@ components:
     Unauthorized:
       description: Missing or invalid access token.
       content: *ref_12
+    NotFound:
+      description: The requested resource does not exist.
+      content: *ref_21
   headers:
     SetCookie:
       description: |

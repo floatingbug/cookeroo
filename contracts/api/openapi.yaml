@@ -6,7 +6,8 @@ info:
     name: ISC
     identifier: ISC
   description: |
-    HTTP API for authentication, users and account management.
+    HTTP API for authentication, users, account management, recipes
+    and image uploads.
 
     All request and response bodies are JSON unless stated otherwise. Errors
     use `{ "message": "..." }`.
@@ -23,8 +24,10 @@ tags:
     description: Current user and public user lookup.
   - name: Account
     description: Account updates and email-change confirmation.
-  - name: Products
-    description: Food product search backed by OpenFoodFacts.
+  - name: Recipes
+    description: Create and view recipes.
+  - name: Uploads
+    description: Image uploads and delivery.
 paths:
   /auth/sign-up:
     $ref: paths/auth_sign-up.yaml
@@ -48,8 +51,14 @@ paths:
     $ref: paths/account.yaml
   /account/confirm-email:
     $ref: paths/account_confirm-email.yaml
-  /products/search:
-    $ref: paths/products_search.yaml
+  /recipes:
+    $ref: paths/recipes.yaml
+  /recipes/{recipeId}:
+    $ref: paths/recipes_{recipeId}.yaml
+  /uploads/images:
+    $ref: paths/uploads_images.yaml
+  /uploads/{fileName}:
+    $ref: paths/uploads_{fileName}.yaml
 components:
   securitySchemes:
     bearerAuth:

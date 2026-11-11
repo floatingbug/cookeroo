@@ -24,6 +24,7 @@ const year = computed(() => new Date().getFullYear())
   padding: var(--space-sm) var(--space-md);
   border-top: 1px solid var(--color-border);
   color: var(--color-text-muted);
+  background-color: var(--color-bg-muted);
   font-size: var(--font-size-sm);
 }
 </style>

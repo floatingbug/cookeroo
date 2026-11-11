@@ -23,4 +23,10 @@ export const openApiMiddleware = OpenApiValidator.middleware({
   // Responses werden nur in Tests und Entwicklung validiert.
   validateResponses: config.env !== 'production',
   validateSecurity: false,
+  fileUploader: {
+    limits: {
+      fileSize: config.uploadsConfig.maxFileSizeBytes,
+      files: 1,
+    },
+  },
 });

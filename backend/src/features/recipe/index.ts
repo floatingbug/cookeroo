@@ -1,0 +1,11 @@
+import express from 'express';
+import controller from './controller/index.js';
+import authUser from '../../middlewares/authUser.js';
+import { openApiMiddleware } from '../../middlewares/openapi.js';
+
+const router = express.Router();
+
+router.post('/', authUser, ...openApiMiddleware, controller.createRecipe);
+router.get('/:recipeId', authUser, ...openApiMiddleware, controller.getRecipe);
+
+export default router;

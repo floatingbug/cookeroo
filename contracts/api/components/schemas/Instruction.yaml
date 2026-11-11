@@ -1,0 +1,27 @@
+type: object
+required:
+  - step
+  - description
+additionalProperties: false
+description: A single preparation step of a recipe.
+properties:
+  step:
+    type: integer
+    minimum: 1
+    description: 1-based position of the step.
+  description:
+    type: string
+    minLength: 1
+    maxLength: 2000
+  duration:
+    type:
+      - integer
+      - 'null'
+    minimum: 0
+    description: Duration in minutes.
+  imageUrl:
+    type:
+      - string
+      - 'null'
+    format: uri
+    description: URL of an uploaded image for this step.

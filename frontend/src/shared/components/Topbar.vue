@@ -31,9 +31,10 @@ defineProps({
   flex-wrap: wrap;
   gap: var(--space-sm) var(--space-md);
   min-height: var(--topbar-height);
-  padding: var(--space-sm) var(--space-md);
+  padding: var(--space-sm) var(--space-lg);
   border-bottom: 1px solid var(--color-border);
-  background-color: var(--color-surface);
+  background-color: color-mix(in srgb, var(--color-surface) 94%, transparent);
+  backdrop-filter: blur(12px);
 }
 
 .topbar-start,

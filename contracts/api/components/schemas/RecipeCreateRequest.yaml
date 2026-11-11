@@ -1,0 +1,86 @@
+type: object
+required:
+  - title
+  - prepTime
+  - cookTime
+  - servings
+  - ingredients
+  - instructions
+additionalProperties: false
+description: |
+  Payload to create a recipe. Timestamps, creator and status are derived by the
+  server and cannot be supplied by the client.
+properties:
+  title:
+    type: string
+    minLength: 1
+    maxLength: 150
+  description:
+    type:
+      - string
+      - 'null'
+    maxLength: 2000
+  imageUrl:
+    type:
+      - string
+      - 'null'
+    format: uri
+    description: URL of an uploaded image for the recipe.
+  category:
+    type:
+      - string
+      - 'null'
+    maxLength: 60
+  cuisine:
+    type:
+      - string
+      - 'null'
+    maxLength: 60
+  difficulty:
+    oneOf:
+      - $ref: RecipeDifficulty.yaml
+      - type: 'null'
+  prepTime:
+    type: integer
+    minimum: 0
+    description: Preparation time in minutes.
+  cookTime:
+    type: integer
+    minimum: 0
+    description: Cooking time in minutes.
+  restTime:
+    type:
+      - integer
+      - 'null'
+    minimum: 0
+    description: Resting time in minutes.
+  servings:
+    type: integer
+    minimum: 1
+  servingUnit:
+    type:
+      - string
+      - 'null'
+    maxLength: 40
+    description: Optional label of one serving, for example "Portion".
+  tags:
+    type: array
+    maxItems: 20
+    items:
+      type: string
+      minLength: 1
+      maxLength: 30
+  ingredients:
+    type: array
+    minItems: 1
+    items:
+      $ref: Ingredient.yaml
+  instructions:
+    type: array
+    minItems: 1
+    items:
+      $ref: Instruction.yaml
+  isPublic:
+    type: boolean
+    default: true
+    description: Whether the recipe is visible to other users.

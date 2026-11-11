@@ -49,7 +49,12 @@ export async function apiFetch<T = unknown>(
   }: ApiFetchOptions = {},
 ): Promise<T> {
   const hasBody = body !== undefined
-  const serializedBody = hasBody ? JSON.stringify(body) : undefined
+  const isFormData = hasBody && body instanceof FormData
+  const serializedBody: BodyInit | undefined = hasBody
+    ? isFormData
+      ? (body as FormData)
+      : JSON.stringify(body)
+    : undefined
 
   async function execute(): Promise<ApiResult> {
     const token = auth ? getAccessToken() : null
@@ -58,7 +63,7 @@ export async function apiFetch<T = unknown>(
       method,
       credentials: 'include',
       headers: {
-        ...(hasBody ? { 'Content-Type': 'application/json' } : {}),
+        ...(hasBody && !isFormData ? { 'Content-Type': 'application/json' } : {}),
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...headers,
       },

@@ -2,7 +2,7 @@
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
-import { Sidebar, Topbar, UserMenu } from '@/shared/components'
+import { Logo, Sidebar, Topbar, UserMenu } from '@/shared/components'
 import { useAuthStore } from '@/features/auth/store/authStore'
 
 const router = useRouter()
@@ -18,6 +18,10 @@ async function onSignOut() {
 <template>
   <div class="app-layout">
     <Topbar class="topbar">
+      <template #start>
+        <Logo @logo:press="router.push('/dashboard')" />
+      </template>
+
       <template #end>
         <div class="topbar-end">
           <UserMenu
@@ -33,8 +37,8 @@ async function onSignOut() {
       <RouterLink class="sidebar-link" :to="{ name: 'dashboard' }">
         {{ t('nav.dashboard') }}
       </RouterLink>
-      <RouterLink class="sidebar-link" :to="{ name: 'product-search' }">
-        {{ t('nav.products') }}
+      <RouterLink class="sidebar-link" :to="{ name: 'recipe-create' }">
+        {{ t('nav.recipeCreate') }}
       </RouterLink>
     </Sidebar>
 
@@ -83,13 +87,14 @@ async function onSignOut() {
 }
 
 .sidebar-link:hover {
-  color: var(--color-text);
-  background-color: var(--color-surface);
+  color: var(--color-primary);
+  background-color: var(--color-primary-soft);
 }
 
 .sidebar-link.router-link-active {
   color: var(--color-primary);
-  background-color: var(--color-surface);
+  background-color: var(--color-primary-soft);
+  font-weight: var(--font-weight-semibold);
 }
 
 .main {
@@ -97,7 +102,13 @@ async function onSignOut() {
   width: 100%;
   display: flex;
   justify-content: center;
-  padding: var(--space-lg) var(--space-md) var(--space-2xl);
+  padding: var(--space-xl) var(--space-lg) var(--space-2xl);
+}
+
+@media (max-width: 640px) {
+  .main {
+    padding: var(--space-lg) var(--space-md) var(--space-2xl);
+  }
 }
 
 @media (min-width: 1024px) {
