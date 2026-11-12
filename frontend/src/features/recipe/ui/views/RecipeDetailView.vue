@@ -265,7 +265,7 @@ async function onDelete(): Promise<void> {
 .header-actions {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
+  align-items: flex-end;
   gap: var(--space-xs);
 }
 
