@@ -80,6 +80,15 @@ properties:
     type: array
     items:
       $ref: Instruction.yaml
+  nutrition:
+    oneOf:
+      - $ref: Nutrition.yaml
+      - type: 'null'
+    description: |
+      Nutrients calculated by the server from the foods collection. Null when no
+      ingredient could be matched and converted to grams. Older recipes may not
+      contain this field.
+
   createdAt:
     type: string
     format: date-time

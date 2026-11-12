@@ -2,12 +2,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('../api/createRecipeApi', () => ({ createRecipeApi: vi.fn() }))
 vi.mock('../api/getRecipeApi', () => ({ getRecipeApi: vi.fn() }))
+vi.mock('../api/getRecipesApi', () => ({ getRecipesApi: vi.fn() }))
 vi.mock('../api/uploadImageApi', () => ({ uploadImageApi: vi.fn() }))
 
 import { ApiError } from '@/shared/api/apiFetch'
 import type { Recipe, RecipeCreateRequest } from '@/shared/api/types'
 import { createRecipeApi } from '../api/createRecipeApi'
 import { getRecipeApi } from '../api/getRecipeApi'
+import { getRecipesApi } from '../api/getRecipesApi'
 import { uploadImageApi } from '../api/uploadImageApi'
 import type { RecipeForm } from '../types'
 import {
@@ -15,6 +17,7 @@ import {
   getRecipeErrorKey,
   getUploadErrorKey,
   loadRecipe,
+  loadRecipes,
   parseTags,
   toCreateRecipePayload,
   uploadImage,
@@ -23,6 +26,7 @@ import {
 
 const mockedCreateRecipeApi = vi.mocked(createRecipeApi)
 const mockedGetRecipeApi = vi.mocked(getRecipeApi)
+const mockedGetRecipesApi = vi.mocked(getRecipesApi)
 const mockedUploadImageApi = vi.mocked(uploadImageApi)
 
 const RECIPE = { id: 'recipe-1', title: 'Testrezept' } as Recipe
@@ -201,6 +205,13 @@ describe('recipeService', () => {
 
       await expect(loadRecipe('recipe-1')).resolves.toBe(RECIPE)
       expect(mockedGetRecipeApi).toHaveBeenCalledWith('recipe-1')
+    })
+
+    it('lädt alle Rezepte des Benutzers', async () => {
+      mockedGetRecipesApi.mockResolvedValue([RECIPE])
+
+      await expect(loadRecipes()).resolves.toEqual([RECIPE])
+      expect(mockedGetRecipesApi).toHaveBeenCalledWith()
     })
 
     it('liefert die URL des hochgeladenen Bildes', async () => {

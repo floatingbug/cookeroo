@@ -7,6 +7,11 @@ export default {
   meta: { requiresAuth: true },
   children: [
     {
+      path: '',
+      name: 'recipe-list',
+      component: () => import('../ui/views/RecipeListView.vue'),
+    },
+    {
       path: 'new',
       name: 'recipe-create',
       component: () => import('../ui/views/RecipeCreateView.vue'),

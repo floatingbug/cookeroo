@@ -5,6 +5,7 @@ import { useRoute } from 'vue-router'
 import { storeToRefs } from 'pinia'
 
 import type { RecipeIngredient, RecipeInstruction } from '@/shared/api/types'
+import NutritionPanel from '../components/NutritionPanel.vue'
 import { useRecipeStore } from '../../store/recipeStore'
 
 const { t, locale } = useI18n()
@@ -109,6 +110,8 @@ function formatDate(value: string): string {
           </ul>
         </div>
       </header>
+
+      <NutritionPanel v-if="recipe.nutrition" :nutrition="recipe.nutrition" />
 
       <section class="section">
         <h2 class="section-title">{{ t('recipe.create.sections.ingredients') }}</h2>

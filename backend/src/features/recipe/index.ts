@@ -6,6 +6,7 @@ import { openApiMiddleware } from '../../middlewares/openapi.js';
 const router = express.Router();
 
 router.post('/', authUser, ...openApiMiddleware, controller.createRecipe);
+router.get('/', authUser, ...openApiMiddleware, controller.listRecipes);
 router.get('/:recipeId', authUser, ...openApiMiddleware, controller.getRecipe);
 
 export default router;

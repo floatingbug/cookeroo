@@ -1,0 +1,40 @@
+type: object
+required:
+  - calories
+  - protein
+  - fat
+  - carbohydrates
+  - fiber
+  - sugar
+  - salt
+additionalProperties: false
+description: Nutrient values calculated from the recipe ingredients.
+properties:
+  calories:
+    type: number
+    minimum: 0
+    description: Energy in kilocalories (kcal).
+  protein:
+    type: number
+    minimum: 0
+    description: Protein in grams.
+  fat:
+    type: number
+    minimum: 0
+    description: Fat in grams.
+  carbohydrates:
+    type: number
+    minimum: 0
+    description: Available carbohydrates in grams.
+  fiber:
+    type: number
+    minimum: 0
+    description: Total dietary fiber in grams.
+  sugar:
+    type: number
+    minimum: 0
+    description: Total mono- and disaccharides in grams.
+  salt:
+    type: number
+    minimum: 0
+    description: Salt (sodium chloride) in grams.

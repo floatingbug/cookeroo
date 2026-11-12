@@ -246,7 +246,12 @@ export interface paths {
       path?: never
       cookie?: never
     }
-    get?: never
+    /**
+     * List recipes created by the authenticated user
+     * @description Returns all recipes created by the authenticated user, including private
+     *     recipes, newest first. Recipes created by other users are not included.
+     */
+    get: operations['listRecipes']
     put?: never
     /**
      * Create a recipe
@@ -466,6 +471,182 @@ export interface components {
        */
       imageUrl?: string | null
     }
+    /** @description Nutrient values calculated from the recipe ingredients. */
+    NutritionValues: {
+      /** @description Energy in kilocalories (kcal). */
+      calories: number
+      /** @description Protein in grams. */
+      protein: number
+      /** @description Fat in grams. */
+      fat: number
+      /** @description Available carbohydrates in grams. */
+      carbohydrates: number
+      /** @description Total dietary fiber in grams. */
+      fiber: number
+      /** @description Total mono- and disaccharides in grams. */
+      sugar: number
+      /** @description Salt (sodium chloride) in grams. */
+      salt: number
+    }
+    /**
+     * @description Nutrients calculated on the server from the foods collection. Only ingredients
+     *     that could be matched to a food and converted to grams are included. Optional
+     *     ingredients are included as well.
+     */
+    Nutrition: {
+      /** @description Nutrient values calculated from the recipe ingredients. */
+      total: {
+        /** @description Energy in kilocalories (kcal). */
+        calories: number
+        /** @description Protein in grams. */
+        protein: number
+        /** @description Fat in grams. */
+        fat: number
+        /** @description Available carbohydrates in grams. */
+        carbohydrates: number
+        /** @description Total dietary fiber in grams. */
+        fiber: number
+        /** @description Total mono- and disaccharides in grams. */
+        sugar: number
+        /** @description Salt (sodium chloride) in grams. */
+        salt: number
+      }
+      /** @description Nutrient values calculated from the recipe ingredients. */
+      perServing: {
+        /** @description Energy in kilocalories (kcal). */
+        calories: number
+        /** @description Protein in grams. */
+        protein: number
+        /** @description Fat in grams. */
+        fat: number
+        /** @description Available carbohydrates in grams. */
+        carbohydrates: number
+        /** @description Total dietary fiber in grams. */
+        fiber: number
+        /** @description Total mono- and disaccharides in grams. */
+        sugar: number
+        /** @description Salt (sodium chloride) in grams. */
+        salt: number
+      }
+      /** @description Number of ingredients included in the calculation. */
+      matchedIngredients: number
+      /** @description Total number of ingredients in the recipe. */
+      totalIngredients: number
+      /** @description Names of ingredients that were not included in the calculation. */
+      unmatchedIngredients: string[]
+    }
+    /**
+     * @description Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
+     *     visible to other users, `private` otherwise.
+     * @enum {string}
+     */
+    RecipeStatus: 'public' | 'private'
+    /** @description A complete recipe after creation or lookup. */
+    Recipe: {
+      /** @description MongoDB ObjectId serialized as a hex string. */
+      id: string
+      title: string
+      description: string | null
+      /** Format: uri */
+      imageUrl: string | null
+      category: string | null
+      cuisine: string | null
+      difficulty: ('easy' | 'medium' | 'hard') | null
+      prepTime: number
+      cookTime: number
+      restTime: number | null
+      servings: number
+      servingUnit: string | null
+      tags: string[]
+      ingredients: {
+        name: string
+        /** @description Numeric amount of the ingredient. */
+        quantity: number
+        /**
+         * @description Unit of an ingredient quantity.
+         * @enum {string}
+         */
+        unit: 'g' | 'kg' | 'ml' | 'l' | 'piece' | 'tbsp' | 'tsp'
+        note?: string | null
+        /**
+         * @description Whether the ingredient is optional.
+         * @default false
+         */
+        isOptional: boolean
+      }[]
+      instructions: {
+        /** @description 1-based position of the step. */
+        step: number
+        description: string
+        /** @description Duration in minutes. */
+        duration?: number | null
+        /**
+         * Format: uri
+         * @description URL of an uploaded image for this step.
+         */
+        imageUrl?: string | null
+      }[]
+      /**
+       * @description Nutrients calculated by the server from the foods collection. Null when no
+       *     ingredient could be matched and converted to grams. Older recipes may not
+       *     contain this field.
+       */
+      nutrition?: {
+        /** @description Nutrient values calculated from the recipe ingredients. */
+        total: {
+          /** @description Energy in kilocalories (kcal). */
+          calories: number
+          /** @description Protein in grams. */
+          protein: number
+          /** @description Fat in grams. */
+          fat: number
+          /** @description Available carbohydrates in grams. */
+          carbohydrates: number
+          /** @description Total dietary fiber in grams. */
+          fiber: number
+          /** @description Total mono- and disaccharides in grams. */
+          sugar: number
+          /** @description Salt (sodium chloride) in grams. */
+          salt: number
+        }
+        /** @description Nutrient values calculated from the recipe ingredients. */
+        perServing: {
+          /** @description Energy in kilocalories (kcal). */
+          calories: number
+          /** @description Protein in grams. */
+          protein: number
+          /** @description Fat in grams. */
+          fat: number
+          /** @description Available carbohydrates in grams. */
+          carbohydrates: number
+          /** @description Total dietary fiber in grams. */
+          fiber: number
+          /** @description Total mono- and disaccharides in grams. */
+          sugar: number
+          /** @description Salt (sodium chloride) in grams. */
+          salt: number
+        }
+        /** @description Number of ingredients included in the calculation. */
+        matchedIngredients: number
+        /** @description Total number of ingredients in the recipe. */
+        totalIngredients: number
+        /** @description Names of ingredients that were not included in the calculation. */
+        unmatchedIngredients: string[]
+      } | null
+      /** Format: date-time */
+      createdAt: string
+      /** Format: date-time */
+      updatedAt: string
+      /** @description MongoDB ObjectId of the creating user as a hex string. */
+      createdBy: string
+      isPublic: boolean
+      /**
+       * @description Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
+       *     visible to other users, `private` otherwise.
+       * @enum {string}
+       */
+      status: 'public' | 'private'
+    }
     /**
      * @description Payload to create a recipe. Timestamps, creator and status are derived by the
      *     server and cannot be supplied by the client.
@@ -524,71 +705,6 @@ export interface components {
        * @default true
        */
       isPublic: boolean
-    }
-    /**
-     * @description Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
-     *     visible to other users, `private` otherwise.
-     * @enum {string}
-     */
-    RecipeStatus: 'public' | 'private'
-    /** @description A complete recipe after creation or lookup. */
-    Recipe: {
-      /** @description MongoDB ObjectId serialized as a hex string. */
-      id: string
-      title: string
-      description: string | null
-      /** Format: uri */
-      imageUrl: string | null
-      category: string | null
-      cuisine: string | null
-      difficulty: ('easy' | 'medium' | 'hard') | null
-      prepTime: number
-      cookTime: number
-      restTime: number | null
-      servings: number
-      servingUnit: string | null
-      tags: string[]
-      ingredients: {
-        name: string
-        /** @description Numeric amount of the ingredient. */
-        quantity: number
-        /**
-         * @description Unit of an ingredient quantity.
-         * @enum {string}
-         */
-        unit: 'g' | 'kg' | 'ml' | 'l' | 'piece' | 'tbsp' | 'tsp'
-        note?: string | null
-        /**
-         * @description Whether the ingredient is optional.
-         * @default false
-         */
-        isOptional: boolean
-      }[]
-      instructions: {
-        /** @description 1-based position of the step. */
-        step: number
-        description: string
-        /** @description Duration in minutes. */
-        duration?: number | null
-        /**
-         * Format: uri
-         * @description URL of an uploaded image for this step.
-         */
-        imageUrl?: string | null
-      }[]
-      /** Format: date-time */
-      createdAt: string
-      /** Format: date-time */
-      updatedAt: string
-      /** @description MongoDB ObjectId of the creating user as a hex string. */
-      createdBy: string
-      isPublic: boolean
-      /**
-       * @description Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
-       *     visible to other users, `private` otherwise.
-       * @enum {string}
-       */
-      status: 'public' | 'private'
     }
     /** @description Public URL of an uploaded image. */
     ImageUploadResponse: {
@@ -1538,6 +1654,152 @@ export interface operations {
       }
     }
   }
+  listRecipes: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Recipes created by the authenticated user. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @description MongoDB ObjectId serialized as a hex string. */
+            id: string
+            title: string
+            description: string | null
+            /** Format: uri */
+            imageUrl: string | null
+            category: string | null
+            cuisine: string | null
+            difficulty: ('easy' | 'medium' | 'hard') | null
+            prepTime: number
+            cookTime: number
+            restTime: number | null
+            servings: number
+            servingUnit: string | null
+            tags: string[]
+            ingredients: {
+              name: string
+              /** @description Numeric amount of the ingredient. */
+              quantity: number
+              /**
+               * @description Unit of an ingredient quantity.
+               * @enum {string}
+               */
+              unit: 'g' | 'kg' | 'ml' | 'l' | 'piece' | 'tbsp' | 'tsp'
+              note?: string | null
+              /**
+               * @description Whether the ingredient is optional.
+               * @default false
+               */
+              isOptional: boolean
+            }[]
+            instructions: {
+              /** @description 1-based position of the step. */
+              step: number
+              description: string
+              /** @description Duration in minutes. */
+              duration?: number | null
+              /**
+               * Format: uri
+               * @description URL of an uploaded image for this step.
+               */
+              imageUrl?: string | null
+            }[]
+            /**
+             * @description Nutrients calculated by the server from the foods collection. Null when no
+             *     ingredient could be matched and converted to grams. Older recipes may not
+             *     contain this field.
+             */
+            nutrition?: {
+              /** @description Nutrient values calculated from the recipe ingredients. */
+              total: {
+                /** @description Energy in kilocalories (kcal). */
+                calories: number
+                /** @description Protein in grams. */
+                protein: number
+                /** @description Fat in grams. */
+                fat: number
+                /** @description Available carbohydrates in grams. */
+                carbohydrates: number
+                /** @description Total dietary fiber in grams. */
+                fiber: number
+                /** @description Total mono- and disaccharides in grams. */
+                sugar: number
+                /** @description Salt (sodium chloride) in grams. */
+                salt: number
+              }
+              /** @description Nutrient values calculated from the recipe ingredients. */
+              perServing: {
+                /** @description Energy in kilocalories (kcal). */
+                calories: number
+                /** @description Protein in grams. */
+                protein: number
+                /** @description Fat in grams. */
+                fat: number
+                /** @description Available carbohydrates in grams. */
+                carbohydrates: number
+                /** @description Total dietary fiber in grams. */
+                fiber: number
+                /** @description Total mono- and disaccharides in grams. */
+                sugar: number
+                /** @description Salt (sodium chloride) in grams. */
+                salt: number
+              }
+              /** @description Number of ingredients included in the calculation. */
+              matchedIngredients: number
+              /** @description Total number of ingredients in the recipe. */
+              totalIngredients: number
+              /** @description Names of ingredients that were not included in the calculation. */
+              unmatchedIngredients: string[]
+            } | null
+            /** Format: date-time */
+            createdAt: string
+            /** Format: date-time */
+            updatedAt: string
+            /** @description MongoDB ObjectId of the creating user as a hex string. */
+            createdBy: string
+            isPublic: boolean
+            /**
+             * @description Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
+             *     visible to other users, `private` otherwise.
+             * @enum {string}
+             */
+            status: 'public' | 'private'
+          }[]
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
   createRecipe: {
     parameters: {
       query?: never
@@ -1655,6 +1917,53 @@ export interface operations {
                */
               imageUrl?: string | null
             }[]
+            /**
+             * @description Nutrients calculated by the server from the foods collection. Null when no
+             *     ingredient could be matched and converted to grams. Older recipes may not
+             *     contain this field.
+             */
+            nutrition?: {
+              /** @description Nutrient values calculated from the recipe ingredients. */
+              total: {
+                /** @description Energy in kilocalories (kcal). */
+                calories: number
+                /** @description Protein in grams. */
+                protein: number
+                /** @description Fat in grams. */
+                fat: number
+                /** @description Available carbohydrates in grams. */
+                carbohydrates: number
+                /** @description Total dietary fiber in grams. */
+                fiber: number
+                /** @description Total mono- and disaccharides in grams. */
+                sugar: number
+                /** @description Salt (sodium chloride) in grams. */
+                salt: number
+              }
+              /** @description Nutrient values calculated from the recipe ingredients. */
+              perServing: {
+                /** @description Energy in kilocalories (kcal). */
+                calories: number
+                /** @description Protein in grams. */
+                protein: number
+                /** @description Fat in grams. */
+                fat: number
+                /** @description Available carbohydrates in grams. */
+                carbohydrates: number
+                /** @description Total dietary fiber in grams. */
+                fiber: number
+                /** @description Total mono- and disaccharides in grams. */
+                sugar: number
+                /** @description Salt (sodium chloride) in grams. */
+                salt: number
+              }
+              /** @description Number of ingredients included in the calculation. */
+              matchedIngredients: number
+              /** @description Total number of ingredients in the recipe. */
+              totalIngredients: number
+              /** @description Names of ingredients that were not included in the calculation. */
+              unmatchedIngredients: string[]
+            } | null
             /** Format: date-time */
             createdAt: string
             /** Format: date-time */
@@ -1768,6 +2077,53 @@ export interface operations {
                */
               imageUrl?: string | null
             }[]
+            /**
+             * @description Nutrients calculated by the server from the foods collection. Null when no
+             *     ingredient could be matched and converted to grams. Older recipes may not
+             *     contain this field.
+             */
+            nutrition?: {
+              /** @description Nutrient values calculated from the recipe ingredients. */
+              total: {
+                /** @description Energy in kilocalories (kcal). */
+                calories: number
+                /** @description Protein in grams. */
+                protein: number
+                /** @description Fat in grams. */
+                fat: number
+                /** @description Available carbohydrates in grams. */
+                carbohydrates: number
+                /** @description Total dietary fiber in grams. */
+                fiber: number
+                /** @description Total mono- and disaccharides in grams. */
+                sugar: number
+                /** @description Salt (sodium chloride) in grams. */
+                salt: number
+              }
+              /** @description Nutrient values calculated from the recipe ingredients. */
+              perServing: {
+                /** @description Energy in kilocalories (kcal). */
+                calories: number
+                /** @description Protein in grams. */
+                protein: number
+                /** @description Fat in grams. */
+                fat: number
+                /** @description Available carbohydrates in grams. */
+                carbohydrates: number
+                /** @description Total dietary fiber in grams. */
+                fiber: number
+                /** @description Total mono- and disaccharides in grams. */
+                sugar: number
+                /** @description Salt (sodium chloride) in grams. */
+                salt: number
+              }
+              /** @description Number of ingredients included in the calculation. */
+              matchedIngredients: number
+              /** @description Total number of ingredients in the recipe. */
+              totalIngredients: number
+              /** @description Names of ingredients that were not included in the calculation. */
+              unmatchedIngredients: string[]
+            } | null
             /** Format: date-time */
             createdAt: string
             /** Format: date-time */

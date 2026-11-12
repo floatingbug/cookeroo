@@ -37,6 +37,9 @@ async function onSignOut() {
       <RouterLink class="sidebar-link" :to="{ name: 'dashboard' }">
         {{ t('nav.dashboard') }}
       </RouterLink>
+      <RouterLink class="sidebar-link" :to="{ name: 'recipe-list' }">
+        {{ t('nav.recipeList') }}
+      </RouterLink>
       <RouterLink class="sidebar-link" :to="{ name: 'recipe-create' }">
         {{ t('nav.recipeCreate') }}
       </RouterLink>

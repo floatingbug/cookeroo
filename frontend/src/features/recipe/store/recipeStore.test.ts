@@ -10,6 +10,7 @@ vi.mock('../services/recipeService', async () => {
     ...actual,
     createRecipe: vi.fn(),
     loadRecipe: vi.fn(),
+    loadRecipes: vi.fn(),
     uploadImage: vi.fn(),
   }
 })
@@ -20,6 +21,7 @@ import { useRecipeStore } from './recipeStore'
 
 const mockedCreateRecipe = vi.mocked(recipeService.createRecipe)
 const mockedLoadRecipe = vi.mocked(recipeService.loadRecipe)
+const mockedLoadRecipes = vi.mocked(recipeService.loadRecipes)
 const mockedUploadImage = vi.mocked(recipeService.uploadImage)
 
 const RECIPE = { id: 'recipe-1', title: 'Testrezept' } as Recipe
@@ -157,5 +159,28 @@ describe('recipeStore', () => {
     expect(store.recipe).toBeNull()
     expect(store.errorKey).toBe('recipe.errors.notFound')
     expect(store.loading).toBe(false)
+  })
+
+  it('lädt alle Rezepte in den State', async () => {
+    const store = useRecipeStore()
+
+    mockedLoadRecipes.mockResolvedValue([RECIPE])
+
+    await expect(store.loadRecipes()).resolves.toBe(true)
+    expect(store.recipes).toEqual([RECIPE])
+    expect(store.recipesLoading).toBe(false)
+    expect(store.recipesErrorKey).toBeNull()
+  })
+
+  it('meldet Fehler beim Laden der Rezeptliste und leert sie', async () => {
+    const store = useRecipeStore()
+
+    store.recipes = [RECIPE]
+    mockedLoadRecipes.mockRejectedValue({ status: 500 })
+
+    await expect(store.loadRecipes()).resolves.toBe(false)
+    expect(store.recipes).toEqual([])
+    expect(store.recipesErrorKey).toBe('recipe.errors.generic')
+    expect(store.recipesLoading).toBe(false)
   })
 })

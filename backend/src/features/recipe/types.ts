@@ -21,6 +21,24 @@ export interface InstructionDocument {
     imageUrl: string | null;
 }
 
+export interface NutritionValues {
+    calories: number;
+    protein: number;
+    fat: number;
+    carbohydrates: number;
+    fiber: number;
+    sugar: number;
+    salt: number;
+}
+
+export interface RecipeNutrition {
+    total: NutritionValues;
+    perServing: NutritionValues;
+    matchedIngredients: number;
+    totalIngredients: number;
+    unmatchedIngredients: string[];
+}
+
 export interface CreateRecipeInput {
     title: string;
     description?: string | null;
@@ -55,6 +73,7 @@ export interface RecipeDocument {
     tags: string[];
     ingredients: IngredientDocument[];
     instructions: InstructionDocument[];
+    nutrition: RecipeNutrition | null;
     createdAt: Date;
     updatedAt: Date;
     createdBy: ObjectId;
@@ -82,6 +101,7 @@ export interface RecipeResponse {
     tags: string[];
     ingredients: IngredientDocument[];
     instructions: InstructionDocument[];
+    nutrition: RecipeNutrition | null;
     createdAt: string;
     updatedAt: string;
     createdBy: string;

@@ -6,6 +6,7 @@
     "main": "Hauptnavigation",
     "home": "Start",
     "dashboard": "Dashboard",
+    "recipeList": "Meine Rezepte",
     "recipeCreate": "Rezept erstellen",
     "account": "Konto"
   },
@@ -100,6 +101,15 @@
         "visibility": "Sichtbarkeit"
       }
     },
+    "list": {
+      "title": "Meine Rezepte",
+      "description": "Alle Rezepte, die du erstellt hast.",
+      "loading": "Rezepte werden geladen …",
+      "empty": "Noch keine Rezepte",
+      "emptyHint": "Erstelle dein erstes Rezept und es erscheint hier.",
+      "create": "Rezept erstellen",
+      "totalTime": "Gesamtzeit"
+    },
     "fields": {
       "title": "Titel",
       "description": "Beschreibung",
@@ -157,6 +167,23 @@
     "status": {
       "public": "Öffentlich",
       "private": "Privat"
+    },
+    "nutrition": {
+      "title": "Nährwerte",
+      "perServing": "Pro Portion",
+      "total": "Gesamt",
+      "calories": "Kalorien",
+      "protein": "Protein",
+      "fat": "Fett",
+      "carbohydrates": "Kohlenhydrate",
+      "fiber": "Ballaststoffe",
+      "sugar": "Zucker",
+      "salt": "Salz",
+      "kcal": "kcal",
+      "gram": "g",
+      "coverage": "Berechnet aus {matched} von {total} Zutaten.",
+      "unmatched": "Nicht berücksichtigt: {ingredients}.",
+      "complete": "Alle Zutaten berücksichtigt."
     },
     "detail": {
       "loading": "Rezept wird geladen …",

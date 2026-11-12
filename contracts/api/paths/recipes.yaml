@@ -1,3 +1,26 @@
+get:
+  tags:
+    - Recipes
+  operationId: listRecipes
+  summary: List recipes created by the authenticated user
+  description: |
+    Returns all recipes created by the authenticated user, including private
+    recipes, newest first. Recipes created by other users are not included.
+  security:
+    - bearerAuth: []
+  responses:
+    '200':
+      description: Recipes created by the authenticated user.
+      content:
+        application/json:
+          schema:
+            type: array
+            items:
+              $ref: ../components/schemas/Recipe.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml
 post:
   tags:
     - Recipes

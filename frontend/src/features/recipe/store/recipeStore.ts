@@ -56,18 +56,24 @@ function createDefaultForm(): RecipeForm {
 interface RecipeState {
   form: RecipeForm
   recipe: Recipe | null
+  recipes: Recipe[]
   loading: boolean
+  recipesLoading: boolean
   uploading: boolean
   errorKey: string | null
+  recipesErrorKey: string | null
 }
 
 export const useRecipeStore = defineStore('recipe', {
   state: (): RecipeState => ({
     form: createDefaultForm(),
     recipe: null,
+    recipes: [],
     loading: false,
+    recipesLoading: false,
     uploading: false,
     errorKey: null,
+    recipesErrorKey: null,
   }),
 
   actions: {
@@ -163,6 +169,22 @@ export const useRecipeStore = defineStore('recipe', {
         return false
       } finally {
         this.loading = false
+      }
+    },
+
+    async loadRecipes(): Promise<boolean> {
+      this.recipesLoading = true
+      this.recipesErrorKey = null
+      this.recipes = []
+
+      try {
+        this.recipes = await recipeService.loadRecipes()
+        return true
+      } catch (error) {
+        this.recipesErrorKey = recipeService.getRecipeErrorKey(error)
+        return false
+      } finally {
+        this.recipesLoading = false
       }
     },
   },

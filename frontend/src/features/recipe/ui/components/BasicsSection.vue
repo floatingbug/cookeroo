@@ -32,41 +32,45 @@ const difficultyOptions = computed<SelectOption[]>(() =>
   <section class="section">
     <h2 class="section-title">{{ t('recipe.create.sections.basics') }}</h2>
 
-    <div class="grid">
-      <Input
-        id="recipe-title"
-        v-model="props.form.title"
-        :label="t('recipe.fields.title')"
-        required
-        :disabled="props.loading"
-      />
-      <Textarea
-        id="recipe-description"
-        v-model="props.form.description"
-        :label="t('recipe.fields.description')"
-        :rows="3"
-        :disabled="props.loading"
-      />
-      <Input
-        id="recipe-category"
-        v-model="props.form.category"
-        :label="t('recipe.fields.category')"
-        :disabled="props.loading"
-      />
-      <Input
-        id="recipe-cuisine"
-        v-model="props.form.cuisine"
-        :label="t('recipe.fields.cuisine')"
-        :disabled="props.loading"
-      />
-      <Select
-        id="recipe-difficulty"
-        v-model="props.form.difficulty"
-        :label="t('recipe.fields.difficulty')"
-        :options="difficultyOptions"
-        :placeholder="t('recipe.fields.difficultyPlaceholder')"
-        :disabled="props.loading"
-      />
+    <div class="grid-12">
+      <div class="flex-col column-span-8">
+        <Input
+          id="recipe-title"
+          v-model="props.form.title"
+          :label="t('recipe.fields.title')"
+          required
+          :disabled="props.loading"
+        />
+        <Textarea
+          id="recipe-description"
+          v-model="props.form.description"
+          :label="t('recipe.fields.description')"
+          :disabled="props.loading"
+        />
+      </div>
+
+      <div class="flex-col column-span-4">
+        <Input
+          id="recipe-category"
+          v-model="props.form.category"
+          :label="t('recipe.fields.category')"
+          :disabled="props.loading"
+        />
+        <Input
+          id="recipe-cuisine"
+          v-model="props.form.cuisine"
+          :label="t('recipe.fields.cuisine')"
+          :disabled="props.loading"
+        />
+        <Select
+          id="recipe-difficulty"
+          v-model="props.form.difficulty"
+          :label="t('recipe.fields.difficulty')"
+          :options="difficultyOptions"
+          :placeholder="t('recipe.fields.difficultyPlaceholder')"
+          :disabled="props.loading"
+        />
+      </div>
     </div>
 
     <div class="grid">
@@ -130,7 +134,7 @@ const difficultyOptions = computed<SelectOption[]>(() =>
 .section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-md);
+  gap: var(--space-lg);
   padding: var(--space-lg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-lg);
@@ -142,6 +146,28 @@ const difficultyOptions = computed<SelectOption[]>(() =>
   margin: 0;
   font-size: var(--font-size-lg);
   color: var(--color-primary);
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-md);
+}
+
+@media (width >= 553px) {
+  .grid-12 {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: var(--space-lg);
+  }
+
+  .column-span-8 {
+    grid-column: span 7;
+  }
+
+  .column-span-4 {
+    grid-column: span 5;
+  }
 }
 
 .grid {

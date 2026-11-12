@@ -114,6 +114,10 @@ function validRecipe(overrides: Record<string, unknown> = {}): Record<string, un
     };
 }
 
+function assertClose(actual: number, expected: number, epsilon = 0.001): void {
+    assert.ok(Math.abs(actual - expected) < epsilon, `${actual} ist nicht nahe ${expected}`);
+}
+
 before(async () => {
     server = await startTestServer();
 });
@@ -222,6 +226,206 @@ test('Recipe API', async (t: TestContext) => {
         assert.equal(stored.title, 'Testrezept');
         assert.equal(String(stored.createdBy), owner.id);
         assert.equal(stored.status, 'public');
+    });
+
+    await t.test('berechnet Nährwerte aus der foods-Collection', async () => {
+        const importedAt = new Date();
+
+        await server.db.collection('foods').insertMany([
+            {
+                blsCode: 'TEST_MEHL',
+                nameDe: 'Testmehl',
+                nameNormalized: 'testmehl',
+                baseAmount: 100,
+                baseUnit: 'g',
+                nutrients: {
+                    ENERCC: 350,
+                    PROT625: 10,
+                    FAT: 2,
+                    CHO: 70,
+                    FIBT: 3,
+                    SUGAR: 1,
+                    NACL: 0.01,
+                },
+                note: null,
+                blsVersion: 'test',
+                importedAt,
+            },
+            {
+                blsCode: 'TEST_ZUCKER',
+                nameDe: 'Testzucker',
+                nameNormalized: 'testzucker',
+                baseAmount: 100,
+                baseUnit: 'g',
+                nutrients: {
+                    ENERCC: 400,
+                    PROT625: 0,
+                    FAT: 0,
+                    CHO: 100,
+                    FIBT: 0,
+                    SUGAR: 100,
+                    NACL: 0,
+                },
+                note: null,
+                blsVersion: 'test',
+                importedAt,
+            },
+            {
+                blsCode: 'TEST_MILCH',
+                nameDe: 'Testmilch',
+                nameNormalized: 'testmilch',
+                baseAmount: 100,
+                baseUnit: 'g',
+                nutrients: {
+                    ENERCC: 64,
+                    PROT625: 3.4,
+                    FAT: 3.6,
+                    CHO: 4.7,
+                    FIBT: 0,
+                    SUGAR: 4.7,
+                    NACL: 0.1,
+                },
+                note: null,
+                blsVersion: 'test',
+                importedAt,
+            },
+        ]);
+
+        const response = await api('/recipes', {
+            method: 'POST',
+            body: validRecipe({
+                ingredients: [
+                    { name: 'Testmehl', quantity: 200, unit: 'g', note: null, isOptional: false },
+                    { name: 'Testzucker', quantity: 0.1, unit: 'kg', note: null, isOptional: false },
+                    { name: 'Testmilch', quantity: 100, unit: 'ml', note: null, isOptional: false },
+                    { name: 'Testei', quantity: 1, unit: 'piece', note: null, isOptional: true },
+                ],
+                servings: 4,
+            }),
+            token: owner.token,
+        });
+
+        assert.equal(response.status, 201, response.text);
+
+        const nutrition = response.body.nutrition;
+
+        assert.ok(nutrition);
+        assertClose(nutrition.total.calories, 1164);
+        assertClose(nutrition.total.protein, 23.4);
+        assertClose(nutrition.total.fat, 7.6);
+        assertClose(nutrition.total.carbohydrates, 244.7);
+        assertClose(nutrition.total.fiber, 6);
+        assertClose(nutrition.total.sugar, 106.7);
+        assertClose(nutrition.total.salt, 0.12);
+        assertClose(nutrition.perServing.calories, 291);
+        assertClose(nutrition.perServing.protein, 5.9);
+        assertClose(nutrition.perServing.fat, 1.9);
+        assertClose(nutrition.perServing.carbohydrates, 61.2);
+        assertClose(nutrition.perServing.fiber, 1.5);
+        assertClose(nutrition.perServing.sugar, 26.7);
+        assertClose(nutrition.perServing.salt, 0.03);
+        assert.equal(nutrition.matchedIngredients, 3);
+        assert.equal(nutrition.totalIngredients, 4);
+        assert.deepEqual(nutrition.unmatchedIngredients, ['Testei']);
+
+        const stored = await server.db
+            .collection('recipes')
+            .findOne({ _id: new ObjectId(response.body.id) });
+
+        assert.ok(stored);
+        assert.equal(stored.nutrition.total.calories, 1164);
+        assert.equal(stored.nutrition.matchedIngredients, 3);
+    });
+
+    await t.test('berechnet Nährwerte über generische Zutaten-Aliase', async () => {
+        const importedAt = new Date();
+
+        await server.db.collection('foods').insertMany([
+            {
+                blsCode: 'ALIAS_MEHL',
+                nameDe: 'Weizen Mehl, Type 405',
+                nameNormalized: 'weizen mehl type 405',
+                baseAmount: 100,
+                baseUnit: 'g',
+                nutrients: {
+                    ENERCC: 348,
+                    PROT625: 10.6,
+                    FAT: 1,
+                    CHO: 71.5,
+                    FIBT: 3.7,
+                    SUGAR: 0.5,
+                    NACL: 0.01,
+                },
+                note: null,
+                blsVersion: 'test',
+                importedAt,
+            },
+            {
+                blsCode: 'ALIAS_ZUCKER',
+                nameDe: 'Zucker weiß (Raffinadezucker/Weißzucker)',
+                nameNormalized: 'zucker weiss raffinadezucker weisszucker',
+                baseAmount: 100,
+                baseUnit: 'g',
+                nutrients: {
+                    ENERCC: 400,
+                    PROT625: 0,
+                    FAT: 0,
+                    CHO: 100,
+                    FIBT: 0,
+                    SUGAR: 100,
+                    NACL: 0,
+                },
+                note: null,
+                blsVersion: 'test',
+                importedAt,
+            },
+        ]);
+
+        const response = await api('/recipes', {
+            method: 'POST',
+            body: validRecipe({
+                ingredients: [
+                    { name: 'Mehl', quantity: 200, unit: 'g', note: null, isOptional: false },
+                    { name: 'Zucker', quantity: 100, unit: 'g', note: null, isOptional: false },
+                ],
+                servings: 2,
+            }),
+            token: owner.token,
+        });
+
+        assert.equal(response.status, 201, response.text);
+
+        const nutrition = response.body.nutrition;
+
+        assert.ok(nutrition);
+        assertClose(nutrition.total.calories, 1096);
+        assertClose(nutrition.total.carbohydrates, 243);
+        assert.equal(nutrition.matchedIngredients, 2);
+        assert.equal(nutrition.totalIngredients, 2);
+        assert.deepEqual(nutrition.unmatchedIngredients, []);
+    });
+
+    await t.test('speichert null, wenn keine Zutat zugeordnet werden kann', async () => {
+        const response = await api('/recipes', {
+            method: 'POST',
+            body: validRecipe({
+                title: 'Rezept ohne Nährwerte',
+                ingredients: [
+                    { name: 'Unbekannte Zutat', quantity: 100, unit: 'g', note: null, isOptional: false },
+                ],
+            }),
+            token: owner.token,
+        });
+
+        assert.equal(response.status, 201, response.text);
+        assert.equal(response.body.nutrition, null);
+
+        const stored = await server.db
+            .collection('recipes')
+            .findOne({ _id: new ObjectId(response.body.id) });
+
+        assert.ok(stored);
+        assert.equal(stored.nutrition, null);
     });
 
     await t.test('liefert private Rezepte nur an den Eigentümer', async () => {

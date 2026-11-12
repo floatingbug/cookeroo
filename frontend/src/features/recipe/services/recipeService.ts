@@ -6,6 +6,7 @@ import type {
 } from '@/shared/api/types'
 import { createRecipeApi } from '../api/createRecipeApi'
 import { getRecipeApi } from '../api/getRecipeApi'
+import { getRecipesApi } from '../api/getRecipesApi'
 import { uploadImageApi } from '../api/uploadImageApi'
 import type { RecipeForm } from '../types'
 
@@ -161,6 +162,10 @@ export function createRecipe(payload: RecipeCreateRequest): Promise<Recipe> {
 
 export function loadRecipe(recipeId: string): Promise<Recipe> {
   return getRecipeApi(recipeId)
+}
+
+export function loadRecipes(): Promise<Recipe[]> {
+  return getRecipesApi()
 }
 
 export function uploadImage(file: File): Promise<string> {

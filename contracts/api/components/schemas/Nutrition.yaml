@@ -1,0 +1,30 @@
+type: object
+required:
+  - total
+  - perServing
+  - matchedIngredients
+  - totalIngredients
+  - unmatchedIngredients
+additionalProperties: false
+description: |
+  Nutrients calculated on the server from the foods collection. Only ingredients
+  that could be matched to a food and converted to grams are included. Optional
+  ingredients are included as well.
+properties:
+  total:
+    $ref: NutritionValues.yaml
+  perServing:
+    $ref: NutritionValues.yaml
+  matchedIngredients:
+    type: integer
+    minimum: 0
+    description: Number of ingredients included in the calculation.
+  totalIngredients:
+    type: integer
+    minimum: 1
+    description: Total number of ingredients in the recipe.
+  unmatchedIngredients:
+    type: array
+    description: Names of ingredients that were not included in the calculation.
+    items:
+      type: string

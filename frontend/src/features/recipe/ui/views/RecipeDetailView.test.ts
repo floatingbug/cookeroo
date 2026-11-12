@@ -57,6 +57,29 @@ const RECIPE: Recipe = {
       imageUrl: null,
     },
   ],
+  nutrition: {
+    total: {
+      calories: 1164,
+      protein: 23.4,
+      fat: 7.6,
+      carbohydrates: 244.7,
+      fiber: 6,
+      sugar: 106.7,
+      salt: 0.12,
+    },
+    perServing: {
+      calories: 291,
+      protein: 5.9,
+      fat: 1.9,
+      carbohydrates: 61.2,
+      fiber: 1.5,
+      sugar: 26.7,
+      salt: 0.03,
+    },
+    matchedIngredients: 4,
+    totalIngredients: 4,
+    unmatchedIngredients: [],
+  },
   createdAt: '2026-01-01T10:00:00.000Z',
   updatedAt: '2026-01-01T10:00:00.000Z',
   createdBy: '0123456789abcdef01234567',
@@ -91,6 +114,18 @@ describe('RecipeDetailView', () => {
     expect(wrapper.text()).toContain('Mehl')
     expect(wrapper.text()).toContain('Alles schichten.')
     expect(wrapper.text()).toContain(i18n.global.t('recipe.status.public'))
+    expect(wrapper.text()).toContain(i18n.global.t('recipe.nutrition.title'))
+    expect(wrapper.find('.calorie-value').text()).toBe('291')
+  })
+
+  it('blendet die Nährwerte ohne Daten aus', async () => {
+    mockedLoadRecipe.mockResolvedValue({ ...RECIPE, nutrition: null })
+
+    const wrapper = mountView()
+
+    await flushPromises()
+
+    expect(wrapper.text()).not.toContain(i18n.global.t('recipe.nutrition.title'))
   })
 
   it('zeigt einen Fehler, wenn das Rezept nicht gefunden wird', async () => {

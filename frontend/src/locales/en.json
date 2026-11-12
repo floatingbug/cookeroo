@@ -6,6 +6,7 @@
     "main": "Main navigation",
     "home": "Home",
     "dashboard": "Dashboard",
+    "recipeList": "My recipes",
     "recipeCreate": "Create recipe",
     "account": "Account"
   },
@@ -100,6 +101,15 @@
         "visibility": "Visibility"
       }
     },
+    "list": {
+      "title": "My recipes",
+      "description": "All recipes you have created.",
+      "loading": "Loading recipes …",
+      "empty": "No recipes yet",
+      "emptyHint": "Create your first recipe and it will appear here.",
+      "create": "Create recipe",
+      "totalTime": "Total time"
+    },
     "fields": {
       "title": "Title",
       "description": "Description",
@@ -157,6 +167,23 @@
     "status": {
       "public": "Public",
       "private": "Private"
+    },
+    "nutrition": {
+      "title": "Nutrition",
+      "perServing": "Per serving",
+      "total": "Total",
+      "calories": "Calories",
+      "protein": "Protein",
+      "fat": "Fat",
+      "carbohydrates": "Carbohydrates",
+      "fiber": "Fiber",
+      "sugar": "Sugar",
+      "salt": "Salt",
+      "kcal": "kcal",
+      "gram": "g",
+      "coverage": "Calculated from {matched} of {total} ingredients.",
+      "unmatched": "Not included: {ingredients}.",
+      "complete": "All ingredients included."
     },
     "detail": {
       "loading": "Loading recipe …",
