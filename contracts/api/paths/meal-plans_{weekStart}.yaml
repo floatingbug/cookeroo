@@ -1,0 +1,101 @@
+get:
+  tags:
+    - MealPlans
+  operationId: getMealPlan
+  summary: Get the meal plan of a week
+  description: |
+    Returns a meal plan for the week starting at `weekStart`. Without
+    `ownerId` the authenticated user's own plan is returned. With `ownerId`
+    the plan of a shared planner is returned when the authenticated user is a
+    member; otherwise the planner is reported as not found. A week without a
+    saved plan is returned with an empty entry list and `updatedAt` set to null.
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: weekStart
+      in: path
+      required: true
+      description: Monday that starts the week, formatted as YYYY-MM-DD.
+      schema:
+        type: string
+        format: date
+        pattern: '^\d{4}-\d{2}-\d{2}$'
+    - name: ownerId
+      in: query
+      required: false
+      description: |
+        ObjectId of the planner owner. Omit to load the authenticated user's
+        own planner.
+      schema:
+        type: string
+        pattern: '^[a-f0-9]{24}$'
+  responses:
+    '200':
+      description: The meal plan of the requested week.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/MealPlan.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '404':
+      $ref: ../components/responses/NotFound.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml
+put:
+  tags:
+    - MealPlans
+  operationId: saveMealPlan
+  summary: Save the meal plan of a week
+  description: |
+    Replaces the complete meal plan of the week starting at `weekStart`.
+    Without `ownerId` the authenticated user's own plan is saved. With
+    `ownerId` the plan of a shared planner is saved when the authenticated
+    user is a member with edit permission. Recipes must be public or belong to
+    the authenticated user or the planner owner. An empty entry list clears
+    the plan.
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: weekStart
+      in: path
+      required: true
+      description: Monday that starts the week, formatted as YYYY-MM-DD.
+      schema:
+        type: string
+        format: date
+        pattern: '^\d{4}-\d{2}-\d{2}$'
+    - name: ownerId
+      in: query
+      required: false
+      description: |
+        ObjectId of the planner owner. Omit to save the authenticated user's
+        own planner.
+      schema:
+        type: string
+        pattern: '^[a-f0-9]{24}$'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/MealPlanSaveRequest.yaml
+  responses:
+    '200':
+      description: The saved meal plan.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/MealPlan.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '403':
+      $ref: ../components/responses/Forbidden.yaml
+    '404':
+      $ref: ../components/responses/NotFound.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml

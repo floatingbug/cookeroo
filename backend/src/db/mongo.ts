@@ -26,9 +26,51 @@ async function ensureIndexes(database: Db): Promise<void> {
                 { name: 1 },
                 { unique: true, name: 'uniq_users_name' }
             );
+
+        await database
+            .collection('meal_plans')
+            .createIndex(
+                { userId: 1, weekStart: 1 },
+                { unique: true, name: 'uniq_meal_plans_user_week' }
+            );
+
+        await database
+            .collection('meal_plan_members')
+            .createIndex(
+                { ownerId: 1, memberId: 1 },
+                { unique: true, name: 'uniq_meal_plan_members_owner_member' }
+            );
+
+        await database
+            .collection('meal_plan_members')
+            .createIndex(
+                { memberId: 1 },
+                { name: 'meal_plan_members_member' }
+            );
+
+        await database
+            .collection('meal_plan_invites')
+            .createIndex(
+                { tokenHash: 1 },
+                { unique: true, name: 'uniq_meal_plan_invites_token' }
+            );
+
+        await database
+            .collection('recipes')
+            .createIndex(
+                { status: 1, createdAt: -1 },
+                { name: 'recipes_status_created' }
+            );
+
+        await database
+            .collection('recipes')
+            .createIndex(
+                { createdBy: 1, createdAt: -1 },
+                { name: 'recipes_creator_created' }
+            );
     }
     catch (err) {
-        logger.error({ err }, 'Failed to create unique indexes for users');
+        logger.error({ err }, 'Failed to create indexes');
     }
 }
 

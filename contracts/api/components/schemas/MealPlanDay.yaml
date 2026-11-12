@@ -1,0 +1,10 @@
+type: string
+description: A weekday within a Monday-to-Sunday meal plan.
+enum:
+  - monday
+  - tuesday
+  - wednesday
+  - thursday
+  - friday
+  - saturday
+  - sunday

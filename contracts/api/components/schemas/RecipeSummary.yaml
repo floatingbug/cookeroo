@@ -1,0 +1,56 @@
+type: object
+required:
+  - id
+  - title
+  - imageUrl
+  - category
+  - cuisine
+  - difficulty
+  - prepTime
+  - cookTime
+  - restTime
+  - tags
+  - status
+additionalProperties: false
+description: Compact recipe representation used by search results and meal plans.
+properties:
+  id:
+    type: string
+    description: MongoDB ObjectId serialized as a hex string.
+  title:
+    type: string
+    minLength: 1
+    maxLength: 150
+  imageUrl:
+    type:
+      - string
+      - 'null'
+    format: uri
+  category:
+    type:
+      - string
+      - 'null'
+  cuisine:
+    type:
+      - string
+      - 'null'
+  difficulty:
+    oneOf:
+      - $ref: RecipeDifficulty.yaml
+      - type: 'null'
+  prepTime:
+    type: integer
+    minimum: 0
+  cookTime:
+    type: integer
+    minimum: 0
+  restTime:
+    type:
+      - integer
+      - 'null'
+  tags:
+    type: array
+    items:
+      type: string
+  status:
+    $ref: RecipeStatus.yaml

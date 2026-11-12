@@ -7,6 +7,9 @@ const router = express.Router();
 
 router.post('/', authUser, ...openApiMiddleware, controller.createRecipe);
 router.get('/', authUser, ...openApiMiddleware, controller.listRecipes);
+router.get('/public', authUser, ...openApiMiddleware, controller.listPublicRecipes);
+router.get('/search', authUser, ...openApiMiddleware, controller.searchRecipes);
+router.get('/tags', authUser, ...openApiMiddleware, controller.listRecipeTags);
 router.get('/:recipeId', authUser, ...openApiMiddleware, controller.getRecipe);
 router.delete('/:recipeId', authUser, ...openApiMiddleware, controller.deleteRecipe);
 

@@ -1,0 +1,69 @@
+patch:
+  tags:
+    - MealPlans
+  operationId: updateMealPlanMember
+  summary: Change a member's permission
+  description: |
+    Sets whether a member may change the authenticated user's meal planner.
+    The member must belong to the authenticated user's planner.
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: memberId
+      in: path
+      required: true
+      description: ObjectId of the member user.
+      schema:
+        type: string
+        pattern: '^[a-f0-9]{24}$'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: ../components/schemas/MealPlanMemberUpdateRequest.yaml
+  responses:
+    '200':
+      description: The updated member.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/MealPlanMember.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '404':
+      $ref: ../components/responses/NotFound.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml
+delete:
+  tags:
+    - MealPlans
+  operationId: removeMealPlanMember
+  summary: Remove a member
+  description: |
+    Removes a member from the authenticated user's meal planner. The member
+    loses access immediately. The member must belong to the authenticated
+    user's planner.
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: memberId
+      in: path
+      required: true
+      description: ObjectId of the member user.
+      schema:
+        type: string
+        pattern: '^[a-f0-9]{24}$'
+  responses:
+    '204':
+      description: The member was removed.
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '404':
+      $ref: ../components/responses/NotFound.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml

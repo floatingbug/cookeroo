@@ -1,8 +1,10 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
+import { useRoute } from 'vue-router'
 
 import { Button, Input } from '@/shared/components'
+import { savePendingRedirect } from '@/shared/router/pendingRedirect'
 
 import AuthCard from '../components/AuthCard.vue'
 import {
@@ -14,9 +16,19 @@ import {
 import { useAuthStore } from '../../store/authStore'
 
 const { t } = useI18n()
+const route = useRoute()
 const store = useAuthStore()
 
 const errorMessage = computed(() => (store.errorKey ? t(store.errorKey) : ''))
+const redirectQuery = computed(() =>
+  typeof route.query.redirect === 'string' ? { redirect: route.query.redirect } : undefined,
+)
+
+onMounted(() => {
+  if (typeof route.query.redirect === 'string') {
+    savePendingRedirect(route.query.redirect)
+  }
+})
 
 function validate() {
   const form = store.signUpForm
@@ -57,7 +69,9 @@ async function onSubmit() {
     :notice="t('auth.signUpSuccess', { email: store.pendingVerificationEmail })"
   >
     <p class="auth-text">{{ t('auth.signUpSuccessHint') }}</p>
-    <RouterLink :to="{ name: 'sign-in' }">{{ t('auth.backToSignIn') }}</RouterLink>
+    <RouterLink :to="{ name: 'sign-in', query: redirectQuery }">
+      {{ t('auth.backToSignIn') }}
+    </RouterLink>
   </AuthCard>
 
   <AuthCard v-else :title="t('auth.signUpTitle')" :error="errorMessage">
@@ -103,7 +117,9 @@ async function onSubmit() {
 
     <p class="auth-text">
       {{ t('auth.hasAccount') }}
-      <RouterLink :to="{ name: 'sign-in' }">{{ t('auth.signIn') }}</RouterLink>
+      <RouterLink :to="{ name: 'sign-in', query: redirectQuery }">
+        {{ t('auth.signIn') }}
+      </RouterLink>
     </p>
   </AuthCard>
 </template>

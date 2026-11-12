@@ -80,4 +80,16 @@ describe('RecipeCard', () => {
 
     expect(wrapper.emitted('delete')).toHaveLength(1)
   })
+
+  it('blendet die Löschaktion aus, wenn das Rezept nicht löschbar ist', () => {
+    const wrapper = mount(RecipeCard, {
+      props: { recipe: RECIPE, deletable: false },
+      global: {
+        plugins: [i18n],
+        stubs: { RouterLink: RouterLinkStub },
+      },
+    })
+
+    expect(wrapper.findAll('button')).toHaveLength(0)
+  })
 })

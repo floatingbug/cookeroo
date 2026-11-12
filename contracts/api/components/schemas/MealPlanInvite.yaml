@@ -1,0 +1,15 @@
+type: object
+required:
+  - token
+  - url
+additionalProperties: false
+description: A freshly created one-time invitation to a meal planner.
+properties:
+  token:
+    type: string
+    description: Secret that is embedded in the invitation URL.
+    pattern: '^[a-f0-9]{64}$'
+  url:
+    type: string
+    format: uri
+    description: Link that the owner can share through any channel.

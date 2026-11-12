@@ -10,6 +10,7 @@ vi.mock('../services/recipeService', async () => {
     ...actual,
     createRecipe: vi.fn(),
     deleteRecipe: vi.fn(),
+    loadPublicRecipes: vi.fn(),
     loadRecipe: vi.fn(),
     loadRecipes: vi.fn(),
     uploadImage: vi.fn(),
@@ -22,6 +23,7 @@ import { useRecipeStore } from './recipeStore'
 
 const mockedCreateRecipe = vi.mocked(recipeService.createRecipe)
 const mockedDeleteRecipe = vi.mocked(recipeService.deleteRecipe)
+const mockedLoadPublicRecipes = vi.mocked(recipeService.loadPublicRecipes)
 const mockedLoadRecipe = vi.mocked(recipeService.loadRecipe)
 const mockedLoadRecipes = vi.mocked(recipeService.loadRecipes)
 const mockedUploadImage = vi.mocked(recipeService.uploadImage)
@@ -184,6 +186,29 @@ describe('recipeStore', () => {
     expect(store.recipes).toEqual([])
     expect(store.recipesErrorKey).toBe('recipe.errors.generic')
     expect(store.recipesLoading).toBe(false)
+  })
+
+  it('lädt alle öffentlichen Rezepte in den State', async () => {
+    const store = useRecipeStore()
+
+    mockedLoadPublicRecipes.mockResolvedValue([RECIPE])
+
+    await expect(store.loadPublicRecipes()).resolves.toBe(true)
+    expect(store.publicRecipes).toEqual([RECIPE])
+    expect(store.publicRecipesLoading).toBe(false)
+    expect(store.publicRecipesErrorKey).toBeNull()
+  })
+
+  it('meldet Fehler beim Laden der öffentlichen Rezepte und leert sie', async () => {
+    const store = useRecipeStore()
+
+    store.publicRecipes = [RECIPE]
+    mockedLoadPublicRecipes.mockRejectedValue({ status: 500 })
+
+    await expect(store.loadPublicRecipes()).resolves.toBe(false)
+    expect(store.publicRecipes).toEqual([])
+    expect(store.publicRecipesErrorKey).toBe('recipe.errors.generic')
+    expect(store.publicRecipesLoading).toBe(false)
   })
 
   it('löscht ein Rezept und entfernt es aus dem State', async () => {

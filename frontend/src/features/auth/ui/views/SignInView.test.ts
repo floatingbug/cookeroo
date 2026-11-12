@@ -20,6 +20,7 @@ import * as authService from '../../services/authService'
 
 const mockedAuthService = vi.mocked(authService)
 import i18n from '@/app/i18n'
+import { savePendingRedirect } from '@/shared/router/pendingRedirect'
 import { useAuthStore } from '../../store/authStore'
 import SignInView from './SignInView.vue'
 
@@ -33,6 +34,7 @@ function createTestRouter() {
       { path: '/auth/sign-in', name: 'sign-in', component: Stub },
       { path: '/auth/sign-up', name: 'sign-up', component: Stub },
       { path: '/auth/forgot-password', name: 'forgot-password', component: Stub },
+      { path: '/meal-plan/join/:token', name: 'meal-plan-join', component: Stub },
     ],
   })
 }
@@ -60,6 +62,7 @@ async function submitWith(wrapper: VueWrapper, identifier: string, password: str
 describe('SignInView', () => {
   beforeEach(() => {
     vi.clearAllMocks()
+    localStorage.clear()
   })
 
   it('verlangt Pflichtfelder', async () => {
@@ -114,6 +117,20 @@ describe('SignInView', () => {
     await submitWith(wrapper, 'Tommy', 'Passwort1')
 
     expect(router.currentRoute.value.path).toBe('/')
+  })
+
+  it('nutzt ein gemerktes Redirect-Ziel nach der Anmeldung', async () => {
+    mockedAuthService.signIn.mockResolvedValue({
+      accessToken: 'token-1',
+      user: { id: '1', name: 'Tommy', email: 't@example.com' },
+    })
+    savePendingRedirect('/meal-plan/join/abc')
+
+    const { wrapper, router } = await mountView()
+
+    await submitWith(wrapper, 'Tommy', 'Passwort1')
+
+    expect(router.currentRoute.value.fullPath).toBe('/meal-plan/join/abc')
   })
 
   it('zeigt falsche Zugangsdaten an', async () => {

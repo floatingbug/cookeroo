@@ -1,0 +1,12 @@
+type: object
+required:
+  - owner
+  - canEdit
+additionalProperties: false
+description: A meal planner shared with the authenticated user.
+properties:
+  owner:
+    $ref: MealPlanUser.yaml
+  canEdit:
+    type: boolean
+    description: Whether the authenticated user may change weeks of this planner.

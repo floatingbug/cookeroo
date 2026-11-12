@@ -1,0 +1,15 @@
+type: object
+required:
+  - id
+  - name
+additionalProperties: false
+description: Owner or member of a meal planner.
+properties:
+  id:
+    type: string
+    description: MongoDB ObjectId serialized as a hex string.
+    pattern: '^[a-f0-9]{24}$'
+  name:
+    type: string
+    minLength: 1
+    maxLength: 50

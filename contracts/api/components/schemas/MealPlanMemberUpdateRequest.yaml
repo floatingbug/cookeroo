@@ -1,0 +1,9 @@
+type: object
+required:
+  - canEdit
+additionalProperties: false
+description: New permission for a member of the authenticated user's meal planner.
+properties:
+  canEdit:
+    type: boolean
+    description: Whether the member may change the owner's meal plan.

@@ -1,0 +1,16 @@
+type: object
+required:
+  - user
+  - canEdit
+  - joinedAt
+additionalProperties: false
+description: A user invited to a meal planner.
+properties:
+  user:
+    $ref: MealPlanUser.yaml
+  canEdit:
+    type: boolean
+    description: Whether the member may change the owner's meal plan.
+  joinedAt:
+    type: string
+    format: date-time

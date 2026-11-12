@@ -244,7 +244,7 @@ test('Recipe List API', async (t: TestContext) => {
     });
 
     await t.test('liefert null für veraltete Nährwertstrukturen', async () => {
-        const legacy = await createUser('recipe_list_legacy_nutrition');
+        const legacy = await createUser('recipe_legacy_nutrition');
         const now = new Date();
 
         const inserted = await server.db.collection('recipes').insertOne({

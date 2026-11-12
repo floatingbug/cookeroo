@@ -264,6 +264,71 @@ export interface paths {
     patch?: never
     trace?: never
   }
+  '/recipes/public': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List all public recipes
+     * @description Returns all public recipes from all users, newest first. Private recipes are
+     *     not included. The authenticated user's own public recipes are included as
+     *     well.
+     */
+    get: operations['listPublicRecipes']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/recipes/search': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Search accessible recipes
+     * @description Searches recipes that are public or belong to the authenticated user.
+     *     Returns at most ten results per request, newest first. Use `nextOffset`
+     *     from the response to load the next page.
+     */
+    get: operations['searchRecipes']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/recipes/tags': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * List available recipe tags
+     * @description Returns the distinct tags of recipes that are public or belong to the
+     *     authenticated user. Tags are deduplicated case-insensitively and sorted.
+     */
+    get: operations['listRecipeTags']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
   '/recipes/{recipeId}': {
     parameters: {
       query?: never
@@ -286,6 +351,166 @@ export interface paths {
      *     Recipes of other users are reported as not found.
      */
     delete: operations['deleteRecipe']
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/meal-plans/shared': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List meal planners shared with the authenticated user */
+    get: operations['listSharedMealPlans']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/meal-plans/invites': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Create a one-time invitation to the authenticated user's meal planner
+     * @description Creates a single-use invitation link. The link can be shared through any
+     *     channel. It stays valid until a user accepts it; accepting consumes it.
+     */
+    post: operations['createMealPlanInvite']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/meal-plans/invites/{token}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Preview an invitation
+     * @description Returns the owner of a valid invitation so a join page can show who
+     *     invited the user. This endpoint is public and does not consume the
+     *     invitation.
+     */
+    get: operations['previewMealPlanInvite']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/meal-plans/invites/{token}/accept': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    /**
+     * Accept an invitation
+     * @description Consumes the one-time invitation and adds the authenticated user as a
+     *     member of the owner's meal planner. New members may only read the plan
+     *     until the owner grants edit permission. The invitation cannot be used to
+     *     join the authenticated user's own planner.
+     */
+    post: operations['acceptMealPlanInvite']
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/meal-plans/members': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /** List members of the authenticated user's meal planner */
+    get: operations['listMealPlanMembers']
+    put?: never
+    post?: never
+    delete?: never
+    options?: never
+    head?: never
+    patch?: never
+    trace?: never
+  }
+  '/meal-plans/members/{memberId}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    get?: never
+    put?: never
+    post?: never
+    /**
+     * Remove a member
+     * @description Removes a member from the authenticated user's meal planner. The member
+     *     loses access immediately. The member must belong to the authenticated
+     *     user's planner.
+     */
+    delete: operations['removeMealPlanMember']
+    options?: never
+    head?: never
+    /**
+     * Change a member's permission
+     * @description Sets whether a member may change the authenticated user's meal planner.
+     *     The member must belong to the authenticated user's planner.
+     */
+    patch: operations['updateMealPlanMember']
+    trace?: never
+  }
+  '/meal-plans/{weekStart}': {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    /**
+     * Get the meal plan of a week
+     * @description Returns a meal plan for the week starting at `weekStart`. Without
+     *     `ownerId` the authenticated user's own plan is returned. With `ownerId`
+     *     the plan of a shared planner is returned when the authenticated user is a
+     *     member; otherwise the planner is reported as not found. A week without a
+     *     saved plan is returned with an empty entry list and `updatedAt` set to null.
+     */
+    get: operations['getMealPlan']
+    /**
+     * Save the meal plan of a week
+     * @description Replaces the complete meal plan of the week starting at `weekStart`.
+     *     Without `ownerId` the authenticated user's own plan is saved. With
+     *     `ownerId` the plan of a shared planner is saved when the authenticated
+     *     user is a member with edit permission. Recipes must be public or belong to
+     *     the authenticated user or the planner owner. An empty entry list clears
+     *     the plan.
+     */
+    put: operations['saveMealPlan']
+    post?: never
+    delete?: never
     options?: never
     head?: never
     patch?: never
@@ -712,6 +937,276 @@ export interface components {
        */
       isPublic: boolean
     }
+    /** @description Compact recipe representation used by search results and meal plans. */
+    RecipeSummary: {
+      /** @description MongoDB ObjectId serialized as a hex string. */
+      id: string
+      title: string
+      /** Format: uri */
+      imageUrl: string | null
+      category: string | null
+      cuisine: string | null
+      difficulty: ('easy' | 'medium' | 'hard') | null
+      prepTime: number
+      cookTime: number
+      restTime: number | null
+      tags: string[]
+      /**
+       * @description Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
+       *     visible to other users, `private` otherwise.
+       * @enum {string}
+       */
+      status: 'public' | 'private'
+    }
+    /** @description One page of access-controlled recipe search results. */
+    RecipeSearchResponse: {
+      /** @description At most ten recipes. Use nextOffset to load the next page. */
+      items: {
+        /** @description MongoDB ObjectId serialized as a hex string. */
+        id: string
+        title: string
+        /** Format: uri */
+        imageUrl: string | null
+        category: string | null
+        cuisine: string | null
+        difficulty: ('easy' | 'medium' | 'hard') | null
+        prepTime: number
+        cookTime: number
+        restTime: number | null
+        tags: string[]
+        /**
+         * @description Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
+         *     visible to other users, `private` otherwise.
+         * @enum {string}
+         */
+        status: 'public' | 'private'
+      }[]
+      /** @description Offset for the next page, or null when no further results exist. */
+      nextOffset: number | null
+    }
+    /** @description Owner or member of a meal planner. */
+    MealPlanUser: {
+      /** @description MongoDB ObjectId serialized as a hex string. */
+      id: string
+      name: string
+    }
+    /** @description A meal planner shared with the authenticated user. */
+    SharedMealPlan: {
+      /** @description Owner or member of a meal planner. */
+      owner: {
+        /** @description MongoDB ObjectId serialized as a hex string. */
+        id: string
+        name: string
+      }
+      /** @description Whether the authenticated user may change weeks of this planner. */
+      canEdit: boolean
+    }
+    /** @description Meal planners shared with the authenticated user. */
+    SharedMealPlanList: {
+      planners: {
+        /** @description Owner or member of a meal planner. */
+        owner: {
+          /** @description MongoDB ObjectId serialized as a hex string. */
+          id: string
+          name: string
+        }
+        /** @description Whether the authenticated user may change weeks of this planner. */
+        canEdit: boolean
+      }[]
+    }
+    /** @description A freshly created one-time invitation to a meal planner. */
+    MealPlanInvite: {
+      /** @description Secret that is embedded in the invitation URL. */
+      token: string
+      /**
+       * Format: uri
+       * @description Link that the owner can share through any channel.
+       */
+      url: string
+    }
+    /** @description Public preview of a valid invitation. Does not consume the invite. */
+    MealPlanInvitePreview: {
+      /** @description Owner or member of a meal planner. */
+      owner: {
+        /** @description MongoDB ObjectId serialized as a hex string. */
+        id: string
+        name: string
+      }
+    }
+    /** @description A user invited to a meal planner. */
+    MealPlanMember: {
+      /** @description Owner or member of a meal planner. */
+      user: {
+        /** @description MongoDB ObjectId serialized as a hex string. */
+        id: string
+        name: string
+      }
+      /** @description Whether the member may change the owner's meal plan. */
+      canEdit: boolean
+      /** Format: date-time */
+      joinedAt: string
+    }
+    /** @description Members of the authenticated user's meal planner. */
+    MealPlanMemberList: {
+      members: {
+        /** @description Owner or member of a meal planner. */
+        user: {
+          /** @description MongoDB ObjectId serialized as a hex string. */
+          id: string
+          name: string
+        }
+        /** @description Whether the member may change the owner's meal plan. */
+        canEdit: boolean
+        /** Format: date-time */
+        joinedAt: string
+      }[]
+    }
+    /** @description New permission for a member of the authenticated user's meal planner. */
+    MealPlanMemberUpdateRequest: {
+      /** @description Whether the member may change the owner's meal plan. */
+      canEdit: boolean
+    }
+    /**
+     * @description A weekday within a Monday-to-Sunday meal plan.
+     * @enum {string}
+     */
+    MealPlanDay: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+    /**
+     * @description The meal slot within a day of a meal plan.
+     * @enum {string}
+     */
+    MealPlanMeal: 'breakfast' | 'lunch' | 'dinner'
+    /** @description One planned recipe including its current recipe summary. */
+    MealPlanEntry: {
+      /**
+       * @description A weekday within a Monday-to-Sunday meal plan.
+       * @enum {string}
+       */
+      day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+      /**
+       * @description The meal slot within a day of a meal plan.
+       * @enum {string}
+       */
+      meal: 'breakfast' | 'lunch' | 'dinner'
+      /** @description MongoDB ObjectId of the planned recipe as a hex string. */
+      recipeId: string
+      /** @description Current recipe data, or null when the recipe is no longer accessible. */
+      recipe: {
+        /** @description MongoDB ObjectId serialized as a hex string. */
+        id: string
+        title: string
+        /** Format: uri */
+        imageUrl: string | null
+        category: string | null
+        cuisine: string | null
+        difficulty: ('easy' | 'medium' | 'hard') | null
+        prepTime: number
+        cookTime: number
+        restTime: number | null
+        tags: string[]
+        /**
+         * @description Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
+         *     visible to other users, `private` otherwise.
+         * @enum {string}
+         */
+        status: 'public' | 'private'
+      } | null
+    }
+    /** @description The meal plan of one Monday-to-Sunday week. */
+    MealPlan: {
+      /**
+       * Format: date
+       * @description Monday that starts the week, formatted as YYYY-MM-DD.
+       */
+      weekStart: string
+      entries: {
+        /**
+         * @description A weekday within a Monday-to-Sunday meal plan.
+         * @enum {string}
+         */
+        day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+        /**
+         * @description The meal slot within a day of a meal plan.
+         * @enum {string}
+         */
+        meal: 'breakfast' | 'lunch' | 'dinner'
+        /** @description MongoDB ObjectId of the planned recipe as a hex string. */
+        recipeId: string
+        /** @description Current recipe data, or null when the recipe is no longer accessible. */
+        recipe: {
+          /** @description MongoDB ObjectId serialized as a hex string. */
+          id: string
+          title: string
+          /** Format: uri */
+          imageUrl: string | null
+          category: string | null
+          cuisine: string | null
+          difficulty: ('easy' | 'medium' | 'hard') | null
+          prepTime: number
+          cookTime: number
+          restTime: number | null
+          tags: string[]
+          /**
+           * @description Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
+           *     visible to other users, `private` otherwise.
+           * @enum {string}
+           */
+          status: 'public' | 'private'
+        } | null
+      }[]
+      /**
+       * Format: date-time
+       * @description Last time the plan was saved, or null when the week has not been saved yet.
+       */
+      updatedAt: string | null
+      /** @description Owner or member of a meal planner. */
+      owner: {
+        /** @description MongoDB ObjectId serialized as a hex string. */
+        id: string
+        name: string
+      }
+      /**
+       * @description Whether the authenticated user may change this week. Always true for the
+       *     user's own planner and for members with edit permission.
+       */
+      canEdit: boolean
+    }
+    /** @description One planned recipe in a save request. */
+    MealPlanEntryInput: {
+      /**
+       * @description A weekday within a Monday-to-Sunday meal plan.
+       * @enum {string}
+       */
+      day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+      /**
+       * @description The meal slot within a day of a meal plan.
+       * @enum {string}
+       */
+      meal: 'breakfast' | 'lunch' | 'dinner'
+      /** @description MongoDB ObjectId of the planned recipe as a hex string. */
+      recipeId: string
+    }
+    /**
+     * @description Complete content of a week. Saving replaces all existing entries of the week,
+     *     so an empty list clears the plan.
+     */
+    MealPlanSaveRequest: {
+      /** @description Planned recipes. Each combination of day and meal may occur only once. */
+      entries: {
+        /**
+         * @description A weekday within a Monday-to-Sunday meal plan.
+         * @enum {string}
+         */
+        day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+        /**
+         * @description The meal slot within a day of a meal plan.
+         * @enum {string}
+         */
+        meal: 'breakfast' | 'lunch' | 'dinner'
+        /** @description MongoDB ObjectId of the planned recipe as a hex string. */
+        recipeId: string
+      }[]
+    }
     /** @description Public URL of an uploaded image. */
     ImageUploadResponse: {
       /** Format: uri */
@@ -765,6 +1260,17 @@ export interface components {
     }
     /** @description The requested resource does not exist. */
     NotFound: {
+      headers: {
+        [name: string]: unknown
+      }
+      content: {
+        'application/json': {
+          message: string
+        }
+      }
+    }
+    /** @description The authenticated user may not change this resource. */
+    Forbidden: {
       headers: {
         [name: string]: unknown
       }
@@ -2021,6 +2527,281 @@ export interface operations {
       }
     }
   }
+  listPublicRecipes: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description All public recipes. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @description MongoDB ObjectId serialized as a hex string. */
+            id: string
+            title: string
+            description: string | null
+            /** Format: uri */
+            imageUrl: string | null
+            category: string | null
+            cuisine: string | null
+            difficulty: ('easy' | 'medium' | 'hard') | null
+            prepTime: number
+            cookTime: number
+            restTime: number | null
+            servings: number
+            servingUnit: string | null
+            tags: string[]
+            ingredients: {
+              name: string
+              /** @description Numeric amount of the ingredient. */
+              quantity: number
+              /**
+               * @description Unit of an ingredient quantity.
+               * @enum {string}
+               */
+              unit: 'g' | 'kg' | 'ml' | 'l' | 'piece' | 'tbsp' | 'tsp'
+              note?: string | null
+              /**
+               * @description Whether the ingredient is optional.
+               * @default false
+               */
+              isOptional: boolean
+            }[]
+            instructions: {
+              /** @description 1-based position of the step. */
+              step: number
+              description: string
+              /** @description Duration in minutes. */
+              duration?: number | null
+              /**
+               * Format: uri
+               * @description URL of an uploaded image for this step.
+               */
+              imageUrl?: string | null
+            }[]
+            /**
+             * @description Nutrients calculated by the server from the foods collection. Null when no
+             *     ingredient could be matched and converted to grams. Older recipes may not
+             *     contain this field.
+             */
+            nutrition?: {
+              /** @description Nutrient values calculated from the recipe ingredients. */
+              total: {
+                /** @description Energy in kilocalories (kcal). */
+                calories: number
+                /** @description Protein in grams. */
+                protein: number
+                /** @description Fat in grams. */
+                fat: number
+                /** @description Available carbohydrates in grams. */
+                carbohydrates: number
+                /** @description Total dietary fiber in grams. */
+                fiber: number
+                /** @description Total mono- and disaccharides in grams. */
+                sugar: number
+                /** @description Salt (sodium chloride) in grams. */
+                salt: number
+              }
+              /** @description Nutrient values calculated from the recipe ingredients. */
+              perServing: {
+                /** @description Energy in kilocalories (kcal). */
+                calories: number
+                /** @description Protein in grams. */
+                protein: number
+                /** @description Fat in grams. */
+                fat: number
+                /** @description Available carbohydrates in grams. */
+                carbohydrates: number
+                /** @description Total dietary fiber in grams. */
+                fiber: number
+                /** @description Total mono- and disaccharides in grams. */
+                sugar: number
+                /** @description Salt (sodium chloride) in grams. */
+                salt: number
+              }
+              /** @description Number of ingredients included in the calculation. */
+              matchedIngredients: number
+              /** @description Total number of ingredients in the recipe. */
+              totalIngredients: number
+              /** @description Names of ingredients that were not included in the calculation. */
+              unmatchedIngredients: string[]
+            } | null
+            /** Format: date-time */
+            createdAt: string
+            /** Format: date-time */
+            updatedAt: string
+            /** @description MongoDB ObjectId of the creating user as a hex string. */
+            createdBy: string
+            isPublic: boolean
+            /**
+             * @description Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
+             *     visible to other users, `private` otherwise.
+             * @enum {string}
+             */
+            status: 'public' | 'private'
+          }[]
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  searchRecipes: {
+    parameters: {
+      query?: {
+        /** @description Case-insensitive substring matched against the recipe title. */
+        q?: string
+        /**
+         * @description Recipes must contain all supplied tags. Tag matching is exact and
+         *     case-insensitive. Repeat the parameter for multiple tags.
+         */
+        tags?: string[]
+        /** @description Number of matching recipes to skip. Defaults to 0. */
+        offset?: string
+      }
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description One page of matching recipes. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @description At most ten recipes. Use nextOffset to load the next page. */
+            items: {
+              /** @description MongoDB ObjectId serialized as a hex string. */
+              id: string
+              title: string
+              /** Format: uri */
+              imageUrl: string | null
+              category: string | null
+              cuisine: string | null
+              difficulty: ('easy' | 'medium' | 'hard') | null
+              prepTime: number
+              cookTime: number
+              restTime: number | null
+              tags: string[]
+              /**
+               * @description Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
+               *     visible to other users, `private` otherwise.
+               * @enum {string}
+               */
+              status: 'public' | 'private'
+            }[]
+            /** @description Offset for the next page, or null when no further results exist. */
+            nextOffset: number | null
+          }
+        }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  listRecipeTags: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Available tags. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': string[]
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
   getRecipe: {
     parameters: {
       query?: never
@@ -2224,6 +3005,746 @@ export interface operations {
       }
       /** @description Missing or invalid access token. */
       401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description The requested resource does not exist. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  listSharedMealPlans: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Meal planners the authenticated user may access. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            planners: {
+              /** @description Owner or member of a meal planner. */
+              owner: {
+                /** @description MongoDB ObjectId serialized as a hex string. */
+                id: string
+                name: string
+              }
+              /** @description Whether the authenticated user may change weeks of this planner. */
+              canEdit: boolean
+            }[]
+          }
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  createMealPlanInvite: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The invitation was created. */
+      201: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @description Secret that is embedded in the invitation URL. */
+            token: string
+            /**
+             * Format: uri
+             * @description Link that the owner can share through any channel.
+             */
+            url: string
+          }
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  previewMealPlanInvite: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description One-time invitation token. */
+        token: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The invitation is valid. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @description Owner or member of a meal planner. */
+            owner: {
+              /** @description MongoDB ObjectId serialized as a hex string. */
+              id: string
+              name: string
+            }
+          }
+        }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description The requested resource does not exist. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  acceptMealPlanInvite: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description One-time invitation token. */
+        token: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The invitation was accepted. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @description Owner or member of a meal planner. */
+            owner: {
+              /** @description MongoDB ObjectId serialized as a hex string. */
+              id: string
+              name: string
+            }
+            /** @description Whether the authenticated user may change weeks of this planner. */
+            canEdit: boolean
+          }
+        }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description The requested resource does not exist. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  listMealPlanMembers: {
+    parameters: {
+      query?: never
+      header?: never
+      path?: never
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description Members of the authenticated user's meal planner. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            members: {
+              /** @description Owner or member of a meal planner. */
+              user: {
+                /** @description MongoDB ObjectId serialized as a hex string. */
+                id: string
+                name: string
+              }
+              /** @description Whether the member may change the owner's meal plan. */
+              canEdit: boolean
+              /** Format: date-time */
+              joinedAt: string
+            }[]
+          }
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  removeMealPlanMember: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description ObjectId of the member user. */
+        memberId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The member was removed. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description The requested resource does not exist. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  updateMealPlanMember: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description ObjectId of the member user. */
+        memberId: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @description Whether the member may change the owner's meal plan. */
+          canEdit: boolean
+        }
+      }
+    }
+    responses: {
+      /** @description The updated member. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @description Owner or member of a meal planner. */
+            user: {
+              /** @description MongoDB ObjectId serialized as a hex string. */
+              id: string
+              name: string
+            }
+            /** @description Whether the member may change the owner's meal plan. */
+            canEdit: boolean
+            /** Format: date-time */
+            joinedAt: string
+          }
+        }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description The requested resource does not exist. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  getMealPlan: {
+    parameters: {
+      query?: {
+        /**
+         * @description ObjectId of the planner owner. Omit to load the authenticated user's
+         *     own planner.
+         */
+        ownerId?: string
+      }
+      header?: never
+      path: {
+        /** @description Monday that starts the week, formatted as YYYY-MM-DD. */
+        weekStart: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The meal plan of the requested week. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /**
+             * Format: date
+             * @description Monday that starts the week, formatted as YYYY-MM-DD.
+             */
+            weekStart: string
+            entries: {
+              /**
+               * @description A weekday within a Monday-to-Sunday meal plan.
+               * @enum {string}
+               */
+              day:
+                'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+              /**
+               * @description The meal slot within a day of a meal plan.
+               * @enum {string}
+               */
+              meal: 'breakfast' | 'lunch' | 'dinner'
+              /** @description MongoDB ObjectId of the planned recipe as a hex string. */
+              recipeId: string
+              /** @description Current recipe data, or null when the recipe is no longer accessible. */
+              recipe: {
+                /** @description MongoDB ObjectId serialized as a hex string. */
+                id: string
+                title: string
+                /** Format: uri */
+                imageUrl: string | null
+                category: string | null
+                cuisine: string | null
+                difficulty: ('easy' | 'medium' | 'hard') | null
+                prepTime: number
+                cookTime: number
+                restTime: number | null
+                tags: string[]
+                /**
+                 * @description Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
+                 *     visible to other users, `private` otherwise.
+                 * @enum {string}
+                 */
+                status: 'public' | 'private'
+              } | null
+            }[]
+            /**
+             * Format: date-time
+             * @description Last time the plan was saved, or null when the week has not been saved yet.
+             */
+            updatedAt: string | null
+            /** @description Owner or member of a meal planner. */
+            owner: {
+              /** @description MongoDB ObjectId serialized as a hex string. */
+              id: string
+              name: string
+            }
+            /**
+             * @description Whether the authenticated user may change this week. Always true for the
+             *     user's own planner and for members with edit permission.
+             */
+            canEdit: boolean
+          }
+        }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description The requested resource does not exist. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  saveMealPlan: {
+    parameters: {
+      query?: {
+        /**
+         * @description ObjectId of the planner owner. Omit to save the authenticated user's
+         *     own planner.
+         */
+        ownerId?: string
+      }
+      header?: never
+      path: {
+        /** @description Monday that starts the week, formatted as YYYY-MM-DD. */
+        weekStart: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': {
+          /** @description Planned recipes. Each combination of day and meal may occur only once. */
+          entries: {
+            /**
+             * @description A weekday within a Monday-to-Sunday meal plan.
+             * @enum {string}
+             */
+            day: 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+            /**
+             * @description The meal slot within a day of a meal plan.
+             * @enum {string}
+             */
+            meal: 'breakfast' | 'lunch' | 'dinner'
+            /** @description MongoDB ObjectId of the planned recipe as a hex string. */
+            recipeId: string
+          }[]
+        }
+      }
+    }
+    responses: {
+      /** @description The saved meal plan. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /**
+             * Format: date
+             * @description Monday that starts the week, formatted as YYYY-MM-DD.
+             */
+            weekStart: string
+            entries: {
+              /**
+               * @description A weekday within a Monday-to-Sunday meal plan.
+               * @enum {string}
+               */
+              day:
+                'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday'
+              /**
+               * @description The meal slot within a day of a meal plan.
+               * @enum {string}
+               */
+              meal: 'breakfast' | 'lunch' | 'dinner'
+              /** @description MongoDB ObjectId of the planned recipe as a hex string. */
+              recipeId: string
+              /** @description Current recipe data, or null when the recipe is no longer accessible. */
+              recipe: {
+                /** @description MongoDB ObjectId serialized as a hex string. */
+                id: string
+                title: string
+                /** Format: uri */
+                imageUrl: string | null
+                category: string | null
+                cuisine: string | null
+                difficulty: ('easy' | 'medium' | 'hard') | null
+                prepTime: number
+                cookTime: number
+                restTime: number | null
+                tags: string[]
+                /**
+                 * @description Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
+                 *     visible to other users, `private` otherwise.
+                 * @enum {string}
+                 */
+                status: 'public' | 'private'
+              } | null
+            }[]
+            /**
+             * Format: date-time
+             * @description Last time the plan was saved, or null when the week has not been saved yet.
+             */
+            updatedAt: string | null
+            /** @description Owner or member of a meal planner. */
+            owner: {
+              /** @description MongoDB ObjectId serialized as a hex string. */
+              id: string
+              name: string
+            }
+            /**
+             * @description Whether the authenticated user may change this week. Always true for the
+             *     user's own planner and for members with edit permission.
+             */
+            canEdit: boolean
+          }
+        }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description The authenticated user may not change this resource. */
+      403: {
         headers: {
           [name: string]: unknown
         }

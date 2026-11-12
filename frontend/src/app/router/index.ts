@@ -4,6 +4,7 @@ import type { RouteRecordRaw } from 'vue-router'
 import authRoutes from '@/features/auth/router'
 import dashboardRoutes from '@/features/dashboard/router'
 import homeRoutes from '@/features/home/router'
+import mealPlanRoutes from '@/features/meal-plan/router'
 import recipeRoutes from '@/features/recipe/router'
 import notFoundRoutes from '@/features/not-found/router'
 
@@ -14,6 +15,7 @@ const routes: RouteRecordRaw[] = [
   authRoutes,
   // Feature-Router mit geschützten Seiten setzen `meta: { requiresAuth: true }`.
   dashboardRoutes,
+  ...mealPlanRoutes,
   recipeRoutes,
   notFoundRoutes,
 ]

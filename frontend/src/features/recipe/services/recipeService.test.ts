@@ -4,6 +4,7 @@ vi.mock('../api/createRecipeApi', () => ({ createRecipeApi: vi.fn() }))
 vi.mock('../api/deleteRecipeApi', () => ({ deleteRecipeApi: vi.fn() }))
 vi.mock('../api/getRecipeApi', () => ({ getRecipeApi: vi.fn() }))
 vi.mock('../api/getRecipesApi', () => ({ getRecipesApi: vi.fn() }))
+vi.mock('../api/getPublicRecipesApi', () => ({ getPublicRecipesApi: vi.fn() }))
 vi.mock('../api/uploadImageApi', () => ({ uploadImageApi: vi.fn() }))
 
 import { ApiError } from '@/shared/api/apiFetch'
@@ -12,6 +13,7 @@ import { createRecipeApi } from '../api/createRecipeApi'
 import { deleteRecipeApi } from '../api/deleteRecipeApi'
 import { getRecipeApi } from '../api/getRecipeApi'
 import { getRecipesApi } from '../api/getRecipesApi'
+import { getPublicRecipesApi } from '../api/getPublicRecipesApi'
 import { uploadImageApi } from '../api/uploadImageApi'
 import type { RecipeForm } from '../types'
 import {
@@ -22,6 +24,7 @@ import {
   getUploadErrorKey,
   loadRecipe,
   loadRecipes,
+  loadPublicRecipes,
   parseTags,
   toCreateRecipePayload,
   uploadImage,
@@ -32,6 +35,7 @@ const mockedCreateRecipeApi = vi.mocked(createRecipeApi)
 const mockedDeleteRecipeApi = vi.mocked(deleteRecipeApi)
 const mockedGetRecipeApi = vi.mocked(getRecipeApi)
 const mockedGetRecipesApi = vi.mocked(getRecipesApi)
+const mockedGetPublicRecipesApi = vi.mocked(getPublicRecipesApi)
 const mockedUploadImageApi = vi.mocked(uploadImageApi)
 
 const RECIPE = { id: 'recipe-1', title: 'Testrezept' } as Recipe
@@ -217,6 +221,13 @@ describe('recipeService', () => {
 
       await expect(loadRecipes()).resolves.toEqual([RECIPE])
       expect(mockedGetRecipesApi).toHaveBeenCalledWith()
+    })
+
+    it('lädt alle öffentlichen Rezepte', async () => {
+      mockedGetPublicRecipesApi.mockResolvedValue([RECIPE])
+
+      await expect(loadPublicRecipes()).resolves.toEqual([RECIPE])
+      expect(mockedGetPublicRecipesApi).toHaveBeenCalledWith()
     })
 
     it('löscht ein Rezept', async () => {

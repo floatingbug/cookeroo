@@ -7,7 +7,9 @@
     "home": "Start",
     "dashboard": "Dashboard",
     "recipeList": "Meine Rezepte",
+    "publicRecipes": "Öffentliche Rezepte",
     "recipeCreate": "Rezept erstellen",
+    "mealPlan": "Wochenplan",
     "account": "Konto"
   },
   "user": {
@@ -109,6 +111,13 @@
       "emptyHint": "Erstelle dein erstes Rezept und es erscheint hier.",
       "create": "Rezept erstellen",
       "totalTime": "Gesamtzeit"
+    },
+    "publicList": {
+      "title": "Öffentliche Rezepte",
+      "description": "Entdecke Rezepte, die andere Nutzer geteilt haben.",
+      "loading": "Rezepte werden geladen …",
+      "empty": "Noch keine öffentlichen Rezepte",
+      "emptyHint": "Sobald jemand ein Rezept teilt, erscheint es hier."
     },
     "fields": {
       "title": "Titel",
@@ -220,6 +229,132 @@
       "uploadTooLarge": "Das Bild ist zu groß (maximal 5 MB).",
       "uploadNetwork": "Der Server ist nicht erreichbar. Bitte prüfe deine Verbindung.",
       "uploadGeneric": "Das Bild konnte nicht hochgeladen werden. Bitte versuche es erneut."
+    }
+  },
+  "mealPlan": {
+    "title": "Wochenplan",
+    "description": "Plane deine Mahlzeiten für die Woche.",
+    "selectRecipe": "Rezept auswählen",
+    "recipeUnavailable": "Rezept nicht verfügbar",
+    "unsavedConfirm": "Es gibt ungespeicherte Änderungen. Möchtest du den Wochenplan wirklich verlassen?",
+    "retry": "Erneut versuchen",
+    "week": {
+      "previous": "Vorherige Woche",
+      "next": "Nächste Woche",
+      "current": "Diese Woche"
+    },
+    "days": {
+      "monday": "Montag",
+      "tuesday": "Dienstag",
+      "wednesday": "Mittwoch",
+      "thursday": "Donnerstag",
+      "friday": "Freitag",
+      "saturday": "Samstag",
+      "sunday": "Sonntag"
+    },
+    "meals": {
+      "breakfast": "Frühstück",
+      "lunch": "Mittagessen",
+      "dinner": "Abendessen"
+    },
+    "actions": {
+      "save": "Wochenplan speichern",
+      "saving": "Wochenplan wird gespeichert …",
+      "change": "Ändern",
+      "remove": "Rezept entfernen"
+    },
+    "status": {
+      "loading": "Wochenplan wird geladen …",
+      "saved": "Wochenplan gespeichert.",
+      "unsaved": "Ungespeicherte Änderungen."
+    },
+    "planner": {
+      "label": "Wochenplan auswählen",
+      "own": "Mein Wochenplan",
+      "sharedPlanFrom": "Geteilter Wochenplan von {name}",
+      "sharedReadOnly": "{name} (nur lesen)",
+      "readOnlyHint": "Du kannst diesen Wochenplan nur ansehen.",
+      "backToOwn": "Zu meinem Wochenplan",
+      "retryShared": "Freigegebene Pläne erneut laden"
+    },
+    "sharing": {
+      "action": "Teilen",
+      "title": "Wochenplan teilen",
+      "description": "Erstelle einen Einmal-Link und teile ihn per E-Mail, Messenger oder auf einem anderen Weg.",
+      "createInvite": "Einladungslink erstellen",
+      "creating": "Link wird erstellt …",
+      "linkLabel": "Einladungslink",
+      "linkHint": "Der Link kann einmal verwendet werden. Danach ist er ungültig.",
+      "copy": "Kopieren",
+      "copied": "Link kopiert.",
+      "copyError": "Der Link konnte nicht kopiert werden. Bitte markiere ihn manuell.",
+      "membersTitle": "Eingeladene Personen",
+      "membersEmpty": "Noch niemand ist dem Wochenplan beigetreten.",
+      "loadingMembers": "Mitglieder werden geladen …",
+      "editPermission": "Darf bearbeiten",
+      "remove": "Entfernen",
+      "removing": "Wird entfernt …",
+      "removeConfirm": "{name} wirklich aus dem Wochenplan entfernen?",
+      "retryMembers": "Mitglieder erneut laden",
+      "close": "Dialog schließen",
+      "errors": {
+        "loadPlanners": "Freigegebene Wochenpläne konnten nicht geladen werden.",
+        "createInvite": "Der Einladungslink konnte nicht erstellt werden.",
+        "loadMembers": "Die Mitglieder konnten nicht geladen werden.",
+        "updateMember": "Das Bearbeitungsrecht konnte nicht geändert werden.",
+        "removeMember": "Die Person konnte nicht entfernt werden."
+      }
+    },
+    "join": {
+      "title": "Zum Wochenplan eingeladen",
+      "loading": "Einladung wird geprüft …",
+      "invitedBy": "Einladung von {name} zum gemeinsamen Wochenplan.",
+      "registerHint": "Bitte registriere dich zuerst. Nach der E-Mail-Bestätigung und Anmeldung kommst du automatisch zu dieser Seite zurück.",
+      "register": "Registrieren",
+      "signIn": "Ich habe schon ein Konto",
+      "accept": "Wochenplan beitreten",
+      "joining": "Beitritt läuft …",
+      "readOnlyHint": "Du kannst beitreten und den Wochenplan zunächst nur ansehen. Der Besitzer kann dir später das Bearbeiten erlauben.",
+      "ownPlanner": "Das ist dein eigener Wochenplan. Du musst ihm nicht beitreten.",
+      "toMealPlan": "Zum Wochenplan",
+      "toHome": "Zur Startseite",
+      "retry": "Erneut versuchen",
+      "errors": {
+        "invalid": "Der Einladungslink ist ungültig oder wurde bereits verwendet.",
+        "ownPlanner": "Du kannst deinem eigenen Wochenplan nicht über einen Link beitreten.",
+        "network": "Der Server ist nicht erreichbar. Bitte prüfe deine Verbindung.",
+        "generic": "Die Einladung konnte nicht verarbeitet werden. Bitte versuche es erneut."
+      }
+    },
+    "picker": {
+      "title": "Rezept für {day}, {meal} auswählen",
+      "searchLabel": "Rezept suchen",
+      "searchPlaceholder": "Rezeptname eingeben …",
+      "tagsLabel": "Tags filtern (alle ausgewählten müssen passen)",
+      "tagsLoading": "Tags werden geladen …",
+      "clearTags": "Tags zurücksetzen",
+      "loading": "Rezepte werden gesucht …",
+      "loadingMore": "Weitere Rezepte werden geladen …",
+      "loadMore": "Weitere Rezepte laden",
+      "allLoaded": "Alle passenden Rezepte geladen.",
+      "noResults": "Keine passenden Rezepte gefunden.",
+      "close": "Dialog schließen",
+      "minutes": "{minutes} Min.",
+      "errors": {
+        "load": "Die Rezepte konnten nicht geladen werden.",
+        "invalidInput": "Bitte prüfe deine Suche.",
+        "tags": "Die Tags konnten nicht geladen werden.",
+        "network": "Der Server ist nicht erreichbar. Bitte prüfe deine Verbindung."
+      }
+    },
+    "errors": {
+      "load": "Der Wochenplan konnte nicht geladen werden.",
+      "save": "Der Wochenplan konnte nicht gespeichert werden.",
+      "invalidInput": "Bitte prüfe deine Auswahl.",
+      "network": "Der Server ist nicht erreichbar. Bitte prüfe deine Verbindung.",
+      "forbidden": "Du darfst diesen Wochenplan nicht ändern.",
+      "notFound": "Der Wochenplan wurde nicht gefunden oder du hast keinen Zugriff.",
+      "generic": "Etwas ist schiefgelaufen. Bitte versuche es erneut."
     }
   },
   "notFound": {

@@ -109,8 +109,6 @@ export default async ({ userId, input }: CreateRecipeParams): Promise<RecipeResp
 
   const nutrition = await calculateNutrition({ ingredients, servings });
 
-  console.log(nutrition);
-
   const created = await model.insertRecipe({ ...recipe, nutrition });
 
   return toRecipeResponse(created);

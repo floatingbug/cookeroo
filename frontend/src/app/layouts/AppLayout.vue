@@ -37,8 +37,14 @@ async function onSignOut() {
       <RouterLink class="sidebar-link" :to="{ name: 'dashboard' }">
         {{ t('nav.dashboard') }}
       </RouterLink>
+      <RouterLink class="sidebar-link" :to="{ name: 'meal-plan' }">
+        {{ t('nav.mealPlan') }}
+      </RouterLink>
       <RouterLink class="sidebar-link" :to="{ name: 'recipe-list' }">
         {{ t('nav.recipeList') }}
+      </RouterLink>
+      <RouterLink class="sidebar-link" :to="{ name: 'recipe-public-list' }">
+        {{ t('nav.publicRecipes') }}
       </RouterLink>
       <RouterLink class="sidebar-link" :to="{ name: 'recipe-create' }">
         {{ t('nav.recipeCreate') }}
@@ -94,7 +100,7 @@ async function onSignOut() {
   background-color: var(--color-primary-soft);
 }
 
-.sidebar-link.router-link-active {
+.sidebar-link.router-link-exact-active {
   color: var(--color-primary);
   background-color: var(--color-primary-soft);
   font-weight: var(--font-weight-semibold);

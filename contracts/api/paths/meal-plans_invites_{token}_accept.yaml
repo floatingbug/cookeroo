@@ -1,0 +1,35 @@
+post:
+  tags:
+    - MealPlans
+  operationId: acceptMealPlanInvite
+  summary: Accept an invitation
+  description: |
+    Consumes the one-time invitation and adds the authenticated user as a
+    member of the owner's meal planner. New members may only read the plan
+    until the owner grants edit permission. The invitation cannot be used to
+    join the authenticated user's own planner.
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: token
+      in: path
+      required: true
+      description: One-time invitation token.
+      schema:
+        type: string
+        pattern: '^[a-f0-9]{64}$'
+  responses:
+    '200':
+      description: The invitation was accepted.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/SharedMealPlan.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '404':
+      $ref: ../components/responses/NotFound.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml

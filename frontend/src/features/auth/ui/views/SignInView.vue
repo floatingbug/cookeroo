@@ -4,6 +4,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 
 import { Button, Input } from '@/shared/components'
+import { takePendingRedirect } from '@/shared/router/pendingRedirect'
 import { safeRedirect } from '@/shared/router/safeRedirect'
 
 import AuthCard from '../components/AuthCard.vue'
@@ -33,6 +34,10 @@ const canResend = computed(
     store.errorKey === 'auth.errors.emailNotVerified' && store.signInForm.nameOrEmail.includes('@'),
 )
 
+const redirectQuery = computed(() =>
+  typeof route.query.redirect === 'string' ? { redirect: route.query.redirect } : undefined,
+)
+
 async function onSubmit() {
   store.clearError()
 
@@ -49,7 +54,9 @@ async function onSubmit() {
   })
 
   if (success) {
-    await router.replace(safeRedirect(route.query.redirect))
+    const pendingRedirect = takePendingRedirect()
+
+    await router.replace(safeRedirect(route.query.redirect ?? pendingRedirect))
   }
 }
 
@@ -98,7 +105,9 @@ async function onResend() {
       </p>
       <p>
         {{ t('auth.noAccount') }}
-        <RouterLink :to="{ name: 'sign-up' }">{{ t('auth.signUp') }}</RouterLink>
+        <RouterLink :to="{ name: 'sign-up', query: redirectQuery }">
+          {{ t('auth.signUp') }}
+        </RouterLink>
       </p>
     </div>
   </AuthCard>

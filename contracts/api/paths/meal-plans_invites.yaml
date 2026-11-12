@@ -1,0 +1,21 @@
+post:
+  tags:
+    - MealPlans
+  operationId: createMealPlanInvite
+  summary: Create a one-time invitation to the authenticated user's meal planner
+  description: |
+    Creates a single-use invitation link. The link can be shared through any
+    channel. It stays valid until a user accepts it; accepting consumes it.
+  security:
+    - bearerAuth: []
+  responses:
+    '201':
+      description: The invitation was created.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/MealPlanInvite.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml

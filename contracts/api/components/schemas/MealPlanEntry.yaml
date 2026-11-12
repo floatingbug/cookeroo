@@ -1,0 +1,22 @@
+type: object
+required:
+  - day
+  - meal
+  - recipeId
+  - recipe
+additionalProperties: false
+description: One planned recipe including its current recipe summary.
+properties:
+  day:
+    $ref: MealPlanDay.yaml
+  meal:
+    $ref: MealPlanMeal.yaml
+  recipeId:
+    type: string
+    description: MongoDB ObjectId of the planned recipe as a hex string.
+    pattern: '^[a-f0-9]{24}$'
+  recipe:
+    oneOf:
+      - $ref: RecipeSummary.yaml
+      - type: 'null'
+    description: Current recipe data, or null when the recipe is no longer accessible.

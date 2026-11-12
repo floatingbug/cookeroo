@@ -57,12 +57,15 @@ interface RecipeState {
   form: RecipeForm
   recipe: Recipe | null
   recipes: Recipe[]
+  publicRecipes: Recipe[]
   loading: boolean
   recipesLoading: boolean
+  publicRecipesLoading: boolean
   uploading: boolean
   deletingId: string | null
   errorKey: string | null
   recipesErrorKey: string | null
+  publicRecipesErrorKey: string | null
   deleteErrorKey: string | null
 }
 
@@ -71,12 +74,15 @@ export const useRecipeStore = defineStore('recipe', {
     form: createDefaultForm(),
     recipe: null,
     recipes: [],
+    publicRecipes: [],
     loading: false,
     recipesLoading: false,
+    publicRecipesLoading: false,
     uploading: false,
     deletingId: null,
     errorKey: null,
     recipesErrorKey: null,
+    publicRecipesErrorKey: null,
     deleteErrorKey: null,
   }),
 
@@ -189,6 +195,22 @@ export const useRecipeStore = defineStore('recipe', {
         return false
       } finally {
         this.recipesLoading = false
+      }
+    },
+
+    async loadPublicRecipes(): Promise<boolean> {
+      this.publicRecipesLoading = true
+      this.publicRecipesErrorKey = null
+      this.publicRecipes = []
+
+      try {
+        this.publicRecipes = await recipeService.loadPublicRecipes()
+        return true
+      } catch (error) {
+        this.publicRecipesErrorKey = recipeService.getRecipeErrorKey(error)
+        return false
+      } finally {
+        this.publicRecipesLoading = false
       }
     },
 

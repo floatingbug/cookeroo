@@ -1,0 +1,19 @@
+type: object
+required:
+  - items
+  - nextOffset
+additionalProperties: false
+description: One page of access-controlled recipe search results.
+properties:
+  items:
+    type: array
+    maxItems: 10
+    description: At most ten recipes. Use nextOffset to load the next page.
+    items:
+      $ref: RecipeSummary.yaml
+  nextOffset:
+    type:
+      - integer
+      - 'null'
+    minimum: 0
+    description: Offset for the next page, or null when no further results exist.

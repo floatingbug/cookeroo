@@ -1,0 +1,16 @@
+type: object
+required:
+  - day
+  - meal
+  - recipeId
+additionalProperties: false
+description: One planned recipe in a save request.
+properties:
+  day:
+    $ref: MealPlanDay.yaml
+  meal:
+    $ref: MealPlanMeal.yaml
+  recipeId:
+    type: string
+    description: MongoDB ObjectId of the planned recipe as a hex string.
+    pattern: '^[a-f0-9]{24}$'

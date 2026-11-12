@@ -1,0 +1,8 @@
+type: object
+required:
+  - owner
+additionalProperties: false
+description: Public preview of a valid invitation. Does not consume the invite.
+properties:
+  owner:
+    $ref: MealPlanUser.yaml

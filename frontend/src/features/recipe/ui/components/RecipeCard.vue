@@ -9,9 +9,11 @@ const props = withDefaults(
   defineProps<{
     recipe: Recipe
     deleting?: boolean
+    deletable?: boolean
   }>(),
   {
     deleting: false,
+    deletable: true,
   },
 )
 
@@ -76,7 +78,7 @@ function confirmDelete(): void {
       </div>
     </RouterLink>
 
-    <div class="card-actions">
+    <div v-if="deletable" class="card-actions">
       <Button
         v-if="!confirmingDelete"
         severity="danger"

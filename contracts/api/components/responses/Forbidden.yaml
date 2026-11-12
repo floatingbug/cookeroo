@@ -1,0 +1,5 @@
+description: The authenticated user may not change this resource.
+content:
+  application/json:
+    schema:
+      $ref: ../schemas/Error.yaml

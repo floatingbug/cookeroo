@@ -1,0 +1,32 @@
+type: object
+required:
+  - weekStart
+  - entries
+  - updatedAt
+  - owner
+  - canEdit
+additionalProperties: false
+description: The meal plan of one Monday-to-Sunday week.
+properties:
+  weekStart:
+    type: string
+    format: date
+    description: Monday that starts the week, formatted as YYYY-MM-DD.
+  entries:
+    type: array
+    maxItems: 21
+    items:
+      $ref: MealPlanEntry.yaml
+  updatedAt:
+    type:
+      - string
+      - 'null'
+    format: date-time
+    description: Last time the plan was saved, or null when the week has not been saved yet.
+  owner:
+    $ref: MealPlanUser.yaml
+  canEdit:
+    type: boolean
+    description: |
+      Whether the authenticated user may change this week. Always true for the
+      user's own planner and for members with edit permission.

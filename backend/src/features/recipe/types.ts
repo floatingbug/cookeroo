@@ -1,10 +1,9 @@
 import type { ObjectId, OptionalId, WithId } from 'mongodb';
+import type { RecipeDifficulty, RecipeStatus, RecipeSummary } from '../../types/recipe.js';
+
+export type { RecipeDifficulty, RecipeStatus } from '../../types/recipe.js';
 
 export type IngredientUnit = 'g' | 'kg' | 'ml' | 'l' | 'piece' | 'tbsp' | 'tsp';
-
-export type RecipeDifficulty = 'easy' | 'medium' | 'hard';
-
-export type RecipeStatus = 'public' | 'private';
 
 export interface IngredientDocument {
     name: string;
@@ -84,6 +83,11 @@ export interface RecipeDocument {
 export type NewRecipe = OptionalId<RecipeDocument>;
 
 export type RecipeRecord = WithId<RecipeDocument>;
+
+export interface RecipeSearchResponse {
+    items: RecipeSummary[];
+    nextOffset: number | null;
+}
 
 export interface RecipeResponse {
     id: string;

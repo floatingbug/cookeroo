@@ -1,0 +1,14 @@
+type: object
+required:
+  - entries
+additionalProperties: false
+description: |
+  Complete content of a week. Saving replaces all existing entries of the week,
+  so an empty list clears the plan.
+properties:
+  entries:
+    type: array
+    maxItems: 21
+    description: Planned recipes. Each combination of day and meal may occur only once.
+    items:
+      $ref: MealPlanEntryInput.yaml

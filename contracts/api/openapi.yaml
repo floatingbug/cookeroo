@@ -26,6 +26,8 @@ tags:
     description: Account updates and email-change confirmation.
   - name: Recipes
     description: Create, view and delete recipes.
+  - name: MealPlans
+    description: Weekly meal planning with recipes.
   - name: Uploads
     description: Image uploads and delivery.
 paths:
@@ -53,8 +55,28 @@ paths:
     $ref: paths/account_confirm-email.yaml
   /recipes:
     $ref: paths/recipes.yaml
+  /recipes/public:
+    $ref: paths/recipes_public.yaml
+  /recipes/search:
+    $ref: paths/recipes_search.yaml
+  /recipes/tags:
+    $ref: paths/recipes_tags.yaml
   /recipes/{recipeId}:
     $ref: paths/recipes_{recipeId}.yaml
+  /meal-plans/shared:
+    $ref: paths/meal-plans_shared.yaml
+  /meal-plans/invites:
+    $ref: paths/meal-plans_invites.yaml
+  /meal-plans/invites/{token}:
+    $ref: paths/meal-plans_invites_{token}.yaml
+  /meal-plans/invites/{token}/accept:
+    $ref: paths/meal-plans_invites_{token}_accept.yaml
+  /meal-plans/members:
+    $ref: paths/meal-plans_members.yaml
+  /meal-plans/members/{memberId}:
+    $ref: paths/meal-plans_members_{memberId}.yaml
+  /meal-plans/{weekStart}:
+    $ref: paths/meal-plans_{weekStart}.yaml
   /uploads/images:
     $ref: paths/uploads_images.yaml
   /uploads/{fileName}:

@@ -11,6 +11,7 @@ import authRoutes from './src/features/auth/index.js';
 import userRoutes from './src/features/user/index.js';
 import accountRoutes from './src/features/account/index.js';
 import recipeRoutes from './src/features/recipe/index.js';
+import mealPlanRoutes from './src/features/meal-plan/index.js';
 import uploadRoutes from './src/features/upload/index.js';
 
 async function start(): Promise<void> {
@@ -48,6 +49,7 @@ async function start(): Promise<void> {
     app.use('/users', userRoutes);
     app.use('/account', accountRoutes);
     app.use('/recipes', recipeRoutes);
+    app.use('/meal-plans', mealPlanRoutes);
     app.use('/uploads', uploadRoutes);
 
     app.use((req, res) => {

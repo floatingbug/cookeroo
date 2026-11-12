@@ -7,7 +7,9 @@
     "home": "Home",
     "dashboard": "Dashboard",
     "recipeList": "My recipes",
+    "publicRecipes": "Public recipes",
     "recipeCreate": "Create recipe",
+    "mealPlan": "Meal plan",
     "account": "Account"
   },
   "user": {
@@ -109,6 +111,13 @@
       "emptyHint": "Create your first recipe and it will appear here.",
       "create": "Create recipe",
       "totalTime": "Total time"
+    },
+    "publicList": {
+      "title": "Public recipes",
+      "description": "Discover recipes shared by other users.",
+      "loading": "Loading recipes …",
+      "empty": "No public recipes yet",
+      "emptyHint": "Recipes shared by users will appear here."
     },
     "fields": {
       "title": "Title",
@@ -220,6 +229,132 @@
       "uploadTooLarge": "The image is too large (maximum 5 MB).",
       "uploadNetwork": "The server is not reachable. Please check your connection.",
       "uploadGeneric": "The image could not be uploaded. Please try again."
+    }
+  },
+  "mealPlan": {
+    "title": "Meal plan",
+    "description": "Plan your meals for the week.",
+    "selectRecipe": "Choose a recipe",
+    "recipeUnavailable": "Recipe unavailable",
+    "unsavedConfirm": "There are unsaved changes. Do you really want to leave the meal plan?",
+    "retry": "Try again",
+    "week": {
+      "previous": "Previous week",
+      "next": "Next week",
+      "current": "This week"
+    },
+    "days": {
+      "monday": "Monday",
+      "tuesday": "Tuesday",
+      "wednesday": "Wednesday",
+      "thursday": "Thursday",
+      "friday": "Friday",
+      "saturday": "Saturday",
+      "sunday": "Sunday"
+    },
+    "meals": {
+      "breakfast": "Breakfast",
+      "lunch": "Lunch",
+      "dinner": "Dinner"
+    },
+    "actions": {
+      "save": "Save meal plan",
+      "saving": "Saving meal plan …",
+      "change": "Change",
+      "remove": "Remove recipe"
+    },
+    "status": {
+      "loading": "Meal plan is loading …",
+      "saved": "Meal plan saved.",
+      "unsaved": "Unsaved changes."
+    },
+    "planner": {
+      "label": "Choose meal plan",
+      "own": "My meal plan",
+      "sharedPlanFrom": "Shared meal plan from {name}",
+      "sharedReadOnly": "{name} (read only)",
+      "readOnlyHint": "You can only view this meal plan.",
+      "backToOwn": "Go to my meal plan",
+      "retryShared": "Reload shared plans"
+    },
+    "sharing": {
+      "action": "Share",
+      "title": "Share meal plan",
+      "description": "Create a one-time link and share it by email, messenger or any other channel.",
+      "createInvite": "Create invitation link",
+      "creating": "Creating link …",
+      "linkLabel": "Invitation link",
+      "linkHint": "The link can be used once. It becomes invalid afterwards.",
+      "copy": "Copy",
+      "copied": "Link copied.",
+      "copyError": "The link could not be copied. Please select it manually.",
+      "membersTitle": "Invited people",
+      "membersEmpty": "Nobody has joined the meal plan yet.",
+      "loadingMembers": "Loading members …",
+      "editPermission": "May edit",
+      "remove": "Remove",
+      "removing": "Removing …",
+      "removeConfirm": "Really remove {name} from the meal plan?",
+      "retryMembers": "Reload members",
+      "close": "Close dialog",
+      "errors": {
+        "loadPlanners": "Shared meal plans could not be loaded.",
+        "createInvite": "The invitation link could not be created.",
+        "loadMembers": "The members could not be loaded.",
+        "updateMember": "The edit permission could not be changed.",
+        "removeMember": "The person could not be removed."
+      }
+    },
+    "join": {
+      "title": "Invited to a meal plan",
+      "loading": "Checking invitation …",
+      "invitedBy": "Invitation from {name} to a shared meal plan.",
+      "registerHint": "Please register first. After confirming your email and signing in, you will return to this page automatically.",
+      "register": "Register",
+      "signIn": "I already have an account",
+      "accept": "Join meal plan",
+      "joining": "Joining …",
+      "readOnlyHint": "You can join and view the meal plan first. The owner can grant edit permission later.",
+      "ownPlanner": "This is your own meal plan. You do not need to join it.",
+      "toMealPlan": "Go to meal plan",
+      "toHome": "Back to home",
+      "retry": "Try again",
+      "errors": {
+        "invalid": "The invitation link is invalid or has already been used.",
+        "ownPlanner": "You cannot join your own meal plan through a link.",
+        "network": "The server is not reachable. Please check your connection.",
+        "generic": "The invitation could not be processed. Please try again."
+      }
+    },
+    "picker": {
+      "title": "Choose a recipe for {day}, {meal}",
+      "searchLabel": "Search recipes",
+      "searchPlaceholder": "Enter a recipe name …",
+      "tagsLabel": "Filter by tags (all selected must match)",
+      "tagsLoading": "Tags are loading …",
+      "clearTags": "Clear tags",
+      "loading": "Searching recipes …",
+      "loadingMore": "Loading more recipes …",
+      "loadMore": "Load more recipes",
+      "allLoaded": "All matching recipes loaded.",
+      "noResults": "No matching recipes found.",
+      "close": "Close dialog",
+      "minutes": "{minutes} min",
+      "errors": {
+        "load": "The recipes could not be loaded.",
+        "invalidInput": "Please check your search.",
+        "tags": "The tags could not be loaded.",
+        "network": "The server is not reachable. Please check your connection."
+      }
+    },
+    "errors": {
+      "load": "The meal plan could not be loaded.",
+      "save": "The meal plan could not be saved.",
+      "invalidInput": "Please check your selection.",
+      "network": "The server is not reachable. Please check your connection.",
+      "forbidden": "You may not change this meal plan.",
+      "notFound": "The meal plan was not found or you do not have access.",
+      "generic": "Something went wrong. Please try again."
     }
   },
   "notFound": {

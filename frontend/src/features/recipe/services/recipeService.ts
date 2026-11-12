@@ -3,11 +3,16 @@ import type {
   Recipe,
   RecipeCreateRequest,
   RecipeDifficulty,
+  RecipeSearchResponse,
 } from '@/shared/api/types'
 import { createRecipeApi } from '../api/createRecipeApi'
 import { deleteRecipeApi } from '../api/deleteRecipeApi'
 import { getRecipeApi } from '../api/getRecipeApi'
+import { getRecipeTagsApi } from '../api/getRecipeTagsApi'
 import { getRecipesApi } from '../api/getRecipesApi'
+import { getPublicRecipesApi } from '../api/getPublicRecipesApi'
+import { searchRecipesApi } from '../api/searchRecipesApi'
+import type { SearchRecipesParams } from '../api/searchRecipesApi'
 import { uploadImageApi } from '../api/uploadImageApi'
 import type { RecipeForm } from '../types'
 
@@ -167,6 +172,21 @@ export function loadRecipe(recipeId: string): Promise<Recipe> {
 
 export function loadRecipes(): Promise<Recipe[]> {
   return getRecipesApi()
+}
+
+export function loadPublicRecipes(): Promise<Recipe[]> {
+  return getPublicRecipesApi()
+}
+
+export function searchRecipes(
+  params: SearchRecipesParams,
+  signal?: AbortSignal,
+): Promise<RecipeSearchResponse> {
+  return searchRecipesApi(params, signal)
+}
+
+export function loadRecipeTags(): Promise<string[]> {
+  return getRecipeTagsApi()
 }
 
 export function deleteRecipe(recipeId: string): Promise<void> {

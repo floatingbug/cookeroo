@@ -1,0 +1,6 @@
+type: string
+description: The meal slot within a day of a meal plan.
+enum:
+  - breakfast
+  - lunch
+  - dinner

@@ -1,0 +1,55 @@
+get:
+  tags:
+    - Recipes
+  operationId: searchRecipes
+  summary: Search accessible recipes
+  description: |
+    Searches recipes that are public or belong to the authenticated user.
+    Returns at most ten results per request, newest first. Use `nextOffset`
+    from the response to load the next page.
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: q
+      in: query
+      required: false
+      description: Case-insensitive substring matched against the recipe title.
+      schema:
+        type: string
+        maxLength: 100
+    - name: tags
+      in: query
+      required: false
+      description: |
+        Recipes must contain all supplied tags. Tag matching is exact and
+        case-insensitive. Repeat the parameter for multiple tags.
+      style: form
+      explode: true
+      schema:
+        type: array
+        maxItems: 10
+        items:
+          type: string
+          minLength: 1
+          maxLength: 30
+    - name: offset
+      in: query
+      required: false
+      description: Number of matching recipes to skip. Defaults to 0.
+      schema:
+        type: string
+        pattern: '^\d+$'
+        default: '0'
+  responses:
+    '200':
+      description: One page of matching recipes.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/RecipeSearchResponse.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml

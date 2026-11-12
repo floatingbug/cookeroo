@@ -1,0 +1,31 @@
+get:
+  tags:
+    - MealPlans
+  operationId: previewMealPlanInvite
+  summary: Preview an invitation
+  description: |
+    Returns the owner of a valid invitation so a join page can show who
+    invited the user. This endpoint is public and does not consume the
+    invitation.
+  security: []
+  parameters:
+    - name: token
+      in: path
+      required: true
+      description: One-time invitation token.
+      schema:
+        type: string
+        pattern: '^[a-f0-9]{64}$'
+  responses:
+    '200':
+      description: The invitation is valid.
+      content:
+        application/json:
+          schema:
+            $ref: ../components/schemas/MealPlanInvitePreview.yaml
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '404':
+      $ref: ../components/responses/NotFound.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml
