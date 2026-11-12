@@ -25,7 +25,7 @@ tags:
   - name: Account
     description: Account updates and email-change confirmation.
   - name: Recipes
-    description: Create and view recipes.
+    description: Create, view and delete recipes.
   - name: Uploads
     description: Image uploads and delivery.
 paths:

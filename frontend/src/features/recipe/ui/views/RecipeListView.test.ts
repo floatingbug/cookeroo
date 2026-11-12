@@ -16,6 +16,7 @@ vi.mock('../../services/recipeService', async () => {
 
   return {
     ...actual,
+    deleteRecipe: vi.fn(),
     loadRecipes: vi.fn(),
   }
 })
@@ -26,6 +27,7 @@ import * as recipeService from '../../services/recipeService'
 import RecipeListView from './RecipeListView.vue'
 
 const mockedLoadRecipes = vi.mocked(recipeService.loadRecipes)
+const mockedDeleteRecipe = vi.mocked(recipeService.deleteRecipe)
 
 const RECIPE: Recipe = {
   id: 'recipe-1',
@@ -118,5 +120,32 @@ describe('RecipeListView', () => {
     await flushPromises()
 
     expect(wrapper.text()).toContain(i18n.global.t('recipe.errors.generic'))
+  })
+
+  it('löscht ein Rezept nach Bestätigung aus der Liste', async () => {
+    mockedLoadRecipes.mockResolvedValue([RECIPE])
+    mockedDeleteRecipe.mockResolvedValue(undefined)
+
+    const wrapper = mountView()
+
+    await flushPromises()
+
+    const deleteButton = wrapper
+      .findAll('button')
+      .find((button) => button.text() === i18n.global.t('recipe.actions.delete'))
+
+    expect(deleteButton).toBeDefined()
+
+    await deleteButton!.trigger('click')
+
+    const confirmButton = wrapper
+      .findAll('button')
+      .find((button) => button.text() === i18n.global.t('recipe.actions.deleteConfirm'))
+
+    await confirmButton!.trigger('click')
+    await flushPromises()
+
+    expect(mockedDeleteRecipe).toHaveBeenCalledWith('recipe-1')
+    expect(wrapper.findAll('.recipe-grid-item')).toHaveLength(0)
   })
 })

@@ -2,10 +2,14 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { createPinia, setActivePinia } from 'pinia'
 
-const { routeMock } = vi.hoisted(() => ({ routeMock: { params: { id: 'recipe-1' } } }))
+const { routeMock, pushMock } = vi.hoisted(() => ({
+  routeMock: { params: { id: 'recipe-1' } },
+  pushMock: vi.fn(),
+}))
 
 vi.mock('vue-router', () => ({
   useRoute: () => routeMock,
+  useRouter: () => ({ push: pushMock }),
 }))
 
 vi.mock('../../services/recipeService', async () => {
@@ -15,16 +19,19 @@ vi.mock('../../services/recipeService', async () => {
 
   return {
     ...actual,
+    deleteRecipe: vi.fn(),
     loadRecipe: vi.fn(),
   }
 })
 
-import type { Recipe } from '@/shared/api/types'
+import type { Recipe, User } from '@/shared/api/types'
 import i18n from '@/app/i18n'
+import { useAuthStore } from '@/features/auth/store/authStore'
 import * as recipeService from '../../services/recipeService'
 import RecipeDetailView from './RecipeDetailView.vue'
 
 const mockedLoadRecipe = vi.mocked(recipeService.loadRecipe)
+const mockedDeleteRecipe = vi.mocked(recipeService.deleteRecipe)
 
 const RECIPE: Recipe = {
   id: 'recipe-1',
@@ -87,10 +94,14 @@ const RECIPE: Recipe = {
   status: 'public',
 }
 
-function mountView() {
+function mountView(userId: string = RECIPE.createdBy) {
   const pinia = createPinia()
 
   setActivePinia(pinia)
+
+  const authStore = useAuthStore()
+
+  authStore.user = { id: userId } as User
 
   return mount(RecipeDetailView, {
     global: { plugins: [pinia, i18n] },
@@ -136,5 +147,69 @@ describe('RecipeDetailView', () => {
     await flushPromises()
 
     expect(wrapper.text()).toContain(i18n.global.t('recipe.errors.notFound'))
+  })
+
+  it('zeigt die Löschaktion nur für eigene Rezepte', async () => {
+    mockedLoadRecipe.mockResolvedValue(RECIPE)
+
+    const wrapper = mountView('ffffffffffffffffffffffff')
+
+    await flushPromises()
+
+    expect(wrapper.text()).not.toContain(i18n.global.t('recipe.actions.delete'))
+  })
+
+  it('löscht ein Rezept nach Bestätigung und navigiert zur Liste', async () => {
+    mockedLoadRecipe.mockResolvedValue(RECIPE)
+    mockedDeleteRecipe.mockResolvedValue(undefined)
+
+    const wrapper = mountView()
+
+    await flushPromises()
+
+    const deleteButton = wrapper
+      .findAll('button')
+      .find((button) => button.text() === i18n.global.t('recipe.actions.delete'))
+
+    expect(deleteButton).toBeDefined()
+
+    await deleteButton!.trigger('click')
+
+    expect(wrapper.text()).toContain(i18n.global.t('recipe.actions.deleteConfirmTitle'))
+
+    const confirmButton = wrapper
+      .findAll('button')
+      .find((button) => button.text() === i18n.global.t('recipe.actions.deleteConfirm'))
+
+    await confirmButton!.trigger('click')
+    await flushPromises()
+
+    expect(mockedDeleteRecipe).toHaveBeenCalledWith('recipe-1')
+    expect(pushMock).toHaveBeenCalledWith({ name: 'recipe-list' })
+  })
+
+  it('zeigt einen Löschfehler an', async () => {
+    mockedLoadRecipe.mockResolvedValue(RECIPE)
+    mockedDeleteRecipe.mockRejectedValue({ status: 500 })
+
+    const wrapper = mountView()
+
+    await flushPromises()
+
+    const deleteButton = wrapper
+      .findAll('button')
+      .find((button) => button.text() === i18n.global.t('recipe.actions.delete'))
+
+    await deleteButton!.trigger('click')
+
+    const confirmButton = wrapper
+      .findAll('button')
+      .find((button) => button.text() === i18n.global.t('recipe.actions.deleteConfirm'))
+
+    await confirmButton!.trigger('click')
+    await flushPromises()
+
+    expect(wrapper.text()).toContain(i18n.global.t('recipe.errors.deleteGeneric'))
+    expect(pushMock).not.toHaveBeenCalled()
   })
 })

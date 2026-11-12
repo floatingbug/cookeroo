@@ -279,7 +279,13 @@ export interface paths {
     get: operations['getRecipe']
     put?: never
     post?: never
-    delete?: never
+    /**
+     * Delete a recipe
+     * @description Deletes one of the authenticated user's recipes. Uploaded images referenced by
+     *     the recipe are removed as well, unless another recipe still uses them.
+     *     Recipes of other users are reported as not found.
+     */
+    delete: operations['deleteRecipe']
     options?: never
     head?: never
     patch?: never
@@ -2139,6 +2145,71 @@ export interface operations {
             status: 'public' | 'private'
           }
         }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description The requested resource does not exist. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  deleteRecipe: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description MongoDB ObjectId of the recipe as a hex string. */
+        recipeId: string
+      }
+      cookie?: never
+    }
+    requestBody?: never
+    responses: {
+      /** @description The recipe was deleted. */
+      204: {
+        headers: {
+          [name: string]: unknown
+        }
+        content?: never
       }
       /** @description Invalid input. */
       400: {

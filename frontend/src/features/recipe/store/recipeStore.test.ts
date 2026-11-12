@@ -9,6 +9,7 @@ vi.mock('../services/recipeService', async () => {
   return {
     ...actual,
     createRecipe: vi.fn(),
+    deleteRecipe: vi.fn(),
     loadRecipe: vi.fn(),
     loadRecipes: vi.fn(),
     uploadImage: vi.fn(),
@@ -20,6 +21,7 @@ import * as recipeService from '../services/recipeService'
 import { useRecipeStore } from './recipeStore'
 
 const mockedCreateRecipe = vi.mocked(recipeService.createRecipe)
+const mockedDeleteRecipe = vi.mocked(recipeService.deleteRecipe)
 const mockedLoadRecipe = vi.mocked(recipeService.loadRecipe)
 const mockedLoadRecipes = vi.mocked(recipeService.loadRecipes)
 const mockedUploadImage = vi.mocked(recipeService.uploadImage)
@@ -182,5 +184,35 @@ describe('recipeStore', () => {
     expect(store.recipes).toEqual([])
     expect(store.recipesErrorKey).toBe('recipe.errors.generic')
     expect(store.recipesLoading).toBe(false)
+  })
+
+  it('löscht ein Rezept und entfernt es aus dem State', async () => {
+    const store = useRecipeStore()
+    const otherRecipe = { ...RECIPE, id: 'recipe-2' }
+
+    store.recipes = [RECIPE, otherRecipe]
+    store.recipe = RECIPE
+    mockedDeleteRecipe.mockResolvedValue(undefined)
+
+    await expect(store.deleteRecipe('recipe-1')).resolves.toBe(true)
+
+    expect(mockedDeleteRecipe).toHaveBeenCalledWith('recipe-1')
+    expect(store.recipes).toEqual([otherRecipe])
+    expect(store.recipe).toBeNull()
+    expect(store.deletingId).toBeNull()
+    expect(store.deleteErrorKey).toBeNull()
+  })
+
+  it('meldet Fehler beim Löschen und behält das Rezept', async () => {
+    const store = useRecipeStore()
+
+    store.recipes = [RECIPE]
+    mockedDeleteRecipe.mockRejectedValue({ status: 500 })
+
+    await expect(store.deleteRecipe('recipe-1')).resolves.toBe(false)
+
+    expect(store.recipes).toEqual([RECIPE])
+    expect(store.deleteErrorKey).toBe('recipe.errors.deleteGeneric')
+    expect(store.deletingId).toBeNull()
   })
 })

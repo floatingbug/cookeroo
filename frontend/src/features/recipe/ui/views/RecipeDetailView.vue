@@ -1,17 +1,28 @@
 <script setup lang="ts">
-import { computed, watch } from 'vue'
+import { computed, shallowRef, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 
 import type { RecipeIngredient, RecipeInstruction } from '@/shared/api/types'
+import { Button } from '@/shared/components'
+import { useAuthStore } from '@/features/auth/store/authStore'
 import NutritionPanel from '../components/NutritionPanel.vue'
 import { useRecipeStore } from '../../store/recipeStore'
 
 const { t, locale } = useI18n()
 const route = useRoute()
+const router = useRouter()
 const store = useRecipeStore()
-const { recipe, loading, errorKey } = storeToRefs(store)
+const authStore = useAuthStore()
+const { recipe, loading, errorKey, deletingId, deleteErrorKey } = storeToRefs(store)
+const confirmingDelete = shallowRef(false)
+
+const isOwner = computed(
+  () => recipe.value !== null && recipe.value.createdBy === authStore.user?.id,
+)
+
+const deleting = computed(() => recipe.value !== null && deletingId.value === recipe.value.id)
 
 const numberFormatter = computed(
   () =>
@@ -58,6 +69,20 @@ function formatStepDuration(instruction: RecipeInstruction): string {
 function formatDate(value: string): string {
   return dateFormatter.value.format(new Date(value))
 }
+
+async function onDelete(): Promise<void> {
+  const currentRecipe = recipe.value
+
+  if (!currentRecipe) {
+    return
+  }
+
+  const deleted = await store.deleteRecipe(currentRecipe.id)
+
+  if (deleted) {
+    await router.push({ name: 'recipe-list' })
+  }
+}
 </script>
 
 <template>
@@ -74,6 +99,37 @@ function formatDate(value: string): string {
             <span v-if="recipe.category" class="badge">{{ recipe.category }}</span>
             <span v-if="recipe.cuisine" class="badge">{{ recipe.cuisine }}</span>
             <span class="badge">{{ formatDifficulty(recipe.difficulty) }}</span>
+          </div>
+
+          <div v-if="isOwner" class="header-actions">
+            <Button
+              v-if="!confirmingDelete"
+              severity="danger"
+              :label="t('recipe.actions.delete')"
+              :disabled="deleting"
+              @click="confirmingDelete = true"
+            />
+
+            <div v-else class="delete-confirm">
+              <p class="delete-confirm-title">{{ t('recipe.actions.deleteConfirmTitle') }}</p>
+              <p class="delete-confirm-text">{{ t('recipe.actions.deleteConfirmText') }}</p>
+              <div class="delete-confirm-actions">
+                <Button
+                  severity="danger"
+                  :label="
+                    deleting ? t('recipe.actions.deleting') : t('recipe.actions.deleteConfirm')
+                  "
+                  :disabled="deleting"
+                  @click="onDelete"
+                />
+                <Button
+                  severity="secondary"
+                  :label="t('recipe.actions.cancel')"
+                  :disabled="deleting"
+                  @click="confirmingDelete = false"
+                />
+              </div>
+            </div>
           </div>
 
           <h1 class="title">{{ recipe.title }}</h1>
@@ -152,6 +208,8 @@ function formatDate(value: string): string {
         </ol>
       </section>
     </article>
+
+    <p v-if="deleteErrorKey" class="alert" role="alert">{{ t(deleteErrorKey) }}</p>
   </main>
 </template>
 
@@ -202,6 +260,44 @@ function formatDate(value: string): string {
   display: flex;
   flex-direction: column;
   gap: var(--space-sm);
+}
+
+.header-actions {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--space-xs);
+}
+
+.delete-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  padding: var(--space-sm) var(--space-md);
+  border: 1px solid var(--color-danger);
+  border-radius: var(--radius-md);
+  background-color: color-mix(in srgb, var(--color-danger) 8%, transparent);
+}
+
+.delete-confirm-title,
+.delete-confirm-text {
+  margin: 0;
+}
+
+.delete-confirm-title {
+  font-weight: var(--font-weight-semibold);
+}
+
+.delete-confirm-text {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+}
+
+.delete-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  padding-top: var(--space-xs);
 }
 
 .badges,

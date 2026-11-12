@@ -51,4 +51,33 @@ describe('RecipeCard', () => {
     expect(wrapper.text()).toContain('65')
     expect(wrapper.text()).toContain('4')
   })
+
+  it('verlangt vor dem Löschen eine Bestätigung', async () => {
+    const wrapper = mount(RecipeCard, {
+      props: { recipe: RECIPE },
+      global: {
+        plugins: [i18n],
+        stubs: { RouterLink: RouterLinkStub },
+      },
+    })
+
+    const deleteButton = wrapper
+      .findAll('button')
+      .find((button) => button.text() === i18n.global.t('recipe.actions.delete'))
+
+    expect(deleteButton).toBeDefined()
+
+    await deleteButton!.trigger('click')
+
+    expect(wrapper.text()).toContain(i18n.global.t('recipe.actions.deleteConfirmTitle'))
+    expect(wrapper.emitted('delete')).toBeUndefined()
+
+    const confirmButton = wrapper
+      .findAll('button')
+      .find((button) => button.text() === i18n.global.t('recipe.actions.deleteConfirm'))
+
+    await confirmButton!.trigger('click')
+
+    expect(wrapper.emitted('delete')).toHaveLength(1)
+  })
 })

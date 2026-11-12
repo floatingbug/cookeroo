@@ -5,6 +5,7 @@ import type {
   RecipeDifficulty,
 } from '@/shared/api/types'
 import { createRecipeApi } from '../api/createRecipeApi'
+import { deleteRecipeApi } from '../api/deleteRecipeApi'
 import { getRecipeApi } from '../api/getRecipeApi'
 import { getRecipesApi } from '../api/getRecipesApi'
 import { uploadImageApi } from '../api/uploadImageApi'
@@ -168,6 +169,10 @@ export function loadRecipes(): Promise<Recipe[]> {
   return getRecipesApi()
 }
 
+export function deleteRecipe(recipeId: string): Promise<void> {
+  return deleteRecipeApi(recipeId)
+}
+
 export function uploadImage(file: File): Promise<string> {
   return uploadImageApi(file).then((response) => response.url)
 }
@@ -200,6 +205,20 @@ export function getRecipeErrorKey(error: unknown): string {
   }
 
   return 'recipe.errors.generic'
+}
+
+export function getDeleteErrorKey(error: unknown): string {
+  const status = statusOf(error)
+
+  if (!status) {
+    return 'recipe.errors.network'
+  }
+
+  if (status === 404) {
+    return 'recipe.errors.notFound'
+  }
+
+  return 'recipe.errors.deleteGeneric'
 }
 
 export function getUploadErrorKey(error: unknown): string {

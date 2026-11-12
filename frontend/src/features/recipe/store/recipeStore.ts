@@ -60,8 +60,10 @@ interface RecipeState {
   loading: boolean
   recipesLoading: boolean
   uploading: boolean
+  deletingId: string | null
   errorKey: string | null
   recipesErrorKey: string | null
+  deleteErrorKey: string | null
 }
 
 export const useRecipeStore = defineStore('recipe', {
@@ -72,8 +74,10 @@ export const useRecipeStore = defineStore('recipe', {
     loading: false,
     recipesLoading: false,
     uploading: false,
+    deletingId: null,
     errorKey: null,
     recipesErrorKey: null,
+    deleteErrorKey: null,
   }),
 
   actions: {
@@ -185,6 +189,27 @@ export const useRecipeStore = defineStore('recipe', {
         return false
       } finally {
         this.recipesLoading = false
+      }
+    },
+
+    async deleteRecipe(recipeId: string): Promise<boolean> {
+      this.deletingId = recipeId
+      this.deleteErrorKey = null
+
+      try {
+        await recipeService.deleteRecipe(recipeId)
+        this.recipes = this.recipes.filter((recipe) => recipe.id !== recipeId)
+
+        if (this.recipe?.id === recipeId) {
+          this.recipe = null
+        }
+
+        return true
+      } catch (error) {
+        this.deleteErrorKey = recipeService.getDeleteErrorKey(error)
+        return false
+      } finally {
+        this.deletingId = null
       }
     },
   },

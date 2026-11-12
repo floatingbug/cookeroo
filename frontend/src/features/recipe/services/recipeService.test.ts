@@ -1,6 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 vi.mock('../api/createRecipeApi', () => ({ createRecipeApi: vi.fn() }))
+vi.mock('../api/deleteRecipeApi', () => ({ deleteRecipeApi: vi.fn() }))
 vi.mock('../api/getRecipeApi', () => ({ getRecipeApi: vi.fn() }))
 vi.mock('../api/getRecipesApi', () => ({ getRecipesApi: vi.fn() }))
 vi.mock('../api/uploadImageApi', () => ({ uploadImageApi: vi.fn() }))
@@ -8,12 +9,15 @@ vi.mock('../api/uploadImageApi', () => ({ uploadImageApi: vi.fn() }))
 import { ApiError } from '@/shared/api/apiFetch'
 import type { Recipe, RecipeCreateRequest } from '@/shared/api/types'
 import { createRecipeApi } from '../api/createRecipeApi'
+import { deleteRecipeApi } from '../api/deleteRecipeApi'
 import { getRecipeApi } from '../api/getRecipeApi'
 import { getRecipesApi } from '../api/getRecipesApi'
 import { uploadImageApi } from '../api/uploadImageApi'
 import type { RecipeForm } from '../types'
 import {
   createRecipe,
+  deleteRecipe,
+  getDeleteErrorKey,
   getRecipeErrorKey,
   getUploadErrorKey,
   loadRecipe,
@@ -25,6 +29,7 @@ import {
 } from './recipeService'
 
 const mockedCreateRecipeApi = vi.mocked(createRecipeApi)
+const mockedDeleteRecipeApi = vi.mocked(deleteRecipeApi)
 const mockedGetRecipeApi = vi.mocked(getRecipeApi)
 const mockedGetRecipesApi = vi.mocked(getRecipesApi)
 const mockedUploadImageApi = vi.mocked(uploadImageApi)
@@ -214,6 +219,13 @@ describe('recipeService', () => {
       expect(mockedGetRecipesApi).toHaveBeenCalledWith()
     })
 
+    it('löscht ein Rezept', async () => {
+      mockedDeleteRecipeApi.mockResolvedValue(undefined)
+
+      await expect(deleteRecipe('recipe-1')).resolves.toBeUndefined()
+      expect(mockedDeleteRecipeApi).toHaveBeenCalledWith('recipe-1')
+    })
+
     it('liefert die URL des hochgeladenen Bildes', async () => {
       const file = new File(['abc'], 'image.png', { type: 'image/png' })
 
@@ -241,6 +253,14 @@ describe('recipeService', () => {
       expect(getUploadErrorKey(new ApiError('x', 413, null))).toBe('recipe.errors.uploadTooLarge')
       expect(getUploadErrorKey(new ApiError('x', 500, null))).toBe('recipe.errors.uploadGeneric')
       expect(getUploadErrorKey(new TypeError('fetch failed'))).toBe('recipe.errors.uploadNetwork')
+    })
+  })
+
+  describe('getDeleteErrorKey', () => {
+    it('übersetzt Löschfehler in i18n-Keys', () => {
+      expect(getDeleteErrorKey(new ApiError('x', 404, null))).toBe('recipe.errors.notFound')
+      expect(getDeleteErrorKey(new ApiError('x', 500, null))).toBe('recipe.errors.deleteGeneric')
+      expect(getDeleteErrorKey(new TypeError('fetch failed'))).toBe('recipe.errors.network')
     })
   })
 })

@@ -147,7 +147,13 @@
       "upload": "Bild auswählen",
       "uploading": "Bild wird hochgeladen …",
       "submit": "Rezept speichern",
-      "saving": "Rezept wird gespeichert …"
+      "saving": "Rezept wird gespeichert …",
+      "delete": "Rezept löschen",
+      "deleting": "Wird gelöscht …",
+      "deleteConfirmTitle": "Rezept löschen?",
+      "deleteConfirmText": "Das Rezept und seine Bilder werden dauerhaft entfernt.",
+      "deleteConfirm": "Endgültig löschen",
+      "cancel": "Abbrechen"
     },
     "units": {
       "g": "g",
@@ -209,6 +215,7 @@
       "notFound": "Das Rezept wurde nicht gefunden.",
       "network": "Der Server ist nicht erreichbar. Bitte prüfe deine Verbindung.",
       "generic": "Das Rezept konnte nicht gespeichert werden. Bitte versuche es erneut.",
+      "deleteGeneric": "Das Rezept konnte nicht gelöscht werden. Bitte versuche es erneut.",
       "uploadInvalidType": "Bitte wähle ein JPEG-, PNG- oder WebP-Bild aus.",
       "uploadTooLarge": "Das Bild ist zu groß (maximal 5 MB).",
       "uploadNetwork": "Der Server ist nicht erreichbar. Bitte prüfe deine Verbindung.",

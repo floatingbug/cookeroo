@@ -147,7 +147,13 @@
       "upload": "Choose image",
       "uploading": "Uploading image …",
       "submit": "Save recipe",
-      "saving": "Saving recipe …"
+      "saving": "Saving recipe …",
+      "delete": "Delete recipe",
+      "deleting": "Deleting …",
+      "deleteConfirmTitle": "Delete this recipe?",
+      "deleteConfirmText": "The recipe and its images will be permanently removed.",
+      "deleteConfirm": "Delete permanently",
+      "cancel": "Cancel"
     },
     "units": {
       "g": "g",
@@ -209,6 +215,7 @@
       "notFound": "The recipe could not be found.",
       "network": "The server is not reachable. Please check your connection.",
       "generic": "The recipe could not be saved. Please try again.",
+      "deleteGeneric": "The recipe could not be deleted. Please try again.",
       "uploadInvalidType": "Please choose a JPEG, PNG or WebP image.",
       "uploadTooLarge": "The image is too large (maximum 5 MB).",
       "uploadNetwork": "The server is not reachable. Please check your connection.",

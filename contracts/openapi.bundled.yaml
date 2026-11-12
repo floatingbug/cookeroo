@@ -25,7 +25,7 @@ tags:
   - name: Account
     description: Account updates and email-change confirmation.
   - name: Recipes
-    description: Create and view recipes.
+    description: Create, view and delete recipes.
   - name: Uploads
     description: Image uploads and delivery.
 paths:
@@ -1151,6 +1151,40 @@ paths:
                 required: *ref_0
                 additionalProperties: false
                 properties: *ref_1
+        '500':
+          description: Unexpected server error.
+          content: *ref_4
+    delete:
+      tags:
+        - Recipes
+      operationId: deleteRecipe
+      summary: Delete a recipe
+      description: |
+        Deletes one of the authenticated user's recipes. Uploaded images referenced by
+        the recipe are removed as well, unless another recipe still uses them.
+        Recipes of other users are reported as not found.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: recipeId
+          in: path
+          required: true
+          description: MongoDB ObjectId of the recipe as a hex string.
+          schema:
+            type: string
+            pattern: ^[a-f0-9]{24}$
+      responses:
+        '204':
+          description: The recipe was deleted.
+        '400':
+          description: Invalid input.
+          content: *ref_2
+        '401':
+          description: Missing or invalid access token.
+          content: *ref_12
+        '404':
+          description: The requested resource does not exist.
+          content: *ref_23
         '500':
           description: Unexpected server error.
           content: *ref_4

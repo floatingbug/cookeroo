@@ -1,14 +1,26 @@
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, shallowRef } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 import type { Recipe } from '@/shared/api/types'
+import { Button } from '@/shared/components'
 
-const props = defineProps<{
-  recipe: Recipe
+const props = withDefaults(
+  defineProps<{
+    recipe: Recipe
+    deleting?: boolean
+  }>(),
+  {
+    deleting: false,
+  },
+)
+
+const emit = defineEmits<{
+  delete: []
 }>()
 
 const { t } = useI18n()
+const confirmingDelete = shallowRef(false)
 
 const totalTime = computed(
   () => props.recipe.prepTime + props.recipe.cookTime + (props.recipe.restTime ?? 0),
@@ -19,6 +31,10 @@ const difficultyLabel = computed(() =>
     ? t('recipe.difficulty.none')
     : t(`recipe.difficulty.${props.recipe.difficulty}`),
 )
+
+function confirmDelete(): void {
+  emit('delete')
+}
 </script>
 
 <template>
@@ -59,11 +75,42 @@ const difficultyLabel = computed(() =>
         </dl>
       </div>
     </RouterLink>
+
+    <div class="card-actions">
+      <Button
+        v-if="!confirmingDelete"
+        severity="danger"
+        :label="t('recipe.actions.delete')"
+        :disabled="deleting"
+        @click="confirmingDelete = true"
+      />
+
+      <div v-else class="delete-confirm">
+        <p class="delete-confirm-title">{{ t('recipe.actions.deleteConfirmTitle') }}</p>
+        <p class="delete-confirm-text">{{ t('recipe.actions.deleteConfirmText') }}</p>
+        <div class="delete-confirm-actions">
+          <Button
+            severity="danger"
+            :label="deleting ? t('recipe.actions.deleting') : t('recipe.actions.deleteConfirm')"
+            :disabled="deleting"
+            @click="confirmDelete"
+          />
+          <Button
+            severity="secondary"
+            :label="t('recipe.actions.cancel')"
+            :disabled="deleting"
+            @click="confirmingDelete = false"
+          />
+        </div>
+      </div>
+    </div>
   </article>
 </template>
 
 <style scoped>
 .recipe-card {
+  display: flex;
+  flex-direction: column;
   height: 100%;
   overflow: hidden;
   border: 1px solid var(--color-border);
@@ -82,6 +129,7 @@ const difficultyLabel = computed(() =>
 
 .card-link {
   display: flex;
+  flex: 1;
   flex-direction: column;
   height: 100%;
   color: inherit;
@@ -178,5 +226,37 @@ const difficultyLabel = computed(() =>
 .meta-item dd {
   margin: 0;
   font-weight: var(--font-weight-medium);
+}
+
+.card-actions {
+  padding: var(--space-sm) var(--space-md) var(--space-md);
+  border-top: 1px solid var(--color-border);
+}
+
+.delete-confirm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+}
+
+.delete-confirm-title,
+.delete-confirm-text {
+  margin: 0;
+}
+
+.delete-confirm-title {
+  font-weight: var(--font-weight-semibold);
+}
+
+.delete-confirm-text {
+  color: var(--color-text-muted);
+  font-size: var(--font-size-xs);
+}
+
+.delete-confirm-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-sm);
+  padding-top: var(--space-xs);
 }
 </style>

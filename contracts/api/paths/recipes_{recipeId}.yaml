@@ -31,3 +31,33 @@ get:
       $ref: ../components/responses/NotFound.yaml
     '500':
       $ref: ../components/responses/InternalServerError.yaml
+delete:
+  tags:
+    - Recipes
+  operationId: deleteRecipe
+  summary: Delete a recipe
+  description: |
+    Deletes one of the authenticated user's recipes. Uploaded images referenced by
+    the recipe are removed as well, unless another recipe still uses them.
+    Recipes of other users are reported as not found.
+  security:
+    - bearerAuth: []
+  parameters:
+    - name: recipeId
+      in: path
+      required: true
+      description: MongoDB ObjectId of the recipe as a hex string.
+      schema:
+        type: string
+        pattern: '^[a-f0-9]{24}$'
+  responses:
+    '204':
+      description: The recipe was deleted.
+    '400':
+      $ref: ../components/responses/BadRequest.yaml
+    '401':
+      $ref: ../components/responses/Unauthorized.yaml
+    '404':
+      $ref: ../components/responses/NotFound.yaml
+    '500':
+      $ref: ../components/responses/InternalServerError.yaml

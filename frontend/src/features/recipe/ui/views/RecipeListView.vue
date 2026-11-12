@@ -11,7 +11,7 @@ import RecipeCard from '../components/RecipeCard.vue'
 const { t } = useI18n()
 const router = useRouter()
 const store = useRecipeStore()
-const { recipes, recipesLoading, recipesErrorKey } = storeToRefs(store)
+const { recipes, recipesLoading, recipesErrorKey, deletingId, deleteErrorKey } = storeToRefs(store)
 
 onMounted(() => {
   void store.loadRecipes()
@@ -19,6 +19,10 @@ onMounted(() => {
 
 function onCreate(): void {
   void router.push({ name: 'recipe-create' })
+}
+
+async function onDelete(recipeId: string): Promise<void> {
+  await store.deleteRecipe(recipeId)
 }
 </script>
 
@@ -32,6 +36,7 @@ function onCreate(): void {
       <Button :label="t('recipe.list.create')" @click="onCreate" />
     </div>
 
+    <p v-if="deleteErrorKey" class="alert" role="alert">{{ t(deleteErrorKey) }}</p>
     <p v-if="recipesLoading" class="status" role="status">{{ t('recipe.list.loading') }}</p>
     <p v-else-if="recipesErrorKey" class="alert" role="alert">{{ t(recipesErrorKey) }}</p>
 
@@ -43,7 +48,11 @@ function onCreate(): void {
 
     <ul v-else class="recipe-grid">
       <li v-for="recipe in recipes" :key="recipe.id" class="recipe-grid-item">
-        <RecipeCard :recipe="recipe" />
+        <RecipeCard
+          :recipe="recipe"
+          :deleting="deletingId === recipe.id"
+          @delete="onDelete(recipe.id)"
+        />
       </li>
     </ul>
   </main>
