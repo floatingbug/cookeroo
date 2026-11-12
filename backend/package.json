@@ -13,6 +13,7 @@
     "start": "node dist/main.js",
     "test": "node --import tsx --test \"test/**/*.ts\"",
     "seed:test-user": "tsx scripts/seedTestUser.ts",
+    "seed:test-recipes": "tsx scripts/seedTestRecipes.ts",
     "seed:foods": "tsx scripts/importFoods.ts",
     "recalc:nutrition": "tsx scripts/recalculateNutrition.ts",
     "bundle:api": "redocly bundle ../contracts/api/openapi.yaml --dereferenced -o ../contracts/openapi.bundled.yaml",
