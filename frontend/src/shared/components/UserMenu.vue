@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 defineProps({
@@ -10,16 +10,56 @@ defineProps({
 const emit = defineEmits(['signOut'])
 const { t } = useI18n()
 const open = ref(false)
+const root = ref<HTMLElement | null>(null)
+const button = ref<HTMLButtonElement | null>(null)
+
+function close() {
+  open.value = false
+}
+
+function onPointerDown(event: PointerEvent) {
+  if (!root.value?.contains(event.target as Node)) {
+    close()
+  }
+}
+
+function onKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape') {
+    close()
+    button.value?.focus()
+  }
+}
+
+function addListeners() {
+  document.addEventListener('pointerdown', onPointerDown)
+  document.addEventListener('keydown', onKeydown)
+}
+
+function removeListeners() {
+  document.removeEventListener('pointerdown', onPointerDown)
+  document.removeEventListener('keydown', onKeydown)
+}
+
+watch(open, (isOpen) => {
+  if (isOpen) {
+    addListeners()
+  } else {
+    removeListeners()
+  }
+})
+
+onUnmounted(removeListeners)
 
 function onSignOut() {
-  open.value = false
+  close()
   emit('signOut')
 }
 </script>
 
 <template>
-  <div class="user-menu">
+  <div ref="root" class="user-menu">
     <button
+      ref="button"
       class="user-menu-button"
       type="button"
       :aria-label="t('user.menu')"
