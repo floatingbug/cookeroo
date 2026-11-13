@@ -7,7 +7,7 @@ const { t } = useI18n()
 
 <template>
   <button class="logo" type="button" @click="emit('logo:press')">
-    <span class="logo-mark" aria-hidden="true">c</span>
+    <img class="logo-mark" src="/favicon.svg" alt="" width="32" height="32" />
     <span class="logo-text">{{ t('app.name') }}</span>
   </button>
 </template>
@@ -26,17 +26,11 @@ const { t } = useI18n()
 }
 
 .logo-mark {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
+  display: block;
   width: 2rem;
   height: 2rem;
   border-radius: var(--radius-md);
-  background-color: var(--color-primary);
-  color: var(--color-primary-contrast);
-  font-size: var(--font-size-lg);
-  font-weight: var(--font-weight-bold);
-  line-height: 1;
+  object-fit: contain;
 }
 
 .logo-text {
