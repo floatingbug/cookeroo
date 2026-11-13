@@ -120,4 +120,6 @@
   /* Ebenen */
   --z-topbar: 30;
   --z-dropdown: 40;
+  --z-drawer-backdrop: 45;
+  --z-drawer: 50;
 }

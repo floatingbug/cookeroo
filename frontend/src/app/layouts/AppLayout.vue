@@ -1,13 +1,102 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router'
+import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 
 import { Logo, Sidebar, Topbar, UserMenu } from '@/shared/components'
 import { useAuthStore } from '@/features/auth/store/authStore'
 
+const SIDEBAR_ID = 'app-sidebar'
+
+const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 const { t } = useI18n()
+
+const sidebarOpen = ref(false)
+const menuButton = ref<HTMLButtonElement | null>(null)
+const desktopQuery =
+  typeof window.matchMedia === 'function' ? window.matchMedia('(min-width: 1024px)') : null
+
+let previousBodyOverflow = ''
+let scrollLocked = false
+
+function lockScroll() {
+  if (scrollLocked) {
+    return
+  }
+
+  previousBodyOverflow = document.body.style.overflow
+  document.body.style.overflow = 'hidden'
+  scrollLocked = true
+}
+
+function unlockScroll() {
+  if (!scrollLocked) {
+    return
+  }
+
+  document.body.style.overflow = previousBodyOverflow
+  scrollLocked = false
+}
+
+function openSidebar() {
+  sidebarOpen.value = true
+  lockScroll()
+
+  void nextTick(() => {
+    document.getElementById(SIDEBAR_ID)?.querySelector<HTMLElement>('a, button')?.focus()
+  })
+}
+
+function closeSidebar(restoreFocus = true) {
+  if (!sidebarOpen.value) {
+    return
+  }
+
+  sidebarOpen.value = false
+  unlockScroll()
+
+  if (restoreFocus) {
+    menuButton.value?.focus()
+  }
+}
+
+function toggleSidebar() {
+  if (sidebarOpen.value) {
+    closeSidebar()
+  } else {
+    openSidebar()
+  }
+}
+
+function onKeydown(event: KeyboardEvent) {
+  if (event.key === 'Escape' && sidebarOpen.value) {
+    closeSidebar()
+  }
+}
+
+function onDesktopChange(event: MediaQueryListEvent) {
+  if (event.matches) {
+    closeSidebar(false)
+  }
+}
+
+watch(
+  () => route.fullPath,
+  () => closeSidebar(),
+)
+
+onMounted(() => {
+  window.addEventListener('keydown', onKeydown)
+  desktopQuery?.addEventListener('change', onDesktopChange)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('keydown', onKeydown)
+  desktopQuery?.removeEventListener('change', onDesktopChange)
+  unlockScroll()
+})
 
 async function onSignOut() {
   await authStore.signOut()
@@ -19,6 +108,30 @@ async function onSignOut() {
   <div class="app-layout">
     <Topbar class="topbar">
       <template #start>
+        <button
+          ref="menuButton"
+          class="menu-button"
+          type="button"
+          :aria-label="sidebarOpen ? t('nav.closeMenu') : t('nav.openMenu')"
+          :aria-expanded="sidebarOpen"
+          :aria-controls="SIDEBAR_ID"
+          @click="toggleSidebar"
+        >
+          <svg
+            class="menu-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <path v-if="sidebarOpen" d="M6 6l12 12M18 6L6 18" />
+            <path v-else d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        </button>
+
         <Logo @logo:press="router.push('/dashboard')" />
       </template>
 
@@ -33,20 +146,20 @@ async function onSignOut() {
       </template>
     </Topbar>
 
-    <Sidebar class="sidebar">
-      <RouterLink class="sidebar-link" :to="{ name: 'dashboard' }">
+    <Sidebar :id="SIDEBAR_ID" :open="sidebarOpen" @close="closeSidebar()">
+      <RouterLink class="sidebar-link" :to="{ name: 'dashboard' }" @click="closeSidebar()">
         {{ t('nav.dashboard') }}
       </RouterLink>
-      <RouterLink class="sidebar-link" :to="{ name: 'meal-plan' }">
+      <RouterLink class="sidebar-link" :to="{ name: 'meal-plan' }" @click="closeSidebar()">
         {{ t('nav.mealPlan') }}
       </RouterLink>
-      <RouterLink class="sidebar-link" :to="{ name: 'recipe-list' }">
+      <RouterLink class="sidebar-link" :to="{ name: 'recipe-list' }" @click="closeSidebar()">
         {{ t('nav.recipeList') }}
       </RouterLink>
-      <RouterLink class="sidebar-link" :to="{ name: 'recipe-public-list' }">
+      <RouterLink class="sidebar-link" :to="{ name: 'recipe-public-list' }" @click="closeSidebar()">
         {{ t('nav.publicRecipes') }}
       </RouterLink>
-      <RouterLink class="sidebar-link" :to="{ name: 'recipe-create' }">
+      <RouterLink class="sidebar-link" :to="{ name: 'recipe-create' }" @click="closeSidebar()">
         {{ t('nav.recipeCreate') }}
       </RouterLink>
     </Sidebar>
@@ -72,15 +185,30 @@ async function onSignOut() {
   z-index: var(--z-topbar);
 }
 
-.sidebar {
-  grid-area: sidebar;
-  width: var(--sidebar-width);
-  height: 100dvh;
-  position: sticky;
-  top: 0;
-  display: none;
+.menu-button {
+  display: grid;
+  place-items: center;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+.menu-button:hover {
   background-color: var(--color-bg-muted);
-  border-right: 1px solid var(--color-border);
+  border-color: var(--color-border-strong);
+}
+
+.menu-icon {
+  width: 1.5rem;
+  height: 1.5rem;
 }
 
 .sidebar-link {
@@ -131,8 +259,8 @@ async function onSignOut() {
     user-select: none;
   }
 
-  .sidebar {
-    display: block;
+  .menu-button {
+    display: none;
   }
 }
 </style>

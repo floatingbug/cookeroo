@@ -4,6 +4,8 @@
   },
   "nav": {
     "main": "Hauptnavigation",
+    "openMenu": "Menü öffnen",
+    "closeMenu": "Menü schließen",
     "home": "Start",
     "dashboard": "Dashboard",
     "recipeList": "Meine Rezepte",
