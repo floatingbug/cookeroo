@@ -13,6 +13,7 @@ import { getRecipesApi } from '../api/getRecipesApi'
 import { getPublicRecipesApi } from '../api/getPublicRecipesApi'
 import { searchRecipesApi } from '../api/searchRecipesApi'
 import type { SearchRecipesParams } from '../api/searchRecipesApi'
+import { updateRecipeApi } from '../api/updateRecipeApi'
 import { uploadImageApi } from '../api/uploadImageApi'
 import type { RecipeForm } from '../types'
 
@@ -130,8 +131,8 @@ export function validateRecipeForm(form: RecipeForm): string | null {
   return null
 }
 
-/** Baut aus dem Formular den vertragskonformen Request-Body. */
-export function toCreateRecipePayload(form: RecipeForm): RecipeCreateRequest {
+/** Baut aus dem Formular den vertragskonformen Request-Body für Create und Update. */
+export function toRecipePayload(form: RecipeForm): RecipeCreateRequest {
   return {
     title: form.title.trim(),
     description: trimOrNull(form.description),
@@ -164,6 +165,10 @@ export function toCreateRecipePayload(form: RecipeForm): RecipeCreateRequest {
 
 export function createRecipe(payload: RecipeCreateRequest): Promise<Recipe> {
   return createRecipeApi(payload)
+}
+
+export function updateRecipe(recipeId: string, payload: RecipeCreateRequest): Promise<Recipe> {
+  return updateRecipeApi(recipeId, payload)
 }
 
 export function loadRecipe(recipeId: string): Promise<Recipe> {

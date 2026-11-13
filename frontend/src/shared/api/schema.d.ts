@@ -342,7 +342,14 @@ export interface paths {
      *     Private recipes of other users are reported as not found.
      */
     get: operations['getRecipe']
-    put?: never
+    /**
+     * Update a recipe
+     * @description Replaces the editable fields of one of the authenticated user's recipes.
+     *     Nutrition is recalculated from the submitted ingredients. Uploaded images
+     *     that are no longer referenced are removed unless another recipe still uses
+     *     them. Recipes of other users are reported as not found.
+     */
+    put: operations['updateRecipe']
     post?: never
     /**
      * Delete a recipe
@@ -983,6 +990,66 @@ export interface components {
       }[]
       /** @description Offset for the next page, or null when no further results exist. */
       nextOffset: number | null
+    }
+    /**
+     * @description Payload to update a recipe. Timestamps, creator and status are derived by the
+     *     server and cannot be supplied by the client. The payload replaces all editable
+     *     fields of the recipe.
+     */
+    RecipeUpdateRequest: {
+      title: string
+      description?: string | null
+      /**
+       * Format: uri
+       * @description URL of an uploaded image for the recipe.
+       */
+      imageUrl?: string | null
+      category?: string | null
+      cuisine?: string | null
+      difficulty?: ('easy' | 'medium' | 'hard') | null
+      /** @description Preparation time in minutes. */
+      prepTime: number
+      /** @description Cooking time in minutes. */
+      cookTime: number
+      /** @description Resting time in minutes. */
+      restTime?: number | null
+      servings: number
+      /** @description Optional label of one serving, for example "Portion". */
+      servingUnit?: string | null
+      tags?: string[]
+      ingredients: {
+        name: string
+        /** @description Numeric amount of the ingredient. */
+        quantity: number
+        /**
+         * @description Unit of an ingredient quantity.
+         * @enum {string}
+         */
+        unit: 'g' | 'kg' | 'ml' | 'l' | 'piece' | 'tbsp' | 'tsp'
+        note?: string | null
+        /**
+         * @description Whether the ingredient is optional.
+         * @default false
+         */
+        isOptional: boolean
+      }[]
+      instructions: {
+        /** @description 1-based position of the step. */
+        step: number
+        description: string
+        /** @description Duration in minutes. */
+        duration?: number | null
+        /**
+         * Format: uri
+         * @description URL of an uploaded image for this step.
+         */
+        imageUrl?: string | null
+      }[]
+      /**
+       * @description Whether the recipe is visible to other users.
+       * @default true
+       */
+      isPublic: boolean
     }
     /** @description Owner or member of a meal planner. */
     MealPlanUser: {
@@ -2815,6 +2882,235 @@ export interface operations {
     requestBody?: never
     responses: {
       /** @description The requested recipe. */
+      200: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            /** @description MongoDB ObjectId serialized as a hex string. */
+            id: string
+            title: string
+            description: string | null
+            /** Format: uri */
+            imageUrl: string | null
+            category: string | null
+            cuisine: string | null
+            difficulty: ('easy' | 'medium' | 'hard') | null
+            prepTime: number
+            cookTime: number
+            restTime: number | null
+            servings: number
+            servingUnit: string | null
+            tags: string[]
+            ingredients: {
+              name: string
+              /** @description Numeric amount of the ingredient. */
+              quantity: number
+              /**
+               * @description Unit of an ingredient quantity.
+               * @enum {string}
+               */
+              unit: 'g' | 'kg' | 'ml' | 'l' | 'piece' | 'tbsp' | 'tsp'
+              note?: string | null
+              /**
+               * @description Whether the ingredient is optional.
+               * @default false
+               */
+              isOptional: boolean
+            }[]
+            instructions: {
+              /** @description 1-based position of the step. */
+              step: number
+              description: string
+              /** @description Duration in minutes. */
+              duration?: number | null
+              /**
+               * Format: uri
+               * @description URL of an uploaded image for this step.
+               */
+              imageUrl?: string | null
+            }[]
+            /**
+             * @description Nutrients calculated by the server from the foods collection. Null when no
+             *     ingredient could be matched and converted to grams. Older recipes may not
+             *     contain this field.
+             */
+            nutrition?: {
+              /** @description Nutrient values calculated from the recipe ingredients. */
+              total: {
+                /** @description Energy in kilocalories (kcal). */
+                calories: number
+                /** @description Protein in grams. */
+                protein: number
+                /** @description Fat in grams. */
+                fat: number
+                /** @description Available carbohydrates in grams. */
+                carbohydrates: number
+                /** @description Total dietary fiber in grams. */
+                fiber: number
+                /** @description Total mono- and disaccharides in grams. */
+                sugar: number
+                /** @description Salt (sodium chloride) in grams. */
+                salt: number
+              }
+              /** @description Nutrient values calculated from the recipe ingredients. */
+              perServing: {
+                /** @description Energy in kilocalories (kcal). */
+                calories: number
+                /** @description Protein in grams. */
+                protein: number
+                /** @description Fat in grams. */
+                fat: number
+                /** @description Available carbohydrates in grams. */
+                carbohydrates: number
+                /** @description Total dietary fiber in grams. */
+                fiber: number
+                /** @description Total mono- and disaccharides in grams. */
+                sugar: number
+                /** @description Salt (sodium chloride) in grams. */
+                salt: number
+              }
+              /** @description Number of ingredients included in the calculation. */
+              matchedIngredients: number
+              /** @description Total number of ingredients in the recipe. */
+              totalIngredients: number
+              /** @description Names of ingredients that were not included in the calculation. */
+              unmatchedIngredients: string[]
+            } | null
+            /** Format: date-time */
+            createdAt: string
+            /** Format: date-time */
+            updatedAt: string
+            /** @description MongoDB ObjectId of the creating user as a hex string. */
+            createdBy: string
+            isPublic: boolean
+            /**
+             * @description Visibility of a recipe. Derived from `isPublic`: `public` when the recipe is
+             *     visible to other users, `private` otherwise.
+             * @enum {string}
+             */
+            status: 'public' | 'private'
+          }
+        }
+      }
+      /** @description Invalid input. */
+      400: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Missing or invalid access token. */
+      401: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description The requested resource does not exist. */
+      404: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+      /** @description Unexpected server error. */
+      500: {
+        headers: {
+          [name: string]: unknown
+        }
+        content: {
+          'application/json': {
+            message: string
+          }
+        }
+      }
+    }
+  }
+  updateRecipe: {
+    parameters: {
+      query?: never
+      header?: never
+      path: {
+        /** @description MongoDB ObjectId of the recipe as a hex string. */
+        recipeId: string
+      }
+      cookie?: never
+    }
+    requestBody: {
+      content: {
+        'application/json': {
+          title: string
+          description?: string | null
+          /**
+           * Format: uri
+           * @description URL of an uploaded image for the recipe.
+           */
+          imageUrl?: string | null
+          category?: string | null
+          cuisine?: string | null
+          difficulty?: ('easy' | 'medium' | 'hard') | null
+          /** @description Preparation time in minutes. */
+          prepTime: number
+          /** @description Cooking time in minutes. */
+          cookTime: number
+          /** @description Resting time in minutes. */
+          restTime?: number | null
+          servings: number
+          /** @description Optional label of one serving, for example "Portion". */
+          servingUnit?: string | null
+          tags?: string[]
+          ingredients: {
+            name: string
+            /** @description Numeric amount of the ingredient. */
+            quantity: number
+            /**
+             * @description Unit of an ingredient quantity.
+             * @enum {string}
+             */
+            unit: 'g' | 'kg' | 'ml' | 'l' | 'piece' | 'tbsp' | 'tsp'
+            note?: string | null
+            /**
+             * @description Whether the ingredient is optional.
+             * @default false
+             */
+            isOptional?: boolean
+          }[]
+          instructions: {
+            /** @description 1-based position of the step. */
+            step: number
+            description: string
+            /** @description Duration in minutes. */
+            duration?: number | null
+            /**
+             * Format: uri
+             * @description URL of an uploaded image for this step.
+             */
+            imageUrl?: string | null
+          }[]
+          /**
+           * @description Whether the recipe is visible to other users.
+           * @default true
+           */
+          isPublic?: boolean
+        }
+      }
+    }
+    responses: {
+      /** @description The updated recipe. */
       200: {
         headers: {
           [name: string]: unknown

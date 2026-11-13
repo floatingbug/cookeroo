@@ -25,7 +25,7 @@ tags:
   - name: Account
     description: Account updates and email-change confirmation.
   - name: Recipes
-    description: Create, view and delete recipes.
+    description: Create, view, update and delete recipes.
   - name: MealPlans
     description: Weekly meal planning with recipes.
   - name: Uploads

@@ -110,6 +110,11 @@
         "visibility": "Sichtbarkeit"
       }
     },
+    "edit": {
+      "title": "Rezept bearbeiten",
+      "description": "Passe die Angaben an und speichere deine Änderungen.",
+      "forbidden": "Du kannst nur eigene Rezepte bearbeiten."
+    },
     "list": {
       "title": "Meine Rezepte",
       "description": "Alle Rezepte, die du erstellt hast.",
@@ -164,6 +169,9 @@
       "uploading": "Bild wird hochgeladen …",
       "submit": "Rezept speichern",
       "saving": "Rezept wird gespeichert …",
+      "edit": "Rezept bearbeiten",
+      "saveChanges": "Änderungen speichern",
+      "updating": "Rezept wird aktualisiert …",
       "delete": "Rezept löschen",
       "deleting": "Wird gelöscht …",
       "deleteConfirmTitle": "Rezept löschen?",

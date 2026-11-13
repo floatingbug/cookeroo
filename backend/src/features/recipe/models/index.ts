@@ -8,6 +8,7 @@ import findPublic from './findPublic.js';
 import insertRecipe from './insertRecipe.js';
 import isImageUrlUsedByOtherRecipe from './isImageUrlUsedByOtherRecipe.js';
 import searchRecipes from './searchRecipes.js';
+import updateRecipeById from './updateRecipeById.js';
 
 export default {
     deleteById,
@@ -20,4 +21,5 @@ export default {
     insertRecipe,
     isImageUrlUsedByOtherRecipe,
     searchRecipes,
+    updateRecipeById,
 };

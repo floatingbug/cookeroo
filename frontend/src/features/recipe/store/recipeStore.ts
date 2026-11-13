@@ -63,6 +63,7 @@ interface RecipeState {
   publicRecipesLoading: boolean
   uploading: boolean
   deletingId: string | null
+  updating: boolean
   errorKey: string | null
   recipesErrorKey: string | null
   publicRecipesErrorKey: string | null
@@ -80,6 +81,7 @@ export const useRecipeStore = defineStore('recipe', {
     publicRecipesLoading: false,
     uploading: false,
     deletingId: null,
+    updating: false,
     errorKey: null,
     recipesErrorKey: null,
     publicRecipesErrorKey: null,
@@ -89,6 +91,41 @@ export const useRecipeStore = defineStore('recipe', {
   actions: {
     resetForm(): void {
       this.form = createDefaultForm()
+      this.errorKey = null
+    },
+
+    /** Befüllt das Formular mit den Daten eines bestehenden Rezepts. */
+    fillFormFromRecipe(recipe: Recipe): void {
+      this.form = {
+        title: recipe.title,
+        description: recipe.description ?? '',
+        imageUrl: recipe.imageUrl ?? '',
+        category: recipe.category ?? '',
+        cuisine: recipe.cuisine ?? '',
+        difficulty: recipe.difficulty ?? '',
+        prepTime: String(recipe.prepTime),
+        cookTime: String(recipe.cookTime),
+        restTime: recipe.restTime === null ? '' : String(recipe.restTime),
+        servings: String(recipe.servings),
+        servingUnit: recipe.servingUnit ?? '',
+        tags: recipe.tags.join(', '),
+        ingredients: recipe.ingredients.map((ingredient) => ({
+          key: createKey('ingredient'),
+          name: ingredient.name,
+          quantity: String(ingredient.quantity),
+          unit: ingredient.unit,
+          note: ingredient.note ?? '',
+          isOptional: ingredient.isOptional,
+        })),
+        instructions: recipe.instructions.map((instruction) => ({
+          key: createKey('instruction'),
+          step: instruction.step,
+          description: instruction.description,
+          duration: instruction.duration === null ? '' : String(instruction.duration),
+          imageUrl: instruction.imageUrl ?? '',
+        })),
+        isPublic: recipe.isPublic,
+      }
       this.errorKey = null
     },
 
@@ -153,9 +190,7 @@ export const useRecipeStore = defineStore('recipe', {
       this.errorKey = null
 
       try {
-        const recipe = await recipeService.createRecipe(
-          recipeService.toCreateRecipePayload(this.form),
-        )
+        const recipe = await recipeService.createRecipe(recipeService.toRecipePayload(this.form))
 
         return recipe.id
       } catch (error) {
@@ -163,6 +198,35 @@ export const useRecipeStore = defineStore('recipe', {
         return null
       } finally {
         this.loading = false
+      }
+    },
+
+    /** Speichert Änderungen an einem bestehenden Rezept. */
+    async updateRecipe(recipeId: string): Promise<boolean> {
+      const validationErrorKey = recipeService.validateRecipeForm(this.form)
+
+      if (validationErrorKey) {
+        this.errorKey = validationErrorKey
+        return false
+      }
+
+      this.updating = true
+      this.errorKey = null
+
+      try {
+        const updated = await recipeService.updateRecipe(
+          recipeId,
+          recipeService.toRecipePayload(this.form),
+        )
+
+        this.recipe = updated
+        this.recipes = this.recipes.map((recipe) => (recipe.id === recipeId ? updated : recipe))
+        return true
+      } catch (error) {
+        this.errorKey = recipeService.getRecipeErrorKey(error)
+        return false
+      } finally {
+        this.updating = false
       }
     },
 

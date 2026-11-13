@@ -22,6 +22,11 @@ export default {
       component: () => import('../ui/views/PublicRecipeListView.vue'),
     },
     {
+      path: ':id/edit',
+      name: 'recipe-edit',
+      component: () => import('../ui/views/RecipeEditView.vue'),
+    },
+    {
       path: ':id',
       name: 'recipe-detail',
       component: () => import('../ui/views/RecipeDetailView.vue'),

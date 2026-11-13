@@ -25,7 +25,7 @@ tags:
   - name: Account
     description: Account updates and email-change confirmation.
   - name: Recipes
-    description: Create, view and delete recipes.
+    description: Create, view, update and delete recipes.
   - name: MealPlans
     description: Weekly meal planning with recipes.
   - name: Uploads
@@ -1351,6 +1351,151 @@ paths:
         '500':
           description: Unexpected server error.
           content: *ref_4
+    put:
+      tags:
+        - Recipes
+      operationId: updateRecipe
+      summary: Update a recipe
+      description: |
+        Replaces the editable fields of one of the authenticated user's recipes.
+        Nutrition is recalculated from the submitted ingredients. Uploaded images
+        that are no longer referenced are removed unless another recipe still uses
+        them. Recipes of other users are reported as not found.
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: recipeId
+          in: path
+          required: true
+          description: MongoDB ObjectId of the recipe as a hex string.
+          schema:
+            type: string
+            pattern: ^[a-f0-9]{24}$
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: &ref_59
+                - title
+                - prepTime
+                - cookTime
+                - servings
+                - ingredients
+                - instructions
+              additionalProperties: false
+              description: |
+                Payload to update a recipe. Timestamps, creator and status are derived by the
+                server and cannot be supplied by the client. The payload replaces all editable
+                fields of the recipe.
+              properties: &ref_60
+                title:
+                  type: string
+                  minLength: 1
+                  maxLength: 150
+                description:
+                  type:
+                    - string
+                    - 'null'
+                  maxLength: 2000
+                imageUrl:
+                  type:
+                    - string
+                    - 'null'
+                  format: uri
+                  description: URL of an uploaded image for the recipe.
+                category:
+                  type:
+                    - string
+                    - 'null'
+                  maxLength: 60
+                cuisine:
+                  type:
+                    - string
+                    - 'null'
+                  maxLength: 60
+                difficulty:
+                  oneOf:
+                    - type: string
+                      description: Difficulty of a recipe.
+                      enum: *ref_16
+                    - type: 'null'
+                prepTime:
+                  type: integer
+                  minimum: 0
+                  description: Preparation time in minutes.
+                cookTime:
+                  type: integer
+                  minimum: 0
+                  description: Cooking time in minutes.
+                restTime:
+                  type:
+                    - integer
+                    - 'null'
+                  minimum: 0
+                  description: Resting time in minutes.
+                servings:
+                  type: integer
+                  minimum: 1
+                servingUnit:
+                  type:
+                    - string
+                    - 'null'
+                  maxLength: 40
+                  description: Optional label of one serving, for example "Portion".
+                tags:
+                  type: array
+                  maxItems: 20
+                  items:
+                    type: string
+                    minLength: 1
+                    maxLength: 30
+                ingredients:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    required: *ref_17
+                    additionalProperties: false
+                    description: An ingredient of a recipe.
+                    properties: *ref_18
+                instructions:
+                  type: array
+                  minItems: 1
+                  items:
+                    type: object
+                    required: *ref_19
+                    additionalProperties: false
+                    description: A single preparation step of a recipe.
+                    properties: *ref_20
+                isPublic:
+                  type: boolean
+                  default: true
+                  description: Whether the recipe is visible to other users.
+      responses:
+        '200':
+          description: The updated recipe.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: *ref_21
+                additionalProperties: false
+                description: A complete recipe after creation or lookup.
+                properties: *ref_22
+        '400':
+          description: Invalid input.
+          content: *ref_2
+        '401':
+          description: Missing or invalid access token.
+          content: *ref_12
+        '404':
+          description: The requested resource does not exist.
+          content: *ref_24
+        '500':
+          description: Unexpected server error.
+          content: *ref_4
     delete:
       tags:
         - Recipes
@@ -1400,11 +1545,11 @@ paths:
             application/json:
               schema:
                 type: object
-                required: &ref_59
+                required: &ref_61
                   - planners
                 additionalProperties: false
                 description: Meal planners shared with the authenticated user.
-                properties: &ref_60
+                properties: &ref_62
                   planners:
                     type: array
                     items:
@@ -1458,12 +1603,12 @@ paths:
             application/json:
               schema:
                 type: object
-                required: &ref_61
+                required: &ref_63
                   - token
                   - url
                 additionalProperties: false
                 description: A freshly created one-time invitation to a meal planner.
-                properties: &ref_62
+                properties: &ref_64
                   token:
                     type: string
                     description: Secret that is embedded in the invitation URL.
@@ -1504,11 +1649,11 @@ paths:
             application/json:
               schema:
                 type: object
-                required: &ref_63
+                required: &ref_65
                   - owner
                 additionalProperties: false
                 description: Public preview of a valid invitation. Does not consume the invite.
-                properties: &ref_64
+                properties: &ref_66
                   owner:
                     type: object
                     required: *ref_25
@@ -1583,11 +1728,11 @@ paths:
             application/json:
               schema:
                 type: object
-                required: &ref_65
+                required: &ref_67
                   - members
                 additionalProperties: false
                 description: Members of the authenticated user's meal planner.
-                properties: &ref_66
+                properties: &ref_68
                   members:
                     type: array
                     items:
@@ -1642,11 +1787,11 @@ paths:
           application/json:
             schema:
               type: object
-              required: &ref_67
+              required: &ref_69
                 - canEdit
               additionalProperties: false
               description: New permission for a member of the authenticated user's meal planner.
-              properties: &ref_68
+              properties: &ref_70
                 canEdit:
                   type: boolean
                   description: Whether the member may change the owner's meal plan.
@@ -1764,14 +1909,14 @@ paths:
                     maxItems: 21
                     items:
                       type: object
-                      required: &ref_69
+                      required: &ref_71
                         - day
                         - meal
                         - recipeId
                         - recipe
                       additionalProperties: false
                       description: One planned recipe including its current recipe summary.
-                      properties: &ref_70
+                      properties: &ref_72
                         day:
                           type: string
                           description: A weekday within a Monday-to-Sunday meal plan.
@@ -1870,26 +2015,26 @@ paths:
           application/json:
             schema:
               type: object
-              required: &ref_73
+              required: &ref_75
                 - entries
               additionalProperties: false
               description: |
                 Complete content of a week. Saving replaces all existing entries of the week,
                 so an empty list clears the plan.
-              properties: &ref_74
+              properties: &ref_76
                 entries:
                   type: array
                   maxItems: 21
                   description: Planned recipes. Each combination of day and meal may occur only once.
                   items:
                     type: object
-                    required: &ref_71
+                    required: &ref_73
                       - day
                       - meal
                       - recipeId
                     additionalProperties: false
                     description: One planned recipe in a save request.
-                    properties: &ref_72
+                    properties: &ref_74
                       day:
                         type: string
                         description: A weekday within a Monday-to-Sunday meal plan.
@@ -1921,7 +2066,7 @@ paths:
           content: *ref_12
         '403':
           description: The authenticated user may not change this resource.
-          content: &ref_77
+          content: &ref_79
             application/json:
               schema:
                 type: object
@@ -1966,11 +2111,11 @@ paths:
             application/json:
               schema:
                 type: object
-                required: &ref_75
+                required: &ref_77
                   - url
                 additionalProperties: false
                 description: Public URL of an uploaded image.
-                properties: &ref_76
+                properties: &ref_78
                   url:
                     type: string
                     format: uri
@@ -2180,6 +2325,15 @@ components:
       additionalProperties: false
       description: One page of access-controlled recipe search results.
       properties: *ref_58
+    RecipeUpdateRequest:
+      type: object
+      required: *ref_59
+      additionalProperties: false
+      description: |
+        Payload to update a recipe. Timestamps, creator and status are derived by the
+        server and cannot be supplied by the client. The payload replaces all editable
+        fields of the recipe.
+      properties: *ref_60
     MealPlanUser:
       type: object
       required: *ref_25
@@ -2194,22 +2348,22 @@ components:
       properties: *ref_28
     SharedMealPlanList:
       type: object
-      required: *ref_59
-      additionalProperties: false
-      description: Meal planners shared with the authenticated user.
-      properties: *ref_60
-    MealPlanInvite:
-      type: object
       required: *ref_61
       additionalProperties: false
-      description: A freshly created one-time invitation to a meal planner.
+      description: Meal planners shared with the authenticated user.
       properties: *ref_62
-    MealPlanInvitePreview:
+    MealPlanInvite:
       type: object
       required: *ref_63
       additionalProperties: false
-      description: Public preview of a valid invitation. Does not consume the invite.
+      description: A freshly created one-time invitation to a meal planner.
       properties: *ref_64
+    MealPlanInvitePreview:
+      type: object
+      required: *ref_65
+      additionalProperties: false
+      description: Public preview of a valid invitation. Does not consume the invite.
+      properties: *ref_66
     MealPlanMember:
       type: object
       required: *ref_29
@@ -2218,16 +2372,16 @@ components:
       properties: *ref_30
     MealPlanMemberList:
       type: object
-      required: *ref_65
-      additionalProperties: false
-      description: Members of the authenticated user's meal planner.
-      properties: *ref_66
-    MealPlanMemberUpdateRequest:
-      type: object
       required: *ref_67
       additionalProperties: false
-      description: New permission for a member of the authenticated user's meal planner.
+      description: Members of the authenticated user's meal planner.
       properties: *ref_68
+    MealPlanMemberUpdateRequest:
+      type: object
+      required: *ref_69
+      additionalProperties: false
+      description: New permission for a member of the authenticated user's meal planner.
+      properties: *ref_70
     MealPlanDay:
       type: string
       description: A weekday within a Monday-to-Sunday meal plan.
@@ -2238,10 +2392,10 @@ components:
       enum: *ref_34
     MealPlanEntry:
       type: object
-      required: *ref_69
+      required: *ref_71
       additionalProperties: false
       description: One planned recipe including its current recipe summary.
-      properties: *ref_70
+      properties: *ref_72
     MealPlan:
       type: object
       required: *ref_35
@@ -2250,24 +2404,24 @@ components:
       properties: *ref_36
     MealPlanEntryInput:
       type: object
-      required: *ref_71
+      required: *ref_73
       additionalProperties: false
       description: One planned recipe in a save request.
-      properties: *ref_72
+      properties: *ref_74
     MealPlanSaveRequest:
       type: object
-      required: *ref_73
+      required: *ref_75
       additionalProperties: false
       description: |
         Complete content of a week. Saving replaces all existing entries of the week,
         so an empty list clears the plan.
-      properties: *ref_74
+      properties: *ref_76
     ImageUploadResponse:
       type: object
-      required: *ref_75
+      required: *ref_77
       additionalProperties: false
       description: Public URL of an uploaded image.
-      properties: *ref_76
+      properties: *ref_78
   responses:
     BadRequest:
       description: Invalid input.
@@ -2286,7 +2440,7 @@ components:
       content: *ref_24
     Forbidden:
       description: The authenticated user may not change this resource.
-      content: *ref_77
+      content: *ref_79
   headers:
     SetCookie:
       description: |

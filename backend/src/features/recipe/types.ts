@@ -56,6 +56,8 @@ export interface CreateRecipeInput {
     isPublic?: boolean;
 }
 
+export type UpdateRecipeInput = CreateRecipeInput;
+
 export interface RecipeDocument {
     _id?: ObjectId;
     title: string;

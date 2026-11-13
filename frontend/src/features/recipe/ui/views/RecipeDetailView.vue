@@ -70,6 +70,16 @@ function formatDate(value: string): string {
   return dateFormatter.value.format(new Date(value))
 }
 
+function onEdit(): void {
+  const currentRecipe = recipe.value
+
+  if (!currentRecipe) {
+    return
+  }
+
+  void router.push({ name: 'recipe-edit', params: { id: currentRecipe.id } })
+}
+
 async function onDelete(): Promise<void> {
   const currentRecipe = recipe.value
 
@@ -102,13 +112,20 @@ async function onDelete(): Promise<void> {
           </div>
 
           <div v-if="isOwner" class="header-actions">
-            <Button
-              v-if="!confirmingDelete"
-              severity="danger"
-              :label="t('recipe.actions.delete')"
-              :disabled="deleting"
-              @click="confirmingDelete = true"
-            />
+            <div v-if="!confirmingDelete" class="header-buttons">
+              <Button
+                severity="secondary"
+                :label="t('recipe.actions.edit')"
+                :disabled="deleting"
+                @click="onEdit"
+              />
+              <Button
+                severity="danger"
+                :label="t('recipe.actions.delete')"
+                :disabled="deleting"
+                @click="confirmingDelete = true"
+              />
+            </div>
 
             <div v-else class="delete-confirm">
               <p class="delete-confirm-title">{{ t('recipe.actions.deleteConfirmTitle') }}</p>
@@ -267,6 +284,13 @@ async function onDelete(): Promise<void> {
   flex-direction: column;
   align-items: flex-end;
   gap: var(--space-xs);
+}
+
+.header-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--space-sm);
 }
 
 .delete-confirm {

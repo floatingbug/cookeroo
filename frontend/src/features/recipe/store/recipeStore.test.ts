@@ -13,6 +13,7 @@ vi.mock('../services/recipeService', async () => {
     loadPublicRecipes: vi.fn(),
     loadRecipe: vi.fn(),
     loadRecipes: vi.fn(),
+    updateRecipe: vi.fn(),
     uploadImage: vi.fn(),
   }
 })
@@ -26,9 +27,49 @@ const mockedDeleteRecipe = vi.mocked(recipeService.deleteRecipe)
 const mockedLoadPublicRecipes = vi.mocked(recipeService.loadPublicRecipes)
 const mockedLoadRecipe = vi.mocked(recipeService.loadRecipe)
 const mockedLoadRecipes = vi.mocked(recipeService.loadRecipes)
+const mockedUpdateRecipe = vi.mocked(recipeService.updateRecipe)
 const mockedUploadImage = vi.mocked(recipeService.uploadImage)
 
 const RECIPE = { id: 'recipe-1', title: 'Testrezept' } as Recipe
+
+const FULL_RECIPE: Recipe = {
+  id: 'recipe-1',
+  title: 'Lasagne',
+  description: 'Ein Klassiker.',
+  imageUrl: 'http://example.test/image.png',
+  category: 'Hauptgericht',
+  cuisine: 'Italienisch',
+  difficulty: 'medium',
+  prepTime: 20,
+  cookTime: 40,
+  restTime: 5,
+  servings: 4,
+  servingUnit: 'Portionen',
+  tags: ['Ofen', 'Pasta'],
+  ingredients: [
+    {
+      name: 'Mehl',
+      quantity: 200,
+      unit: 'g',
+      note: 'gesiebt',
+      isOptional: true,
+    },
+  ],
+  instructions: [
+    {
+      step: 1,
+      description: 'Alles schichten.',
+      duration: 10,
+      imageUrl: 'http://example.test/step.png',
+    },
+  ],
+  nutrition: null,
+  createdAt: '2026-01-01T10:00:00.000Z',
+  updatedAt: '2026-01-01T10:00:00.000Z',
+  createdBy: '0123456789abcdef01234567',
+  isPublic: false,
+  status: 'private',
+}
 
 function fillRequiredFields(store: ReturnType<typeof useRecipeStore>): void {
   store.form.title = 'Testrezept'
@@ -120,6 +161,47 @@ describe('recipeStore', () => {
     expect(store.loading).toBe(false)
   })
 
+  it('füllt das Formular aus einem bestehenden Rezept', () => {
+    const store = useRecipeStore()
+
+    store.fillFormFromRecipe(FULL_RECIPE)
+
+    expect(store.form).toEqual({
+      title: 'Lasagne',
+      description: 'Ein Klassiker.',
+      imageUrl: 'http://example.test/image.png',
+      category: 'Hauptgericht',
+      cuisine: 'Italienisch',
+      difficulty: 'medium',
+      prepTime: '20',
+      cookTime: '40',
+      restTime: '5',
+      servings: '4',
+      servingUnit: 'Portionen',
+      tags: 'Ofen, Pasta',
+      ingredients: [
+        {
+          key: expect.any(String),
+          name: 'Mehl',
+          quantity: '200',
+          unit: 'g',
+          note: 'gesiebt',
+          isOptional: true,
+        },
+      ],
+      instructions: [
+        {
+          key: expect.any(String),
+          step: 1,
+          description: 'Alles schichten.',
+          duration: '10',
+          imageUrl: 'http://example.test/step.png',
+        },
+      ],
+      isPublic: false,
+    })
+  })
+
   it('lädt ein Bild hoch und liefert die URL', async () => {
     const store = useRecipeStore()
     const file = new File(['abc'], 'image.png', { type: 'image/png' })
@@ -209,6 +291,46 @@ describe('recipeStore', () => {
     expect(store.publicRecipes).toEqual([])
     expect(store.publicRecipesErrorKey).toBe('recipe.errors.generic')
     expect(store.publicRecipesLoading).toBe(false)
+  })
+
+  it('aktualisiert ein Rezept und übernimmt die Antwort', async () => {
+    const store = useRecipeStore()
+    const updated = { ...RECIPE, title: 'Neuer Titel' }
+
+    fillRequiredFields(store)
+    store.recipes = [RECIPE]
+    store.recipe = RECIPE
+    mockedUpdateRecipe.mockResolvedValue(updated)
+
+    await expect(store.updateRecipe('recipe-1')).resolves.toBe(true)
+
+    expect(mockedUpdateRecipe).toHaveBeenCalledWith(
+      'recipe-1',
+      expect.objectContaining({ title: 'Testrezept' }),
+    )
+    expect(store.recipe).toEqual(updated)
+    expect(store.recipes).toEqual([updated])
+    expect(store.updating).toBe(false)
+    expect(store.errorKey).toBeNull()
+  })
+
+  it('validiert vor dem Update', async () => {
+    const store = useRecipeStore()
+
+    await expect(store.updateRecipe('recipe-1')).resolves.toBe(false)
+    expect(store.errorKey).toBe('recipe.errors.titleRequired')
+    expect(mockedUpdateRecipe).not.toHaveBeenCalled()
+  })
+
+  it('meldet Fehler beim Aktualisieren', async () => {
+    const store = useRecipeStore()
+
+    fillRequiredFields(store)
+    mockedUpdateRecipe.mockRejectedValue({ status: 500 })
+
+    await expect(store.updateRecipe('recipe-1')).resolves.toBe(false)
+    expect(store.errorKey).toBe('recipe.errors.generic')
+    expect(store.updating).toBe(false)
   })
 
   it('löscht ein Rezept und entfernt es aus dem State', async () => {

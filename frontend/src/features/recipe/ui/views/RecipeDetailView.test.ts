@@ -157,6 +157,28 @@ describe('RecipeDetailView', () => {
     await flushPromises()
 
     expect(wrapper.text()).not.toContain(i18n.global.t('recipe.actions.delete'))
+    expect(wrapper.text()).not.toContain(i18n.global.t('recipe.actions.edit'))
+  })
+
+  it('navigiert zur Bearbeitungsansicht', async () => {
+    mockedLoadRecipe.mockResolvedValue(RECIPE)
+
+    const wrapper = mountView()
+
+    await flushPromises()
+
+    const editButton = wrapper
+      .findAll('button')
+      .find((button) => button.text() === i18n.global.t('recipe.actions.edit'))
+
+    expect(editButton).toBeDefined()
+
+    await editButton!.trigger('click')
+
+    expect(pushMock).toHaveBeenCalledWith({
+      name: 'recipe-edit',
+      params: { id: 'recipe-1' },
+    })
   })
 
   it('löscht ein Rezept nach Bestätigung und navigiert zur Liste', async () => {

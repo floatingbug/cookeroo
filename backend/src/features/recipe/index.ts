@@ -11,6 +11,7 @@ router.get('/public', authUser, ...openApiMiddleware, controller.listPublicRecip
 router.get('/search', authUser, ...openApiMiddleware, controller.searchRecipes);
 router.get('/tags', authUser, ...openApiMiddleware, controller.listRecipeTags);
 router.get('/:recipeId', authUser, ...openApiMiddleware, controller.getRecipe);
+router.put('/:recipeId', authUser, ...openApiMiddleware, controller.updateRecipe);
 router.delete('/:recipeId', authUser, ...openApiMiddleware, controller.deleteRecipe);
 
 export default router;

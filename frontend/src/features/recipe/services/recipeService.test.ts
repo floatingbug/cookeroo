@@ -6,6 +6,7 @@ vi.mock('../api/getRecipeApi', () => ({ getRecipeApi: vi.fn() }))
 vi.mock('../api/getRecipesApi', () => ({ getRecipesApi: vi.fn() }))
 vi.mock('../api/getPublicRecipesApi', () => ({ getPublicRecipesApi: vi.fn() }))
 vi.mock('../api/uploadImageApi', () => ({ uploadImageApi: vi.fn() }))
+vi.mock('../api/updateRecipeApi', () => ({ updateRecipeApi: vi.fn() }))
 
 import { ApiError } from '@/shared/api/apiFetch'
 import type { Recipe, RecipeCreateRequest } from '@/shared/api/types'
@@ -14,6 +15,7 @@ import { deleteRecipeApi } from '../api/deleteRecipeApi'
 import { getRecipeApi } from '../api/getRecipeApi'
 import { getRecipesApi } from '../api/getRecipesApi'
 import { getPublicRecipesApi } from '../api/getPublicRecipesApi'
+import { updateRecipeApi } from '../api/updateRecipeApi'
 import { uploadImageApi } from '../api/uploadImageApi'
 import type { RecipeForm } from '../types'
 import {
@@ -26,7 +28,8 @@ import {
   loadRecipes,
   loadPublicRecipes,
   parseTags,
-  toCreateRecipePayload,
+  toRecipePayload,
+  updateRecipe,
   uploadImage,
   validateRecipeForm,
 } from './recipeService'
@@ -37,6 +40,7 @@ const mockedGetRecipeApi = vi.mocked(getRecipeApi)
 const mockedGetRecipesApi = vi.mocked(getRecipesApi)
 const mockedGetPublicRecipesApi = vi.mocked(getPublicRecipesApi)
 const mockedUploadImageApi = vi.mocked(uploadImageApi)
+const mockedUpdateRecipeApi = vi.mocked(updateRecipeApi)
 
 const RECIPE = { id: 'recipe-1', title: 'Testrezept' } as Recipe
 
@@ -154,9 +158,9 @@ describe('recipeService', () => {
     })
   })
 
-  describe('toCreateRecipePayload', () => {
+  describe('toRecipePayload', () => {
     it('trimmt Werte, entfernt doppelte Tags und nummeriert Schritte', () => {
-      const payload = toCreateRecipePayload(createForm())
+      const payload = toRecipePayload(createForm())
 
       expect(payload).toEqual({
         title: 'Testrezept',
@@ -201,12 +205,21 @@ describe('recipeService', () => {
 
   describe('API-Aufrufe', () => {
     it('legt ein Rezept an', async () => {
-      const payload = toCreateRecipePayload(createForm())
+      const payload = toRecipePayload(createForm())
 
       mockedCreateRecipeApi.mockResolvedValue(RECIPE)
 
       await expect(createRecipe(payload)).resolves.toBe(RECIPE)
       expect(mockedCreateRecipeApi).toHaveBeenCalledWith(payload)
+    })
+
+    it('aktualisiert ein Rezept', async () => {
+      const payload = toRecipePayload(createForm())
+
+      mockedUpdateRecipeApi.mockResolvedValue(RECIPE)
+
+      await expect(updateRecipe('recipe-1', payload)).resolves.toBe(RECIPE)
+      expect(mockedUpdateRecipeApi).toHaveBeenCalledWith('recipe-1', payload)
     })
 
     it('lädt ein Rezept', async () => {
