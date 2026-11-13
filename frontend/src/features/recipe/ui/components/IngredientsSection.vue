@@ -28,12 +28,6 @@ const unitOptions = computed<SelectOption[]>(() =>
   <section class="section">
     <div class="section-header">
       <h2 class="section-title">{{ t('recipe.create.sections.ingredients') }}</h2>
-      <Button
-        severity="secondary"
-        :label="t('recipe.actions.addIngredient')"
-        :disabled="props.loading"
-        @click="emit('add')"
-      />
     </div>
 
     <fieldset v-for="(ingredient, index) in props.ingredients" :key="ingredient.key" class="entry">
@@ -88,6 +82,15 @@ const unitOptions = computed<SelectOption[]>(() =>
         />
       </div>
     </fieldset>
+
+    <section class="footer">
+      <Button
+        severity="secondary"
+        :label="t('recipe.actions.addIngredient')"
+        :disabled="props.loading"
+        @click="emit('add')"
+      />
+    </section>
   </section>
 </template>
 
@@ -133,6 +136,11 @@ const unitOptions = computed<SelectOption[]>(() =>
   font-size: var(--font-size-sm);
   font-weight: var(--font-weight-semibold);
   color: var(--color-primary);
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .grid {

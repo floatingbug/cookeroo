@@ -132,7 +132,7 @@ async function onSignOut() {
           </svg>
         </button>
 
-        <Logo @logo:press="router.push('/dashboard')" />
+        <Logo class="logo" @logo:press="router.push('/dashboard')" />
       </template>
 
       <template #end>
@@ -183,6 +183,12 @@ async function onSignOut() {
   position: sticky;
   top: 0;
   z-index: var(--z-topbar);
+}
+
+@media(width <= 480px){
+  .logo {
+    display: none;
+  }
 }
 
 .menu-button {

@@ -24,12 +24,6 @@ const { t } = useI18n()
   <section class="section">
     <div class="section-header">
       <h2 class="section-title">{{ t('recipe.create.sections.instructions') }}</h2>
-      <Button
-        severity="secondary"
-        :label="t('recipe.actions.addInstruction')"
-        :disabled="props.loading"
-        @click="emit('add')"
-      />
     </div>
 
     <fieldset
@@ -76,6 +70,15 @@ const { t } = useI18n()
         />
       </div>
     </fieldset>
+
+    <div class="section-footer">
+      <Button
+        severity="secondary"
+        :label="t('recipe.actions.addInstruction')"
+        :disabled="props.loading"
+        @click="emit('add')"
+      />
+    </div>
   </section>
 </template>
 
@@ -97,12 +100,16 @@ const { t } = useI18n()
   color: var(--color-primary);
 }
 
-.section-header,
-.entry-actions {
+.section-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: var(--space-sm);
+}
+
+.section-footer, .entry-actions {
+  display: flex;
+  justify-content: flex-end;
 }
 
 .entry {
