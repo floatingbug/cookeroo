@@ -28,6 +28,7 @@ interface Options {
     dataDir: string;
     drop: boolean;
     dryRun: boolean;
+    allowProduction: boolean;
 }
 
 interface WriteStats {
@@ -43,6 +44,7 @@ Optionen:
   --data <dir>   Ordner mit den BLS-Excel-Dateien
   --drop         Collection "foods" vor dem Import leeren
   --dry-run      Nur parsen und Statistik ausgeben, keine Datenbank ändern
+  --allow-production  Import gegen eine Produktions-DB erlauben (NODE_ENV=production)
   --help         Diese Hilfe ausgeben`);
 }
 
@@ -51,6 +53,7 @@ function parseArgs(argv: string[]): Options {
         dataDir: defaultDataDir,
         drop: false,
         dryRun: false,
+        allowProduction: false,
     };
 
     for (let index = 0; index < argv.length; index += 1) {
@@ -63,6 +66,11 @@ function parseArgs(argv: string[]): Options {
 
         if (arg === '--dry-run') {
             options.dryRun = true;
+            continue;
+        }
+
+        if (arg === '--allow-production') {
+            options.allowProduction = true;
             continue;
         }
 
@@ -169,8 +177,11 @@ async function main(): Promise<void> {
 
     console.log(`BLS-Import aus: ${options.dataDir}`);
 
-    if (config.env === 'production') {
-        throw new Error('Import-Script läuft nicht in Produktion (NODE_ENV=production).');
+    if (config.env === 'production' && !options.allowProduction) {
+        throw new Error(
+            'Import-Script läuft nicht in Produktion (NODE_ENV=production). '
+            + 'Bewusst mit --allow-production starten.',
+        );
     }
 
     const [dataSheet, componentsSheet] = await Promise.all([
