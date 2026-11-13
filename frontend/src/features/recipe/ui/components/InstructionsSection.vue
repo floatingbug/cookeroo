@@ -107,7 +107,8 @@ const { t } = useI18n()
   gap: var(--space-sm);
 }
 
-.section-footer, .entry-actions {
+.section-footer,
+.entry-actions {
   display: flex;
   justify-content: flex-end;
 }

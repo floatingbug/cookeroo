@@ -185,7 +185,7 @@ async function onSignOut() {
   z-index: var(--z-topbar);
 }
 
-@media(width <= 480px){
+@media (width <= 480px) {
   .logo {
     display: none;
   }
