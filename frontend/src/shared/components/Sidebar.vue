@@ -19,6 +19,10 @@ const { t } = useI18n()
   </Teleport>
 
   <aside :id="id" class="sidebar" :class="{ 'sidebar--open': open }">
+    <div v-if="$slots.header" class="sidebar-header">
+      <slot name="header" />
+    </div>
+
     <nav class="sidebar-nav" :aria-label="t(label)">
       <slot />
     </nav>
@@ -49,6 +53,14 @@ const { t } = useI18n()
 .sidebar--open {
   visibility: visible;
   transform: translateX(0);
+}
+
+.sidebar-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-sm);
+  margin-bottom: var(--space-lg);
 }
 
 .sidebar-nav {

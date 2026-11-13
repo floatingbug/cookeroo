@@ -15,6 +15,7 @@ const { t } = useI18n()
 
 const sidebarOpen = ref(false)
 const menuButton = ref<HTMLButtonElement | null>(null)
+const closeButton = ref<HTMLButtonElement | null>(null)
 const desktopQuery =
   typeof window.matchMedia === 'function' ? window.matchMedia('(min-width: 1024px)') : null
 
@@ -45,7 +46,7 @@ function openSidebar() {
   lockScroll()
 
   void nextTick(() => {
-    document.getElementById(SIDEBAR_ID)?.querySelector<HTMLElement>('a, button')?.focus()
+    closeButton.value?.focus()
   })
 }
 
@@ -131,8 +132,6 @@ async function onSignOut() {
             <path v-else d="M4 7h16M4 12h16M4 17h16" />
           </svg>
         </button>
-
-        <Logo class="logo" @logo:press="router.push('/dashboard')" />
       </template>
 
       <template #end>
@@ -147,6 +146,31 @@ async function onSignOut() {
     </Topbar>
 
     <Sidebar :id="SIDEBAR_ID" :open="sidebarOpen" @close="closeSidebar()">
+      <template #header>
+        <Logo @logo:press="router.push('/dashboard')" />
+
+        <button
+          ref="closeButton"
+          class="sidebar-close"
+          type="button"
+          :aria-label="t('nav.closeMenu')"
+          @click="closeSidebar()"
+        >
+          <svg
+            class="sidebar-close-icon"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+            focusable="false"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+          >
+            <path d="M6 6l12 12M18 6L6 18" />
+          </svg>
+        </button>
+      </template>
+
       <RouterLink class="sidebar-link" :to="{ name: 'dashboard' }" @click="closeSidebar()">
         {{ t('nav.dashboard') }}
       </RouterLink>
@@ -185,12 +209,6 @@ async function onSignOut() {
   z-index: var(--z-topbar);
 }
 
-@media (width <= 480px) {
-  .logo {
-    display: none;
-  }
-}
-
 .menu-button {
   display: grid;
   place-items: center;
@@ -215,6 +233,32 @@ async function onSignOut() {
 .menu-icon {
   width: 1.5rem;
   height: 1.5rem;
+}
+
+.sidebar-close {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  padding: 0;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-standard),
+    border-color var(--duration-fast) var(--ease-standard);
+}
+
+.sidebar-close:hover {
+  background-color: var(--color-surface-raised);
+  border-color: var(--color-border-strong);
+}
+
+.sidebar-close-icon {
+  width: 1.25rem;
+  height: 1.25rem;
 }
 
 .sidebar-link {
@@ -266,6 +310,10 @@ async function onSignOut() {
   }
 
   .menu-button {
+    display: none;
+  }
+
+  .sidebar-close {
     display: none;
   }
 }

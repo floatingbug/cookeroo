@@ -82,13 +82,28 @@ describe('AppLayout', () => {
     await button.trigger('click')
     await nextTick()
 
-    expect(document.activeElement?.textContent).toContain(i18n.global.t('nav.dashboard'))
+    expect(document.activeElement).toBe(wrapper.get('.sidebar-close').element)
 
     window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
     await nextTick()
 
     expect(button.attributes('aria-expanded')).toBe('false')
     expect(document.activeElement).toBe(button.element)
+
+    wrapper.unmount()
+  })
+
+  it('zeigt das Logo in der Sidebar statt in der Topbar', async () => {
+    const wrapper = mountLayout()
+
+    expect(wrapper.find('.topbar .logo').exists()).toBe(false)
+    expect(wrapper.find('#app-sidebar .logo').exists()).toBe(true)
+
+    await wrapper.get('#app-sidebar .logo').trigger('click')
+
+    await vi.waitFor(() => {
+      expect(router.currentRoute.value.name).toBe('dashboard')
+    })
 
     wrapper.unmount()
   })
