@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 
-import { Logo, Topbar, Footer } from '@/shared/components'
+import { LanguageToggle, Logo, Topbar, Footer } from '@/shared/components'
 import { useAuthStore } from '@/features/auth/store/authStore'
 import { AuthButtons } from './components'
 
@@ -39,6 +39,7 @@ async function onAuthButtonActions({ action }: { action: string }) {
         </template>
 
         <template #end>
+          <LanguageToggle />
           <AuthButtons
             :is-authenticated="authStore.isAuthenticated"
             :user-name="authStore.user?.name ?? ''"

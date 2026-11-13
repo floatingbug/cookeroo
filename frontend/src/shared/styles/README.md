@@ -140,6 +140,20 @@ das Design folgt dem System.
 - Texte: `theme.label`, `theme.light`, `theme.dark`, `theme.system` in
   `de.json` und `en.json`.
 
+## Sprachwahl
+
+- `src/shared/i18n/locale.ts`: reaktive Sprache (`de`, `en`), `localStorage`
+  und `lang`-Attribut am `<html>`.
+- `src/app/i18n/index.ts` erzeugt die i18n-Instanz mit der gespeicherten
+  Sprache und folgt `setLocale()` synchron.
+- `src/shared/components/LanguageToggle.vue`: kompakter DE/EN-Schalter mit
+  `aria-pressed` für `AuthLayout` und `PublicLayout`.
+- Im eingeloggten Bereich steckt die Sprachwahl im `UserMenu` (Menüpunkte mit
+  `aria-checked`).
+- Texte: `user.language`, `user.languages.de`, `user.languages.en` in
+  `de.json` und `en.json`; die Sprachnamen bleiben immer in der eigenen
+  Sprache.
+
 ## Breakpoints
 
 | Name | Breite  | Verwendung          |

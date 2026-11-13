@@ -2,6 +2,8 @@
 import { onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 
+import { LOCALES, locale, setLocale } from '@/shared/i18n/locale'
+
 defineProps({
   userName: { type: String, default: '' },
   userEmail: { type: String, default: '' },
@@ -50,6 +52,11 @@ watch(open, (isOpen) => {
 
 onUnmounted(removeListeners)
 
+function onSelectLocale(value: string) {
+  setLocale(value)
+  close()
+}
+
 function onSignOut() {
   close()
   emit('signOut')
@@ -72,6 +79,21 @@ function onSignOut() {
 
     <div v-if="open" class="user-menu-dropdown" role="menu">
       <p v-if="userEmail" class="user-menu-email">{{ userEmail }}</p>
+      <div class="user-menu-languages" role="group" :aria-label="t('user.language')">
+        <button
+          v-for="value in LOCALES"
+          :key="value"
+          class="user-menu-language"
+          :class="{ 'user-menu-language--active': locale === value }"
+          type="button"
+          role="menuitemradio"
+          :aria-checked="locale === value"
+          :data-locale="value"
+          @click="onSelectLocale(value)"
+        >
+          {{ t(`user.languages.${value}`) }}
+        </button>
+      </div>
       <button class="user-menu-signout" type="button" role="menuitem" @click="onSignOut">
         {{ t('user.signOut') }}
       </button>
@@ -126,6 +148,40 @@ function onSignOut() {
   font-size: var(--font-size-xs);
   color: var(--color-text-muted);
   overflow-wrap: anywhere;
+}
+
+.user-menu-languages {
+  display: flex;
+  gap: var(--space-2xs);
+  margin-bottom: var(--space-xs);
+  padding-bottom: var(--space-xs);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.user-menu-language {
+  flex: 1;
+  padding: var(--space-xs) var(--space-sm);
+  border: 0;
+  border-radius: var(--radius-sm);
+  background-color: transparent;
+  color: var(--color-text-muted);
+  font: inherit;
+  font-size: var(--font-size-sm);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    color var(--duration-fast) var(--ease-standard),
+    background-color var(--duration-fast) var(--ease-standard);
+}
+
+.user-menu-language:hover {
+  color: var(--color-text);
+  background-color: var(--color-bg-muted);
+}
+
+.user-menu-language--active {
+  color: var(--color-primary);
+  font-weight: var(--font-weight-medium);
 }
 
 .user-menu-signout {

@@ -16,7 +16,12 @@
   },
   "user": {
     "menu": "Benutzermenü",
-    "signOut": "Abmelden"
+    "signOut": "Abmelden",
+    "language": "Sprache",
+    "languages": {
+      "de": "Deutsch",
+      "en": "English"
+    }
   },
   "theme": {
     "label": "Farbschema",

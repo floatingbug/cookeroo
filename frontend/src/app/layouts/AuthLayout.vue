@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from 'vue-router'
 
-import { Logo, ThemeToggle } from '@/shared/components'
+import { LanguageToggle, Logo, ThemeToggle } from '@/shared/components'
 
 const router = useRouter()
 </script>
@@ -10,7 +10,10 @@ const router = useRouter()
   <div class="auth-layout">
     <header class="auth-header">
       <Logo @logo:press="router.push('/')" />
-      <ThemeToggle />
+      <div class="auth-header-actions">
+        <LanguageToggle />
+        <ThemeToggle />
+      </div>
     </header>
 
     <div class="auth-container">
@@ -35,6 +38,12 @@ const router = useRouter()
   justify-content: space-between;
   gap: var(--space-md);
   padding: var(--space-md);
+}
+
+.auth-header-actions {
+  display: flex;
+  align-items: center;
+  gap: var(--space-sm);
 }
 
 .auth-container {
