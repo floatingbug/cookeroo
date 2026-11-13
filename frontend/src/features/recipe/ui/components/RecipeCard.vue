@@ -231,7 +231,9 @@ function confirmDelete(): void {
 }
 
 .card-actions {
-  padding: var(--space-sm) var(--space-md) var(--space-md);
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--space-sm) var(--space-md);
   border-top: 1px solid var(--color-border);
 }
 
