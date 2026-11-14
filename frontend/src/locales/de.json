@@ -2,6 +2,10 @@
   "app": {
     "name": "Cookeroo"
   },
+  "common": {
+    "showPassword": "Passwort anzeigen",
+    "hidePassword": "Passwort verbergen"
+  },
   "nav": {
     "main": "Hauptnavigation",
     "openMenu": "Menü öffnen",
