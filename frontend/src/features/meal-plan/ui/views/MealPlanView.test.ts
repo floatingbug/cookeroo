@@ -334,6 +334,33 @@ describe('MealPlanView', () => {
     expect(wrapper.text()).toContain(i18n.global.t('mealPlan.errors.load'))
   })
 
+  it('wechselt mit den Pfeil-Buttons zwischen Wochen', async () => {
+    const wrapper = mountView()
+
+    await flushPromises()
+
+    const firstWeek = mockedLoadMealPlan.mock.calls.at(-1)?.[0]
+
+    expect(firstWeek).toBeDefined()
+
+    await wrapper
+      .find(`button[aria-label="${i18n.global.t('mealPlan.week.previous')}"]`)
+      .trigger('click')
+    await flushPromises()
+
+    expect(mockedLoadMealPlan).toHaveBeenLastCalledWith(
+      mealPlanService.shiftWeek(firstWeek!, -1),
+      undefined,
+    )
+
+    await wrapper
+      .find(`button[aria-label="${i18n.global.t('mealPlan.week.next')}"]`)
+      .trigger('click')
+    await flushPromises()
+
+    expect(mockedLoadMealPlan).toHaveBeenLastCalledWith(firstWeek, undefined)
+  })
+
   it('zeigt einen freigegebenen Plan nur lesend an', async () => {
     routeMock.query = { owner: SHARED.owner.id }
     mockedLoadSharedMealPlans.mockResolvedValue([SHARED])
@@ -351,6 +378,7 @@ describe('MealPlanView', () => {
       i18n.global.t('mealPlan.planner.sharedPlanFrom', { name: SHARED.owner.name }),
     )
     expect(wrapper.text()).toContain(i18n.global.t('mealPlan.planner.readOnlyHint'))
+    expect(wrapper.text()).not.toContain(i18n.global.t('mealPlan.sharing.hint'))
     expect(saveButtonOf(wrapper)).toBeUndefined()
 
     const slots = wrapper.findAll('.recipe-slot')
@@ -385,6 +413,7 @@ describe('MealPlanView', () => {
       .find((button) => button.text() === i18n.global.t('mealPlan.sharing.action'))
 
     expect(shareButton).toBeDefined()
+    expect(wrapper.text()).toContain(i18n.global.t('mealPlan.sharing.hint'))
 
     await shareButton!.trigger('click')
     await flushPromises()

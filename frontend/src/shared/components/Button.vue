@@ -4,6 +4,7 @@ import type { PropType } from 'vue'
 
 const props = defineProps({
   label: { type: String, required: true },
+  ariaLabel: { type: String, default: undefined },
   severity: {
     type: String as PropType<'primary' | 'secondary' | 'danger'>,
     default: 'primary',
@@ -17,7 +18,7 @@ const classes = computed(() => ['button', `button--${props.severity}`])
 </script>
 
 <template>
-  <button :type="type" :class="classes" :disabled="disabled">
+  <button :type="type" :class="classes" :disabled="disabled" :aria-label="ariaLabel">
     {{ label }}
   </button>
 </template>

@@ -293,9 +293,10 @@
       "retryShared": "Reload shared plans"
     },
     "sharing": {
-      "action": "Share",
-      "title": "Share meal plan",
-      "description": "Create a one-time link and share it by email, messenger or any other channel.",
+      "action": "Edit together",
+      "title": "Share meal plan for editing",
+      "description": "Invite people to edit your meal plan with you. You decide who may make changes.",
+      "hint": "Other people can edit with you once you grant permission.",
       "createInvite": "Create invitation link",
       "creating": "Creating link …",
       "linkLabel": "Invitation link",

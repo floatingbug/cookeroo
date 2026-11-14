@@ -261,12 +261,10 @@ function retryMembers(): void {
             @click="onSave"
           />
         </template>
-        <Button
-          v-if="isOwner"
-          severity="secondary"
-          :label="t('mealPlan.sharing.action')"
-          @click="openShare"
-        />
+        <div v-if="isOwner" class="share-area">
+          <Button severity="secondary" :label="t('mealPlan.sharing.action')" @click="openShare" />
+          <p class="share-hint">{{ t('mealPlan.sharing.hint') }}</p>
+        </div>
       </div>
     </div>
 
@@ -292,7 +290,13 @@ function retryMembers(): void {
     />
 
     <div class="week-toolbar">
-      <Button severity="secondary" :label="t('mealPlan.week.previous')" @click="previousWeek" />
+      <Button
+        class="week-nav"
+        severity="secondary"
+        label="←"
+        :aria-label="t('mealPlan.week.previous')"
+        @click="previousWeek"
+      />
 
       <div class="week-center">
         <p class="week-range">{{ weekRange }}</p>
@@ -304,7 +308,13 @@ function retryMembers(): void {
         />
       </div>
 
-      <Button severity="secondary" :label="t('mealPlan.week.next')" @click="nextWeek" />
+      <Button
+        class="week-nav"
+        severity="secondary"
+        label="→"
+        :aria-label="t('mealPlan.week.next')"
+        @click="nextWeek"
+      />
     </div>
 
     <p v-if="errorKey" class="alert" role="alert">{{ t(errorKey) }}</p>
@@ -408,6 +418,21 @@ function retryMembers(): void {
   gap: var(--space-sm);
 }
 
+.share-area {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: var(--space-xs);
+}
+
+.share-hint {
+  margin: 0;
+  max-width: 28ch;
+  color: var(--color-text-muted);
+  font-size: var(--font-size-sm);
+  text-align: right;
+}
+
 .dirty,
 .saved,
 .read-only-hint {
@@ -445,6 +470,13 @@ function retryMembers(): void {
   flex-wrap: wrap;
   align-items: center;
   gap: var(--space-sm);
+}
+
+.week-nav {
+  min-width: 2.5rem;
+  padding-inline: var(--space-md);
+  font-size: var(--font-size-lg);
+  line-height: 1;
 }
 
 .week-range {

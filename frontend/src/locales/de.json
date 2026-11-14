@@ -293,9 +293,10 @@
       "retryShared": "Freigegebene Pläne erneut laden"
     },
     "sharing": {
-      "action": "Teilen",
-      "title": "Wochenplan teilen",
-      "description": "Erstelle einen Einmal-Link und teile ihn per E-Mail, Messenger oder auf einem anderen Weg.",
+      "action": "Gemeinsam bearbeiten",
+      "title": "Wochenplan zum Bearbeiten freigeben",
+      "description": "Lade Personen ein, die deinen Wochenplan mit dir bearbeiten. Du legst fest, wer Änderungen vornehmen darf.",
+      "hint": "Andere Personen können nach deiner Freigabe mitbearbeiten.",
       "createInvite": "Einladungslink erstellen",
       "creating": "Link wird erstellt …",
       "linkLabel": "Einladungslink",
