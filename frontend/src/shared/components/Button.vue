@@ -19,7 +19,10 @@ const classes = computed(() => ['button', `button--${props.severity}`])
 
 <template>
   <button :type="type" :class="classes" :disabled="disabled" :aria-label="ariaLabel">
-    {{ label }}
+    <span v-if="$slots.icon" class="button-icon" aria-hidden="true">
+      <slot name="icon" />
+    </span>
+    <span v-if="label" class="button-label">{{ label }}</span>
   </button>
 </template>
 
@@ -47,6 +50,18 @@ const classes = computed(() => ['button', `button--${props.severity}`])
 
 .button:not(:disabled):active {
   transform: translateY(1px);
+}
+
+.button-icon {
+  display: inline-flex;
+  flex-shrink: 0;
+  width: 1.25rem;
+  height: 1.25rem;
+}
+
+.button-icon :deep(svg) {
+  width: 100%;
+  height: 100%;
 }
 
 .button:disabled {

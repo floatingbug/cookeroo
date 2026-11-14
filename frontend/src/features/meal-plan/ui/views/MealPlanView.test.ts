@@ -343,9 +343,13 @@ describe('MealPlanView', () => {
 
     expect(firstWeek).toBeDefined()
 
-    await wrapper
-      .find(`button[aria-label="${i18n.global.t('mealPlan.week.previous')}"]`)
-      .trigger('click')
+    const previousButton = wrapper.find(
+      `button[aria-label="${i18n.global.t('mealPlan.week.previous')}"]`,
+    )
+
+    expect(previousButton.find('svg').exists()).toBe(true)
+
+    await previousButton.trigger('click')
     await flushPromises()
 
     expect(mockedLoadMealPlan).toHaveBeenLastCalledWith(

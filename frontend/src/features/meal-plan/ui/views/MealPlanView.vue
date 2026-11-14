@@ -293,10 +293,25 @@ function retryMembers(): void {
       <Button
         class="week-nav"
         severity="secondary"
-        label="←"
+        label=""
         :aria-label="t('mealPlan.week.previous')"
         @click="previousWeek"
-      />
+      >
+        <template #icon>
+          <svg
+            viewBox="0 0 20 20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.25"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M16 10H4" />
+            <path d="M9 5l-5 5 5 5" />
+          </svg>
+        </template>
+      </Button>
 
       <div class="week-center">
         <p class="week-range">{{ weekRange }}</p>
@@ -311,10 +326,25 @@ function retryMembers(): void {
       <Button
         class="week-nav"
         severity="secondary"
-        label="→"
+        label=""
         :aria-label="t('mealPlan.week.next')"
         @click="nextWeek"
-      />
+      >
+        <template #icon>
+          <svg
+            viewBox="0 0 20 20"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2.25"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            aria-hidden="true"
+          >
+            <path d="M4 10h12" />
+            <path d="M11 5l5 5-5 5" />
+          </svg>
+        </template>
+      </Button>
     </div>
 
     <p v-if="errorKey" class="alert" role="alert">{{ t(errorKey) }}</p>
@@ -473,10 +503,9 @@ function retryMembers(): void {
 }
 
 .week-nav {
-  min-width: 2.5rem;
-  padding-inline: var(--space-md);
-  font-size: var(--font-size-lg);
-  line-height: 1;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0;
 }
 
 .week-range {
