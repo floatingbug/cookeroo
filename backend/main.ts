@@ -19,6 +19,7 @@ async function start(): Promise<void> {
     await mkdir(config.uploadsConfig.dir, { recursive: true });
 
     const app = express();
+    app.set('trust proxy', 1);
 
     app.use(express.json(config.jsonConfig));
     app.use(express.urlencoded(config.urlencodedConfig));
@@ -58,7 +59,7 @@ async function start(): Promise<void> {
 
     app.use(errorMiddleware);
 
-    app.listen(config.port, () => {
+    app.listen(config.port, process.env.HOST || '127.0.0.1', () => {
         console.log(`Server running on port ${config.port}`);
     });
 }
